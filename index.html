@@ -126,6 +126,70 @@
             width: auto;
             margin-bottom: 0.75rem; /* espace sous le logo */
         }
+
+        /* Styles pour Ladder et GRAFCET interactifs */
+        .ladder-diagram, .grafcet-diagram {
+            background-color: #374151; /* Gris un peu plus clair */
+            padding: 1rem;
+            border-radius: 0.375rem;
+            margin-top: 1rem;
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed #4a5568;
+        }
+        .ladder-element, .grafcet-element {
+            cursor: pointer;
+            transition: transform 0.1s ease-out, fill 0.2s ease, stroke 0.2s ease;
+            margin: 5px;
+        }
+        .ladder-element:hover, .grafcet-element:hover {
+            transform: scale(1.1);
+        }
+        .ladder-info, .grafcet-info {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background-color: #1f2937; /* Gris encore plus foncé */
+            border-radius: 0.375rem;
+            text-align: center;
+            color: #9ca3af; /* Gris moyen-clair */
+            min-height: 50px;
+        }
+        .grafcet-step {
+            border: 2px solid #9ca3af;
+            width: 60px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 5px;
+            margin-top: 5px;
+        }
+        .grafcet-transition {
+            width: 40px;
+            height: 2px;
+            background-color: #9ca3af;
+            margin-bottom: 5px;
+            margin-top: 5px;
+            position: relative;
+        }
+        .grafcet-transition-label {
+            position: absolute;
+            left: 110%;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.8rem;
+            color: #9ca3af;
+            white-space: nowrap;
+        }
+        .grafcet-line {
+            width: 2px;
+            height: 20px;
+            background-color: #9ca3af;
+        }
+
     </style>
 </head>
 <body>
@@ -337,13 +401,37 @@
                                     <h4 class="text-2xl font-orbitron font-semibold text-green-300">Langage Ladder (LD)</h4>
                                 </div>
                                 <p class="text-gray-400 mb-4">Aussi appelé schéma à contacts, il est basé sur la logique des relais électromécaniques. Il est très visuel et apprécié pour sa simplicité pour les logiques séquentielles et combinatoires.</p>
-                                <ul class="list-disc list-inside space-y-1 text-gray-300 mb-4">
-                                    <li>Facile à comprendre pour les électriciens.</li>
-                                    <li>Bon pour la logique booléenne simple.</li>
-                                    <li>Représentation graphique des circuits de commande.</li>
-                                </ul>
-                                <img src="https://placehold.co/300x150/2d3748/34d399?text=Exemple+Ladder&font=orbitron" alt="[Exemple de diagramme Ladder]" class="mt-4 rounded-lg shadow-md mx-auto">
-                                <button class="mt-4 button-primary font-semibold py-2 px-4 rounded-lg w-full opacity-50 cursor-not-allowed">Constructeur Ladder (Bientôt)</button>
+                                
+                                <div class="ladder-diagram">
+                                    <svg width="250" height="80" viewBox="0 0 250 80" xmlns="http://www.w3.org/2000/svg">
+                                        <line x1="10" y1="10" x2="10" y2="70" stroke="#e2e8f0" stroke-width="2"/>
+                                        <line x1="240" y1="10" x2="240" y2="70" stroke="#e2e8f0" stroke-width="2"/>
+                                        
+                                        <line x1="10" y1="40" x2="50" stroke="#e2e8f0" stroke-width="2"/>
+                                        
+                                        <g class="ladder-element" data-info="Contact Normalement Ouvert (NO) : Permet le passage du courant si la condition associée (ex: capteur actif) est VRAIE.">
+                                            <line x1="50" y1="30" x2="50" y2="50" stroke="#90cdf4" stroke-width="2"/>
+                                            <line x1="70" y1="30" x2="70" y2="50" stroke="#90cdf4" stroke-width="2"/>
+                                            <text x="52" y="25" font-size="10" fill="#90cdf4">I0.0</text>
+                                        </g>
+                                        <line x1="70" y1="40" x2="90" stroke="#e2e8f0" stroke-width="2"/>
+
+                                        <g class="ladder-element" data-info="Contact Normalement Fermé (NF) : Permet le passage du courant si la condition associée est FAUSSE. S'ouvre si la condition devient VRAIE.">
+                                            <line x1="90" y1="30" x2="90" y2="50" stroke="#fdbf6f" stroke-width="2"/>
+                                            <line x1="110" y1="30" x2="110" y2="50" stroke="#fdbf6f" stroke-width="2"/>
+                                            <line x1="92" y1="40" x2="108" y2="40" stroke="#fdbf6f" stroke-width="2" transform="rotate(-30 100 40)"/>
+                                            <text x="92" y="25" font-size="10" fill="#fdbf6f">I0.1</text>
+                                        </g>
+                                        <line x1="110" y1="40" x2="180" stroke="#e2e8f0" stroke-width="2"/>
+
+                                        <g class="ladder-element" data-info="Bobine de Sortie : S'active (met la sortie à VRAI) si le chemin logique qui la précède est conducteur.">
+                                            <circle cx="195" cy="40" r="12" stroke="#a7f3d0" stroke-width="2" fill="none"/>
+                                            <text x="188" y="44" font-size="10" fill="#a7f3d0">Q0.0</text>
+                                        </g>
+                                        <line x1="207" y1="40" x2="240" stroke="#e2e8f0" stroke-width="2"/>
+                                    </svg>
+                                </div>
+                                <div id="ladder-info-box" class="ladder-info">Cliquez sur un élément du schéma Ladder.</div>
                             </div>
 
                             <div class="logic-diagram-card">
@@ -356,13 +444,23 @@
                                     <h4 class="text-2xl font-orbitron font-semibold text-purple-300">GRAFCET (SFC)</h4>
                                 </div>
                                 <p class="text-gray-400 mb-4">Le GRAphe Fonctionnel de Commande Étapes/Transitions (SFC - Sequential Function Chart) est un langage graphique qui décrit le comportement séquentiel d'un automatisme. Il est idéal pour visualiser les cycles et les modes de marche.</p>
-                                <ul class="list-disc list-inside space-y-1 text-gray-300 mb-4">
-                                    <li>Représentation claire des séquences et des conditions.</li>
-                                    <li>Facilite la conception et le dépannage de processus complexes.</li>
-                                    <li>Standardisé (IEC 61131-3).</li>
-                                </ul>
-                                <img src="https://placehold.co/300x150/2d3748/c084fc?text=Exemple+GRAFCET&font=orbitron" alt="[Exemple de diagramme GRAFCET]" class="mt-4 rounded-lg shadow-md mx-auto">
-                                <button class="mt-4 button-primary font-semibold py-2 px-4 rounded-lg w-full opacity-50 cursor-not-allowed">Simulateur GRAFCET (Bientôt)</button>
+                                
+                                <div class="grafcet-diagram">
+                                    <div class="grafcet-element grafcet-step" data-info="Étape Initiale 0 : Repos, attente de démarrage.">0</div>
+                                    <div class="grafcet-line"></div>
+                                    <div class="grafcet-element grafcet-transition" data-info="Transition : Condition 'Bouton Démarrer Cycle ET Capteur Pièce Présente'.">
+                                        <span class="grafcet-transition-label">Start & PcsOK</span>
+                                    </div>
+                                    <div class="grafcet-line"></div>
+                                    <div class="grafcet-element grafcet-step" data-info="Étape 1 : Action 'Serrer Pièce'.">1</div>
+                                    <div class="grafcet-line"></div>
+                                    <div class="grafcet-element grafcet-transition" data-info="Transition : Condition 'Pièce Serrée'.">
+                                         <span class="grafcet-transition-label">PcsSerrée</span>
+                                    </div>
+                                    <div class="grafcet-line"></div>
+                                    <div class="grafcet-element grafcet-step" data-info="Étape 2 : Action 'Usiner Pièce'.">2</div>
+                                </div>
+                                <div id="grafcet-info-box" class="grafcet-info">Cliquez sur une étape ou une transition.</div>
                             </div>
                         </div>
                     </div>
@@ -1032,15 +1130,13 @@
             });
             const defaultButton = document.querySelector(`.${tabButtonClass}[data-target="${defaultTabTarget}"]`);
             if (defaultButton) {
-                // Pour éviter de déclencher le click si l'onglet est déjà actif par la navigation principale
-                if (!defaultButton.classList.contains('border-blue-500')) {
+                if (!defaultButton.classList.contains('border-blue-500')) { // Click only if not already active by main nav
                      defaultButton.click();
-                } else { // Si déjà actif, s'assurer que le contenu est bien initialisé
-                     if (defaultTabTarget === 'module2-normes') { 
+                } else { // If already active, ensure content is initialized
+                     if (defaultTabTarget === 'etape1-composants' && moduleId === 'module1') {
+                        setupInteractiveList('component-list', 'component-details', componentData);
+                    } else if (defaultTabTarget === 'module2-normes' && moduleId === 'module2') { 
                         setupInteractiveList('module2-normes-cards', 'norme-details', normesData, 'card');
-                    } else if (defaultTabTarget === 'module2-fabricants') {
-                        populateFabricantCards(); 
-                        setupInteractiveList('module2-fabricants-cards', 'fabricant-details', fabricantsData, 'card');
                     }
                 }
             }
@@ -1054,6 +1150,31 @@
         setupModuleTabs('module2', 'module2-tab-button', 'module2-tab-content', 'module2-normes', {
             // 'module2-normes' et 'module2-fabricants' sont gérés dans le click handler du bouton d'onglet
         });
+
+        // --- Logique pour Ladder et GRAFCET interactifs ---
+        const ladderElements = document.querySelectorAll('.ladder-element');
+        const ladderInfoBox = document.getElementById('ladder-info-box');
+        ladderElements.forEach(el => {
+            el.addEventListener('click', () => {
+                ladderInfoBox.textContent = el.dataset.info || "Information non disponible.";
+                ladderElements.forEach(e => e.style.strokeWidth = '2'); // Reset others
+                el.querySelectorAll('line, circle').forEach(shape => shape.style.strokeWidth = '4'); // Highlight clicked
+            });
+        });
+
+        const grafcetElements = document.querySelectorAll('.grafcet-element');
+        const grafcetInfoBox = document.getElementById('grafcet-info-box');
+        grafcetElements.forEach(el => {
+            el.addEventListener('click', () => {
+                grafcetInfoBox.textContent = el.dataset.info || "Information non disponible.";
+                 grafcetElements.forEach(e => {
+                    if(e.classList.contains('grafcet-step')) e.style.borderColor = '#9ca3af';
+                    if(e.classList.contains('grafcet-transition')) e.style.backgroundColor = '#9ca3af';
+                 });
+                if(el.classList.contains('grafcet-step')) el.style.borderColor = '#63b3ed'; // Highlight step
+                if(el.classList.contains('grafcet-transition')) el.style.backgroundColor = '#63b3ed'; // Highlight transition
+            });
+        });
         
         document.getElementById('currentYear').textContent = new Date().getFullYear();
         setActiveSection('accueil');
@@ -1061,4 +1182,3 @@
     </script>
 </body>
 </html>
-
