@@ -1129,24 +1129,17 @@ Source Code (.java) → Compiler → Bytecode (.class) → JVM → Exécution
 
             const isCurrentlyActive = tooltip.classList.contains('active');
 
-            if (isCurrentlyActive) {
-                // Si l'infobulle cliquée est déjà active, ne rien faire.
-                // La fermeture se fera uniquement via le bouton 'X'.
-                return;
-            }
-
-            // Si on arrive ici, c'est qu'on a cliqué sur le label d'une infobulle
-            // qui n'est PAS active, ou qu'aucune infobulle n'est active.
-
-            // Fermer toutes les autres infobulles actives (s'il y en a une autre d'ouverte)
+            // Fermer toutes les infobulles actives
             document.querySelectorAll('.tooltip-content.active').forEach(activeTooltip => {
                 activeTooltip.classList.remove('active');
             });
-            // L'overlay et le 'tooltip-overlay-active' sur le container seront gérés ci-dessous
-            // s'ils étaient actifs pour une autre infobulle, ils le resteront pour la nouvelle.
-            // S'ils n'étaient pas actifs, ils le deviendront.
 
-            // Activer l'infobulle cliquée et l'overlay
+            if (isCurrentlyActive) {
+                // Si l'infobulle cliquée était déjà active, on la ferme (et l'overlay)
+                tooltipOverlay.classList.remove('active');
+                document.querySelector('.container').classList.remove('tooltip-overlay-active');
+            } else {
+                // Sinon, on active l'infobulle cliquée et l'overlay
                 tooltip.classList.add('active');
                 tooltipOverlay.classList.add('active');
                 document.querySelector('.container').classList.add('tooltip-overlay-active');
@@ -1171,6 +1164,14 @@ Source Code (.java) → Compiler → Bytecode (.class) → JVM → Exécution
             tooltipOverlay.classList.remove('active');
             document.querySelector('.container').classList.remove('tooltip-overlay-active');
         }
+
+        tooltipOverlay.addEventListener('click', function(event) {
+            // Only close the tooltip if the click is directly on the overlay itself,
+            // and not on an element within the tooltip content.
+            if (event.target === tooltipOverlay) {
+                closeCurrentTooltip();
+            }
+        });
 
         // Gestion des sections
         function toggleSection(header) {
