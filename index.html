@@ -30,12 +30,14 @@
             transform: translateY(-5px);
             box-shadow: 0 10px 15px -3px rgba(74, 85, 104, 0.5), 0 4px 6px -2px rgba(74, 85, 104, 0.3);
         }
-        .interactive-list-item { /* Classe générique pour les éléments de liste cliquables */
+        .interactive-list-item, .interactive-card-item { /* Classe générique pour les éléments cliquables */
             cursor: pointer;
-            transition: background-color 0.2s ease;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
         }
-        .interactive-list-item:hover, .interactive-list-item.active {
+        .interactive-list-item:hover, .interactive-list-item.active,
+        .interactive-card-item:hover, .interactive-card-item.active {
             background-color: #4a5568; /* Gris */
+            border-color: #63b3ed; /* Bleu clair pour la bordure active/survolée */
         }
         .button-primary {
             background-color: #4299e1; /* Bleu */
@@ -62,7 +64,6 @@
             background-color: #718096; /* Gris plus clair */
         }
 
-
         /* Styles menu mobile */
         .mobile-menu {
             display: none;
@@ -74,13 +75,24 @@
             .mobile-menu-button-container {
                 display: flex;
             }
+            .module-tabs-nav { /* Permettre le défilement horizontal des onglets sur mobile */
+                overflow-x: auto;
+                white-space: nowrap; /* Empêcher le retour à la ligne des onglets */
+                -webkit-overflow-scrolling: touch; /* Défilement fluide sur iOS */
+            }
+            .module-tabs-nav::-webkit-scrollbar { /* Cacher la scrollbar pour l'esthétique */
+                display: none;
+            }
+            .module-tabs-nav > button { /* S'assurer que les boutons ne rétrécissent pas trop */
+                flex-shrink: 0;
+            }
         }
          @media (min-width: 769px) {
             .mobile-menu-button-container {
                 display: none;
             }
         }
-        .logic-diagram-card {
+        .logic-diagram-card, .toolbox-card, .norm-card { /* Style partagé pour les cartes de contenu */
             background-color: #2d3748; /* Gris-bleu moyen */
             border: 1px solid #4a5568; /* Gris */
             border-radius: 0.5rem;
@@ -121,7 +133,7 @@
                 <nav class="hidden md:flex space-x-6 items-center desktop-nav">
                     <a href="#" class="nav-link text-lg hover:text-blue-400 transition-colors duration-300 px-3 py-2 rounded-md" data-target="accueil">Accueil</a>
                     <a href="#" class="nav-link text-lg hover:text-blue-400 transition-colors duration-300 px-3 py-2 rounded-md" data-target="module1">Module 1</a>
-                    <a href="#" class="nav-link text-lg hover:text-blue-400 transition-colors duration-300 px-3 py-2 rounded-md" data-target="module-placeholder">Module 2 (À venir)</a>
+                    <a href="#" class="nav-link text-lg hover:text-blue-400 transition-colors duration-300 px-3 py-2 rounded-md" data-target="module2">Module 2</a>
                     <a href="#" class="nav-link text-lg hover:text-blue-400 transition-colors duration-300 px-3 py-2 rounded-md" data-target="module-placeholder">Module 3 (À venir)</a>
                 </nav>
                 <div class="md:hidden mobile-menu-button-container">
@@ -136,11 +148,10 @@
         <div id="mobile-menu" class="md:hidden mobile-menu bg-gray-800">
             <a href="#" class="nav-link block px-4 py-3 text-lg text-gray-300 hover:bg-gray-700 hover:text-blue-400" data-target="accueil">Accueil</a>
             <a href="#" class="nav-link block px-4 py-3 text-lg text-gray-300 hover:bg-gray-700 hover:text-blue-400" data-target="module1">Module 1</a>
-            <a href="#" class="nav-link block px-4 py-3 text-lg text-gray-300 hover:bg-gray-700 hover:text-blue-400" data-target="module-placeholder">Module 2 (À venir)</a>
+            <a href="#" class="nav-link block px-4 py-3 text-lg text-gray-300 hover:bg-gray-700 hover:text-blue-400" data-target="module2">Module 2</a>
             <a href="#" class="nav-link block px-4 py-3 text-lg text-gray-300 hover:bg-gray-700 hover:text-blue-400" data-target="module-placeholder">Module 3 (À venir)</a>
         </div>
     </header>
-
 
     <main class="container mx-auto p-4 sm:p-6 lg:p-8">
         <section id="accueil" class="content-section active">
@@ -148,7 +159,6 @@
                 <h2 class="text-4xl font-orbitron font-bold mb-4 text-blue-300">Bienvenue à l'Usine Virtuelle d'Apprentissage !</h2>
                 <p class="text-xl text-gray-400 max-w-3xl mx-auto">Prêt à assembler les connaissances et à maîtriser les secrets de l'automatisation et de la robotique ? Explorez nos modules interactifs et devenez un pro de la Tech !</p>
             </div>
-
 
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <div class="module-card rounded-lg p-6 shadow-xl hover:shadow-blue-500/30">
@@ -162,16 +172,15 @@
                     <button class="nav-link button-primary font-semibold py-2 px-4 rounded-lg w-full" data-target="module1">Commencer le Module 1</button>
                 </div>
 
-
-                <div class="module-card rounded-lg p-6 shadow-xl opacity-70">
+                <div class="module-card rounded-lg p-6 shadow-xl hover:shadow-blue-500/30">
                      <div class="flex items-center mb-4">
-                        <svg class="h-12 w-12 text-gray-500 mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <svg class="h-12 w-12 text-blue-400 mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.472-2.472a3.75 3.75 0 00-5.303-5.303L6.25 9.75M11.42 15.17L5.877 21m5.543-5.83l2.472-2.472a3.75 3.75 0 00-5.303-5.303L6.25 9.75M15 11.25l-2.472-2.472" />
                         </svg>
-                        <h3 class="text-2xl font-orbitron font-semibold text-gray-500">Module 2: Boîte à Outils</h3>
+                        <h3 class="text-2xl font-orbitron font-semibold text-blue-300">Module 2: Boîte à Outils</h3>
                     </div>
-                    <p class="text-gray-500 mb-6">Explorez les normes, fabricants et outils de référence essentiels.</p>
-                    <button class="bg-gray-600 text-gray-400 font-semibold py-2 px-4 rounded-lg w-full cursor-not-allowed">À venir</button>
+                    <p class="text-gray-400 mb-6">Explorez les normes, fabricants et outils de référence essentiels pour vos projets.</p>
+                    <button class="nav-link button-primary font-semibold py-2 px-4 rounded-lg w-full" data-target="module2">Explorer le Module 2</button>
                 </div>
                  <div class="module-card rounded-lg p-6 shadow-xl opacity-70">
                      <div class="flex items-center mb-4">
@@ -186,7 +195,6 @@
             </div>
         </section>
 
-
         <section id="module1" class="content-section">
             <div class="bg-gray-800 p-6 sm:p-8 rounded-xl shadow-2xl">
                 <div class="flex items-center mb-6">
@@ -197,9 +205,8 @@
                 </div>
                 <p class="text-lg text-gray-400 mb-8">Cette première étape est cruciale. Elle consiste à identifier tous les éléments qui interagiront dans votre système automatisé, comment ils communiqueront, et comment la logique de commande sera structurée.</p>
 
-
                 <div class="mb-8 border-b border-gray-700">
-                    <nav class="-mb-px flex space-x-4 sm:space-x-8 overflow-x-auto pb-px" aria-label="Tabs">
+                    <nav class="-mb-px flex space-x-4 sm:space-x-8 overflow-x-auto pb-px module-tabs-nav" aria-label="Tabs">
                         <button class="module1-tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-blue-500 text-blue-400" data-target="etape1-composants">
                             Étape 1: Composants
                         </button>
@@ -215,12 +222,11 @@
                     </nav>
                 </div>
 
-
                 <div id="module1-content">
                     <div class="module1-tab-content active" id="etape1-composants">
                         <h3 class="text-2xl font-semibold mb-6 text-sky-300">Étape 1: Définir les Composants d'Interaction</h3>
                         <p class="text-gray-400 mb-6">Cliquez sur un composant pour afficher ses détails et comprendre son rôle.</p>
-                       
+                        
                         <div class="flex flex-col md:flex-row gap-6">
                             <div class="md:w-1/3 bg-gray-700 p-4 rounded-lg shadow">
                                 <h4 class="text-xl font-semibold mb-4 text-gray-200">Composants Clés :</h4>
@@ -312,7 +318,7 @@
                      <div class="module1-tab-content" id="etape1-logique">
                         <h3 class="text-2xl font-semibold mb-6 text-sky-300">Étape 3: Dessiner le Diagramme Logique</h3>
                         <p class="text-gray-400 mb-8">Le diagramme logique est le cerveau de votre système. Il définit comment les entrées (capteurs, commandes) sont traitées pour produire des sorties (actions des moteurs, voyants). Les langages les plus courants sont le Ladder et le GRAFCET.</p>
-                       
+                        
                         <div class="grid md:grid-cols-2 gap-8">
                             <div class="logic-diagram-card">
                                 <div class="flex items-center mb-3">
@@ -331,7 +337,6 @@
                                 <img src="https://placehold.co/300x150/2d3748/34d399?text=Exemple+Ladder&font=orbitron" alt="[Exemple de diagramme Ladder]" class="mt-4 rounded-lg shadow-md mx-auto">
                                 <button class="mt-4 button-primary font-semibold py-2 px-4 rounded-lg w-full opacity-50 cursor-not-allowed">Constructeur Ladder (Bientôt)</button>
                             </div>
-
 
                             <div class="logic-diagram-card">
                                  <div class="flex items-center mb-3">
@@ -356,7 +361,7 @@
                     <div class="module1-tab-content" id="etape1-tags">
                         <h3 class="text-2xl font-semibold mb-6 text-sky-300">Étape 4: Liste des Tags et E/S</h3>
                         <p class="text-gray-400 mb-4">Une gestion rigoureuse des tags (variables) et des entrées/sorties (E/S) est fondamentale pour un programme automate clair, maintenable et efficace.</p>
-                       
+                        
                         <div class="logic-diagram-card mb-8">
                             <h4 class="text-xl font-orbitron font-semibold text-yellow-300 mb-3">Conventions de Nommage</h4>
                             <p class="text-gray-400 mb-2">Adopter une convention de nommage claire et cohérente est crucial. Voici quelques bonnes pratiques :</p>
@@ -369,7 +374,6 @@
                             <p class="text-gray-400 mt-3">Exemple : `DI_Zone01_DetecteurPositionHaute_S01` (Entrée Digitale, Zone 1, Détecteur de position haute, Capteur numéro 01)</p>
                         </div>
 
-
                         <div class="logic-diagram-card mb-8">
                             <h4 class="text-xl font-orbitron font-semibold text-yellow-300 mb-3">Ordre de Définition Critique</h4>
                             <p class="text-gray-400 mb-2">L'ordre dans lequel les tags sont définis peut avoir un impact sur la performance et l'organisation de la mémoire de l'automate, surtout pour les E/S mappées directement.</p>
@@ -379,7 +383,6 @@
                                 <li>Documenter clairement l'adressage physique et son mappage aux tags.</li>
                             </ul>
                         </div>
-
 
                         <div class="logic-diagram-card">
                             <h4 class="text-xl font-orbitron font-semibold text-yellow-300 mb-3">Exemple de Table de Tags et E/S</h4>
@@ -440,7 +443,66 @@
                 </div>
             </div>
         </section>
+        
+        <section id="module2" class="content-section">
+            <div class="bg-gray-800 p-6 sm:p-8 rounded-xl shadow-2xl">
+                <div class="flex items-center mb-6">
+                     <svg class="h-10 w-10 text-blue-400 mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.472-2.472a3.75 3.75 0 00-5.303-5.303L6.25 9.75M11.42 15.17L5.877 21m5.543-5.83l2.472-2.472a3.75 3.75 0 00-5.303-5.303L6.25 9.75M15 11.25l-2.472-2.472" />
+                    </svg>
+                    <h2 class="text-3xl font-orbitron font-bold text-blue-300">Module 2: La Boîte à Outils Intelligente</h2>
+                </div>
+                <p class="text-lg text-gray-400 mb-8">Ce module rassemble les outils de référence technique essentiels pour mener à bien vos projets d'automatisation et de robotique.</p>
+                
+                <div class="mb-8 border-b border-gray-700">
+                    <nav class="-mb-px flex space-x-4 sm:space-x-8 overflow-x-auto pb-px module-tabs-nav" aria-label="Tabs">
+                        <button class="module2-tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-blue-500 text-blue-400" data-target="module2-normes">
+                            Normes & Standards
+                        </button>
+                        <button class="module2-tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-transparent text-gray-500 hover:text-gray-300 hover:border-gray-500" data-target="module2-fabricants">
+                            Fabricants (À venir)
+                        </button>
+                         <button class="module2-tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-transparent text-gray-500 hover:text-gray-300 hover:border-gray-500" data-target="module2-adressage">
+                            Adressage & Connectique (À venir)
+                        </button>
+                    </nav>
+                </div>
 
+                <div id="module2-content">
+                    <div class="module2-tab-content active" id="module2-normes">
+                        <h3 class="text-2xl font-semibold mb-6 text-sky-300">Normes & Standards Essentiels</h3>
+                        <p class="text-gray-400 mb-6">Naviguez à travers les normes clés pour assurer la conformité, la sécurité et l'interopérabilité de vos systèmes.</p>
+                        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                            <div class="interactive-card-item norm-card" data-itemkey="securite_machines">
+                                <h4 class="text-xl font-orbitron font-semibold text-yellow-300 mb-2">Sécurité Machines</h4>
+                                <p class="text-gray-400 text-sm">Principes fondamentaux pour la conception de machines sûres (ex: ISO 12100, IEC 60204-1).</p>
+                            </div>
+                            <div class="interactive-card-item norm-card" data-itemkey="programmation_automates">
+                                <h4 class="text-xl font-orbitron font-semibold text-yellow-300 mb-2">Programmation Automates (IEC 61131-3)</h4>
+                                <p class="text-gray-400 text-sm">Standardisation des langages de programmation (LD, FBD, SFC, ST, IL).</p>
+                            </div>
+                            <div class="interactive-card-item norm-card" data-itemkey="communication_industrielle">
+                                <h4 class="text-xl font-orbitron font-semibold text-yellow-300 mb-2">Communication Industrielle</h4>
+                                <p class="text-gray-400 text-sm">Protocoles et standards pour l'échange de données (OPC UA, MQTT, etc.).</p>
+                            </div>
+                        </div>
+                        <div id="norme-details" class="bg-gray-700 p-6 rounded-lg shadow-inner min-h-[200px] md:min-h-[300px] flex flex-col">
+                            <div class="details-content-area norme-details-content overflow-y-auto flex-grow pr-2">
+                                 <p class="text-gray-400 text-lg">Sélectionnez une catégorie de norme pour afficher plus d'informations.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="module2-tab-content" id="module2-fabricants">
+                        <h3 class="text-2xl font-semibold mb-4 text-sky-300">Le Qui-est-Qui des Fabricants</h3>
+                        <p class="text-gray-400">Contenu à venir pour les fabricants...</p>
+                    </div>
+                    <div class="module2-tab-content" id="module2-adressage">
+                        <h3 class="text-2xl font-semibold mb-4 text-sky-300">Adressage & Connectique</h3>
+                        <p class="text-gray-400">Contenu à venir pour l'adressage et la connectique...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
         <section id="module-placeholder" class="content-section">
             <h2 class="text-3xl font-orbitron font-bold mb-4 text-blue-300">Module en Construction</h2>
@@ -451,12 +513,10 @@
         </section>
     </main>
 
-
     <footer class="bg-gray-900 mt-12 py-8 text-center">
         <p class="text-gray-500">&copy; <span id="currentYear"></span> RoboPro Académie. Tous droits réservés.</p>
         <p class="text-gray-600 text-sm">Une création interactive pour l'apprentissage de l'automatisation.</p>
     </footer>
-
 
     <script>
         // --- Données des Composants ---
@@ -546,7 +606,6 @@
             }
         };
 
-
         // --- Données des Protocoles ---
         const protocolData = {
             ethernet_ip: {
@@ -610,6 +669,46 @@
                 image: "https://placehold.co/300x200/1a202c/818cf8?text=PROFINET&font=orbitron"
             }
         };
+        
+        // --- Données des Normes (Module 2) ---
+        const normesData = {
+            securite_machines: {
+                title: "Sécurité des Machines",
+                icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 mx-auto mb-4 text-red-500"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" /></svg>`,
+                description: "La sécurité des machines est primordiale pour prévenir les accidents. Elle implique une analyse des risques, la mise en place de mesures de protection (protecteurs, dispositifs d'arrêt d'urgence, barrières immatérielles) et le respect des normes en vigueur.",
+                pointsCles: [
+                    "Norme principale : ISO 12100 (Principes généraux de conception - Appréciation du risque et réduction du risque).",
+                    "IEC 60204-1 : Sécurité des machines – Équipement électrique des machines.",
+                    "ISO 13849-1 : Sécurité des machines – Parties des systèmes de commande relatives à la sécurité.",
+                    "Importance des niveaux de performance (PL) et des niveaux d'intégrité de sécurité (SIL)."
+                ],
+                image: "https://placehold.co/300x200/1a202c/ef4444?text=Sécurité+Machines&font=orbitron"
+            },
+            programmation_automates: {
+                title: "Programmation Automates (IEC 61131-3)",
+                icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 mx-auto mb-4 text-green-500"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" /></svg>`,
+                description: "La norme IEC 61131-3 standardise les langages de programmation pour les automates programmables industriels (API/PLC), favorisant la portabilité et la compréhension des programmes.",
+                pointsCles: [
+                    "Langages graphiques : Ladder Diagram (LD), Function Block Diagram (FBD), Sequential Function Chart (SFC).",
+                    "Langages textuels : Instruction List (IL), Structured Text (ST).",
+                    "Définition des types de données, variables, fonctions et blocs fonctionnels.",
+                    "Facilite la maintenance et la réutilisation du code."
+                ],
+                 image: "https://placehold.co/300x200/1a202c/22c55e?text=IEC+61131-3&font=orbitron"
+            },
+            communication_industrielle: {
+                title: "Communication Industrielle",
+                icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 mx-auto mb-4 text-blue-500"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h18M21 16.5L16.5 12m0 0L21 7.5m-18 0L7.5 3M7.5 3v4.5m1.125 0L12 12m2.625-4.5L12 12m0 0L8.25 15M12 12l3.75 3M12 12l-3.75 3" /></svg>`,
+                description: "Les normes de communication industrielle définissent comment les différents équipements (automates, robots, capteurs, HMI, systèmes SCADA) échangent des données de manière fiable et efficace.",
+                pointsCles: [
+                    "Bus de terrain : Profibus, DeviceNet, Modbus RTU.",
+                    "Ethernet industriel : PROFINET, Ethernet/IP, Modbus TCP, EtherCAT.",
+                    "Protocoles pour l'Industrie 4.0 : OPC UA, MQTT.",
+                    "Importance de l'interopérabilité et de la cybersécurité."
+                ],
+                image: "https://placehold.co/300x200/1a202c/3b82f6?text=Communication&font=orbitron"
+            }
+        };
 
 
         // --- Logique de Navigation ---
@@ -618,7 +717,6 @@
         const mobileMenuButton = document.getElementById('mobile-menu-button');
         const mobileMenu = document.getElementById('mobile-menu');
 
-
         function setActiveSection(targetId) {
             contentSections.forEach(section => {
                 section.classList.toggle('active', section.id === targetId);
@@ -626,16 +724,24 @@
             navLinks.forEach(link => {
                 link.classList.toggle('text-blue-400', link.dataset.target === targetId);
                 link.classList.toggle('bg-gray-700', link.closest('.mobile-menu') && link.dataset.target === targetId);
-                 if (!link.closest('.mobile-menu') && link.dataset.target !== targetId) { // Pour les liens desktop non actifs
+                 if (!link.closest('.mobile-menu') && link.dataset.target !== targetId) { 
                     link.classList.remove('text-blue-400');
                 }
             });
             if (mobileMenu.style.display === 'block') {
                 mobileMenu.style.display = 'none';
             }
-            window.scrollTo(0, 0);
-        }
+            window.scrollTo(0, 0); 
 
+            // Initialisation spécifique au module si la section active est un module
+            if (targetId === 'module1') {
+                const firstTabButton = document.querySelector('.module1-tab-button[data-target="etape1-composants"]');
+                if (firstTabButton) firstTabButton.click(); // Active le premier onglet
+            } else if (targetId === 'module2') {
+                const firstTabButton = document.querySelector('.module2-tab-button[data-target="module2-normes"]');
+                 if (firstTabButton) firstTabButton.click(); // Active le premier onglet
+            }
+        }
 
         navLinks.forEach(link => {
             link.addEventListener('click', (e) => {
@@ -644,17 +750,15 @@
                 setActiveSection(targetId);
             });
         });
-       
+        
         mobileMenuButton.addEventListener('click', () => {
             mobileMenu.style.display = mobileMenu.style.display === 'block' ? 'none' : 'block';
         });
-
 
         // --- Logique d'interaction pour les listes et détails (générique) ---
         function setupInteractiveList(listId, detailsDivId, dataObject) {
             const listItems = document.querySelectorAll(`#${listId} .interactive-list-item`);
             const detailsDiv = document.getElementById(detailsDivId).querySelector('.details-content-area');
-
 
             function displayDetails(itemKey) {
                 const data = dataObject[itemKey];
@@ -679,83 +783,125 @@
                 }
             }
 
-
             listItems.forEach(item => {
                 item.addEventListener('click', () => {
                     listItems.forEach(i => i.classList.remove('active', 'bg-blue-600', 'text-white'));
                     item.classList.add('active', 'bg-blue-600', 'text-white');
-                    const itemKey = item.dataset.itemkey;
+                    const itemKey = item.dataset.itemkey; 
                     displayDetails(itemKey);
                 });
             });
-           
+            
             if (listItems.length > 0) {
                 const isActive = Array.from(listItems).some(item => item.classList.contains('active'));
-                if (!isActive) {
+                if (!isActive) { 
                     listItems[0].click();
                 }
             } else {
                  detailsDiv.innerHTML = `<p class="text-gray-400 text-lg">Aucun élément à afficher.</p>`;
             }
         }
-       
-        // --- Navigation par Onglets pour Module 1 ---
-        const module1TabButtons = document.querySelectorAll('.module1-tab-button');
-        const module1TabContents = document.querySelectorAll('#module1-content .module1-tab-content');
+        
+        // --- Navigation par Onglets pour Modules ---
+        function setupModuleTabs(moduleId, tabButtonClass, tabContentClass, defaultTabTarget, dataMapping) {
+            const tabButtons = document.querySelectorAll(`.${tabButtonClass}`);
+            const tabContents = document.querySelectorAll(`#${moduleId}-content .${tabContentClass}`);
 
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetId = button.dataset.target;
 
-        module1TabButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const targetId = button.dataset.target;
+                    tabButtons.forEach(btn => {
+                        btn.classList.remove('border-blue-500', 'text-blue-400');
+                        btn.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-300', 'hover:border-gray-500');
+                    });
+                    button.classList.add('border-blue-500', 'text-blue-400');
+                    button.classList.remove('border-transparent', 'text-gray-500', 'hover:text-gray-300', 'hover:border-gray-500');
 
+                    tabContents.forEach(content => {
+                        content.classList.toggle('active', content.id === targetId);
+                    });
 
-                module1TabButtons.forEach(btn => {
-                    btn.classList.remove('border-blue-500', 'text-blue-400');
-                    btn.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-300', 'hover:border-gray-500');
+                    // Initialiser la liste interactive pour l'onglet actif si des données sont mappées
+                    if (dataMapping && dataMapping[targetId]) {
+                        const {listId, detailsId, data} = dataMapping[targetId];
+                        setupInteractiveList(listId, detailsId, data);
+                    } else if (targetId === 'module2-normes') { // Cas spécifique pour les cartes de normes
+                        setupInteractiveCardList('module2-normes-cards', 'norme-details', normesData);
+                    }
                 });
-                button.classList.add('border-blue-500', 'text-blue-400');
-                button.classList.remove('border-transparent', 'text-gray-500', 'hover:text-gray-300', 'hover:border-gray-500');
-
-
-                module1TabContents.forEach(content => {
-                    content.classList.toggle('active', content.id === targetId);
-                });
-
-
-                // Initialiser la liste interactive pour l'onglet actif si ce n'est pas l'onglet des tags
-                if (targetId === 'etape1-composants') {
-                    setupInteractiveList('component-list', 'component-details', componentData);
-                } else if (targetId === 'etape1-protocoles') {
-                    setupInteractiveList('protocol-list', 'protocol-details', protocolData);
-                }
-                // L'onglet 'etape1-tags' n'utilise pas setupInteractiveList pour le moment
             });
-        });
-       
-        // Année actuelle dans le pied de page
-        document.getElementById('currentYear').textContent = new Date().getFullYear();
-
-
-        // Activer la section "Accueil" par défaut
-        setActiveSection('accueil');
-       
-        // S'assurer que le premier onglet du module 1 est bien actif et son contenu affiché si module1 est la cible
-        // et initialiser la liste des composants
-        if (document.getElementById('module1').classList.contains('active')) {
-            const firstTabButton = document.querySelector('.module1-tab-button[data-target="etape1-composants"]');
-            if (firstTabButton) {
-                firstTabButton.click();
+             // Activer l'onglet par défaut
+            const defaultButton = document.querySelector(`.${tabButtonClass}[data-target="${defaultTabTarget}"]`);
+            if (defaultButton) {
+                defaultButton.click();
             }
-        } else {
-            setupInteractiveList('component-list', 'component-details', componentData);
+        }
+
+        // Initialisation des onglets pour Module 1
+        setupModuleTabs('module1', 'module1-tab-button', 'module1-tab-content', 'etape1-composants', {
+            'etape1-composants': { listId: 'component-list', detailsId: 'component-details', data: componentData },
+            'etape1-protocoles': { listId: 'protocol-list', detailsId: 'protocol-details', data: protocolData }
+        });
+
+        // Initialisation des onglets pour Module 2
+        setupModuleTabs('module2', 'module2-tab-button', 'module2-tab-content', 'module2-normes', {
+            // 'module2-normes' sera géré par setupInteractiveCardList
+        });
+
+        // --- Logique pour les cartes interactives (Module 2 - Normes) ---
+        function setupInteractiveCardList(cardsContainerId, detailsDivId, dataObject) {
+            const cardItems = document.querySelectorAll(`#${cardsContainerId} .interactive-card-item`);
+            const detailsDiv = document.getElementById(detailsDivId).querySelector('.details-content-area');
+
+            function displayDetails(itemKey) {
+                const data = dataObject[itemKey];
+                 if (data) {
+                    let pointsHtml = '';
+                    if (data.pointsCles && data.pointsCles.length > 0) {
+                        pointsHtml = '<h4 class="text-xl font-semibold mt-6 mb-3 text-sky-200">Points Clés / Exemples :</h4><ul class="list-disc list-inside space-y-1 text-gray-300">';
+                        data.pointsCles.forEach(point => {
+                            pointsHtml += `<li>${point}</li>`;
+                        });
+                        pointsHtml += '</ul>';
+                    }
+                    detailsDiv.innerHTML = `
+                        <div class="text-center">${data.icon || ''}</div>
+                        <h3 class="text-3xl font-orbitron font-semibold mb-4 text-center text-blue-300">${data.title}</h3>
+                        <p class="text-lg text-gray-300 mb-4">${data.description}</p>
+                        ${pointsHtml}
+                        ${data.image ? `<img src="${data.image}" alt="[Image de ${data.title}]" class="mt-6 rounded-lg shadow-md mx-auto" onerror="this.src='https://placehold.co/300x200/1a202c/e2e8f0?text=Image+Indisponible&font=orbitron'; this.alt='Image par défaut pour ${data.title}'">` : ''}
+                    `;
+                } else {
+                    detailsDiv.innerHTML = `<p class="text-gray-400 text-lg">Sélectionnez une catégorie de norme pour afficher plus d'informations.</p>`;
+                }
+            }
+
+            cardItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    cardItems.forEach(i => i.classList.remove('active', 'bg-blue-700', 'border-blue-400'));
+                    item.classList.add('active', 'bg-blue-700', 'border-blue-400');
+                    const itemKey = item.dataset.itemkey;
+                    displayDetails(itemKey);
+                });
+            });
+             if (cardItems.length > 0) {
+                 const isActive = Array.from(cardItems).some(item => item.classList.contains('active'));
+                if (!isActive) {
+                    cardItems[0].click(); // Sélectionne la première carte par défaut
+                }
+            } else {
+                detailsDiv.innerHTML = `<p class="text-gray-400 text-lg">Aucune norme à afficher.</p>`;
+            }
         }
 
 
+        // Année actuelle dans le pied de page
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        // Activer la section "Accueil" par défaut
+        setActiveSection('accueil');
+        
     </script>
 </body>
 </html>
-
-
-
-
-
