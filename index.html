@@ -92,7 +92,7 @@
                 display: none;
             }
         }
-        .logic-diagram-card, .toolbox-card, .norm-card, .fabricant-card, .connectique-card { /* Style partagé pour les cartes de contenu */
+        .logic-diagram-card, .toolbox-card, .norm-card, .fabricant-card, .connectique-card, .calculator-card { /* Style partagé pour les cartes de contenu */
             background-color: #2d3748; /* Gris-bleu moyen */
             border: 1px solid #4a5568; /* Gris */
             border-radius: 0.5rem;
@@ -568,10 +568,34 @@
                     </svg>
                     <h2 class="text-3xl font-orbitron font-bold text-blue-300">Module 3: Le Laboratoire de Calcul</h2>
                 </div>
-                <p class="text-xl text-gray-400">Ce module est en cours de développement. Revenez bientôt pour des calculateurs interactifs et des outils pratiques !</p>
-                <div class="mt-8">
-                    <img src="https://placehold.co/600x400/2d3748/e2e8f0?text=Labo+de+Calcul+en+Construction&font=orbitron" alt="[Image d'un module en construction]" class="rounded-lg shadow-lg mx-auto">
-                </div>
+                <p class="text-lg text-gray-400 mb-8">Bienvenue au Laboratoire de Calcul ! Ici, vous trouverez des outils interactifs pour vous aider avec les formules et calculs courants en automatisation et robotique.</p>
+                
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="calculator-card">
+                        <h4 class="text-xl font-orbitron font-semibold text-green-300 mb-3">Calculateur de Vitesse Robot</h4>
+                        <p class="text-gray-400 mb-4 text-sm">Estimez la vitesse optimale de votre robot en fonction de la charge et de la distance à parcourir.</p>
+                        <img src="https://placehold.co/300x150/2d3748/34d399?text=Vitesse+Robot&font=orbitron" alt="[Illustration Calculateur Vitesse Robot]" class="my-4 rounded-lg shadow-md mx-auto">
+                        <button class="button-primary font-semibold py-2 px-4 rounded-lg w-full opacity-50 cursor-not-allowed">Ouvrir (Bientôt)</button>
+                    </div>
+                     <div class="calculator-card">
+                        <h4 class="text-xl font-orbitron font-semibold text-yellow-300 mb-3">Comparateur Temps de Cycle</h4>
+                        <p class="text-gray-400 mb-4 text-sm">Analysez et comparez les temps de cycle théoriques et réels de vos processus.</p>
+                        <img src="https://placehold.co/300x150/2d3748/fbbf24?text=Temps+de+Cycle&font=orbitron" alt="[Illustration Comparateur Temps de Cycle]" class="my-4 rounded-lg shadow-md mx-auto">
+                        <button class="button-primary font-semibold py-2 px-4 rounded-lg w-full opacity-50 cursor-not-allowed">Ouvrir (Bientôt)</button>
+                    </div>
+                    <div class="calculator-card">
+                        <h4 class="text-xl font-orbitron font-semibold text-purple-300 mb-3">Optimiseur Force Pneumatique</h4>
+                        <p class="text-gray-400 mb-4 text-sm">Calculez la force de serrage ou de poussée de vos actionneurs pneumatiques.</p>
+                        <img src="https://placehold.co/300x150/2d3748/c084fc?text=Force+Pneumatique&font=orbitron" alt="[Illustration Optimiseur Force Pneumatique]" class="my-4 rounded-lg shadow-md mx-auto">
+                        <button class="button-primary font-semibold py-2 px-4 rounded-lg w-full opacity-50 cursor-not-allowed">Ouvrir (Bientôt)</button>
+                    </div>
+                    <div class="calculator-card">
+                        <h4 class="text-xl font-orbitron font-semibold text-red-300 mb-3">Simulateur de Vide (Ventouses)</h4>
+                        <p class="text-gray-400 mb-4 text-sm">Déterminez la force de préhension de vos ventouses en fonction du niveau de vide et de la surface.</p>
+                        <img src="https://placehold.co/300x150/2d3748/fca5a5?text=Vide+Ventouses&font=orbitron" alt="[Illustration Simulateur Vide Ventouses]" class="my-4 rounded-lg shadow-md mx-auto">
+                        <button class="button-primary font-semibold py-2 px-4 rounded-lg w-full opacity-50 cursor-not-allowed">Ouvrir (Bientôt)</button>
+                    </div>
+                    </div>
             </div>
         </section>
 
@@ -1008,7 +1032,17 @@
             });
             const defaultButton = document.querySelector(`.${tabButtonClass}[data-target="${defaultTabTarget}"]`);
             if (defaultButton) {
-                defaultButton.click();
+                // Pour éviter de déclencher le click si l'onglet est déjà actif par la navigation principale
+                if (!defaultButton.classList.contains('border-blue-500')) {
+                     defaultButton.click();
+                } else { // Si déjà actif, s'assurer que le contenu est bien initialisé
+                     if (defaultTabTarget === 'module2-normes') { 
+                        setupInteractiveList('module2-normes-cards', 'norme-details', normesData, 'card');
+                    } else if (defaultTabTarget === 'module2-fabricants') {
+                        populateFabricantCards(); 
+                        setupInteractiveList('module2-fabricants-cards', 'fabricant-details', fabricantsData, 'card');
+                    }
+                }
             }
         }
 
@@ -1027,3 +1061,4 @@
     </script>
 </body>
 </html>
+
