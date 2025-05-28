@@ -1106,6 +1106,52 @@ Source Code (.java) → Compiler → Bytecode (.class) → JVM → Exécution
             updateProgress();
         });
 
+        // Gestion des infobulles
+        const tooltipOverlay = document.createElement('div');
+        tooltipOverlay.className = 'tooltip-overlay';
+        document.body.appendChild(tooltipOverlay);
+
+        function showTooltip(tooltipId) {
+            const tooltip = document.getElementById(tooltipId);
+            if (!tooltip) return;
+
+            const isCurrentlyActive = tooltip.classList.contains('active');
+
+            // Fermer toutes les infobulles actives
+            document.querySelectorAll('.tooltip-content.active').forEach(activeTooltip => {
+                activeTooltip.classList.remove('active');
+            });
+
+            if (isCurrentlyActive) {
+                // Si l'infobulle cliquée était déjà active, on la ferme (et l'overlay)
+                tooltipOverlay.classList.remove('active');
+            } else {
+                // Sinon, on active l'infobulle cliquée et l'overlay
+                tooltip.classList.add('active');
+                tooltipOverlay.classList.add('active');
+                // Ajouter un bouton de fermeture s'il n'existe pas
+                if (!tooltip.querySelector('.close-tooltip')) {
+                    const closeButton = document.createElement('button');
+                    closeButton.className = 'close-tooltip';
+                    closeButton.innerHTML = '&times;'; // Caractère de multiplication pour la croix
+                    closeButton.onclick = (event) => {
+                        event.stopPropagation(); // Empêche le clic de se propager au label
+                        closeCurrentTooltip();
+                    };
+                    tooltip.insertBefore(closeButton, tooltip.firstChild);
+                }
+            }
+        }
+
+        function closeCurrentTooltip() {
+            document.querySelectorAll('.tooltip-content.active').forEach(activeTooltip => {
+                activeTooltip.classList.remove('active');
+            });
+            tooltipOverlay.classList.remove('active');
+        }
+
+        tooltipOverlay.addEventListener('click', closeCurrentTooltip);
+
         // Gestion des sections
         function toggleSection(header) {
             const section = header.parentElement;
