@@ -1,0 +1,1474 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprendre les Langages Informatiques</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            padding: 40px 20px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .section {
+            background: white;
+            margin-bottom: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+        }
+
+        .section-header {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+
+        .section-header:hover {
+            background: linear-gradient(135deg, #45a049, #4CAF50);
+        }
+
+        .arrow {
+            transition: transform 0.3s ease;
+            font-size: 1.5em;
+        }
+
+        .section.active .arrow {
+            transform: rotate(180deg);
+        }
+
+        .section-content {
+            padding: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.5s ease;
+        }
+
+        .section.active .section-content {
+            padding: 30px;
+            max-height: 2000px;
+        }
+
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .concept-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #4CAF50;
+            transition: all 0.3s ease;
+        }
+
+        .concept-card:hover {
+            background: #e8f5e8;
+            transform: scale(1.02);
+        }
+
+        .concept-card h3 {
+            color: #4CAF50;
+            margin-bottom: 10px;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .comparison-table th {
+            background: #4CAF50;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        .comparison-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .comparison-table tr:hover {
+            background: #f5f5f5;
+        }
+
+        .code-example {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .code-example::before {
+            content: attr(data-lang);
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: #4CAF50;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8em;
+        }
+
+        .interactive-demo {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .demo-button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .demo-button:hover {
+            background: #45a049;
+            transform: scale(1.05);
+        }
+
+        .memory-visual {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 5px;
+            margin: 20px 0;
+            padding: 20px;
+            background: #f0f0f0;
+            border-radius: 10px;
+        }
+
+        .memory-block {
+            height: 40px;
+            background: #ddd;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .memory-block.allocated {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .memory-block.freed {
+            background: #f44336;
+            color: white;
+        }
+
+        .quiz-container {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .quiz-question {
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .quiz-options {
+            display: grid;
+            gap: 10px;
+        }
+
+        .quiz-option {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .quiz-option:hover {
+            background: #e8f5e8;
+            border-color: #4CAF50;
+        }
+
+        .quiz-option.correct {
+            background: #d4edda;
+            border-color: #4CAF50;
+        }
+
+        .paradigm-item {
+            margin: 15px 0;
+            position: relative;
+        }
+
+        .paradigm-label {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            display: inline-block;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+        }
+
+        .paradigm-label:hover {
+            background: linear-gradient(135deg, #45a049, #4CAF50);
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+        }
+
+        .paradigm-desc {
+            margin-left: 10px;
+            font-style: italic;
+            color: #666;
+        }
+
+        .tooltip-content {
+            display: none;
+            position: absolute;
+            top: 40px;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid #4CAF50;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            z-index: 1000;
+            max-height: 500px;
+            overflow-y: auto;
+            animation: tooltipSlideIn 0.3s ease-out;
+        }
+
+        .tooltip-content.active {
+            display: block;
+        }
+
+        .tooltip-content h4 {
+            color: #4CAF50;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            border-bottom: 2px solid #e8f5e8;
+            padding-bottom: 8px;
+        }
+
+        .tooltip-section {
+            margin: 15px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .tooltip-section h5 {
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+
+        .tooltip-section ul {
+            margin: 8px 0;
+            padding-left: 20px;
+        }
+
+        .tooltip-section li {
+            margin: 5px 0;
+            line-height: 1.4;
+        }
+
+        .code-example-mini {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .tooltip-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.3);
+            z-index: 999;
+            display: none;
+            backdrop-filter: blur(2px);
+        }
+
+        .tooltip-overlay.active {
+            display: block;
+        }
+
+        @keyframes tooltipSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .close-tooltip {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: #f44336;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .close-tooltip:hover {
+            background: #d32f2f;
+            transform: scale(1.1);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #4CAF50;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .concept-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .memory-visual {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧠 Comprendre les Langages Informatiques</h1>
+            <p>Formation approfondie pour la programmation robotique</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+        </div>
+
+        <!-- Section 1: Gestion de la Mémoire -->
+        <div class="section active" data-section="memory">
+            <div class="section-header" onclick="toggleSection(this)">
+                <span>🧮 Gestion de la Mémoire</span>
+                <span class="arrow">▲</span>
+            </div>
+            <div class="section-content">
+                <p>La gestion de la mémoire est fondamentale en programmation. Comprendre comment les programmes utilisent la RAM vous aidera à écrire du code plus efficace pour vos cobots.</p>
+                
+                <div class="concept-grid">
+                    <div class="concept-card">
+                        <h3>Stack (Pile)</h3>
+                        <p>Zone mémoire pour les variables locales et les appels de fonctions. Allocation/libération automatique et rapide.</p>
+                        <ul style="margin-top: 10px; margin-left: 20px;">
+                            <li>Variables locales</li>
+                            <li>Paramètres de fonctions</li>
+                            <li>Adresses de retour</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="concept-card">
+                        <h3>Heap (Tas)</h3>
+                        <p>Zone mémoire pour l'allocation dynamique. Plus flexible mais nécessite une gestion manuelle ou automatique.</p>
+                        <ul style="margin-top: 10px; margin-left: 20px;">
+                            <li>Objets créés dynamiquement</li>
+                            <li>Structures de données complexes</li>
+                            <li>Allocation à l'exécution</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="interactive-demo">
+                    <h3>🎮 Démonstration Interactive - Allocation Mémoire</h3>
+                    <p>Cliquez sur les boutons pour voir comment la mémoire est allouée et libérée :</p>
+                    <button class="demo-button" onclick="allocateMemory()">Allouer Mémoire</button>
+                    <button class="demo-button" onclick="freeMemory()">Libérer Mémoire</button>
+                    <button class="demo-button" onclick="resetMemory()">Réinitialiser</button>
+                    
+                    <div class="memory-visual" id="memoryBlocks">
+                        <!-- Blocs mémoire générés par JavaScript -->
+                    </div>
+                    <p id="memoryStatus">Mémoire disponible : 32 blocs</p>
+                </div>
+
+                <div class="code-example" data-lang="C++">
+// Exemple en C++ - Gestion manuelle
+int* ptr = new int(42);        // Allocation sur le heap
+// ... utilisation de ptr
+delete ptr;                    // Libération obligatoire !
+
+// Exemple en Python - Gestion automatique
+def create_list():
+    data = [1, 2, 3, 4, 5]    # Allocation automatique
+    return data               # Garbage Collector s'occupe du nettoyage
+                </div>
+
+                <div class="quiz-container">
+                    <div class="quiz-question">🤔 Quiz : Quelle zone mémoire est utilisée pour stocker une variable locale dans une fonction ?</div>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="checkAnswer(this, true)">A) Stack (Pile)</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">B) Heap (Tas)</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">C) Registre du processeur</div>
+                        <div class="quiz-option" onclick="checkAnswer(this, false)">D) Mémoire cache</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Structure des Langages -->
+        <div class="section" data-section="structure">
+            <div class="section-header" onclick="toggleSection(this)">
+                <span>🏗️ Pourquoi les Langages sont Structurés Ainsi</span>
+                <span class="arrow">▼</span>
+            </div>
+            <div class="section-content">
+                <p>Chaque langage de programmation a été conçu pour résoudre des problèmes spécifiques. Comprendre ces choix vous aidera à mieux programmer vos robots collaboratifs.</p>
+
+                <div class="concept-grid">
+                    <div class="concept-card">
+                        <h3>🎭 Paradigmes de Programmation</h3>
+                        <div class="paradigm-item">
+                            <span class="paradigm-label" onclick="showTooltip('imperative')">
+                                <strong>Impératif</strong> 💡
+                            </span>
+                            <span class="paradigm-desc">Instructions séquentielles (C, Python)</span>
+                            <div id="imperative" class="tooltip-content">
+                                <h4>🔄 Programmation Impérative</h4>
+                                <p><strong>Principe :</strong> Le programme décrit <em>comment</em> faire les choses, étape par étape.</p>
+                                <div class="tooltip-section">
+                                    <h5>🎯 Caractéristiques :</h5>
+                                    <ul>
+                                        <li>Instructions exécutées séquentiellement</li>
+                                        <li>Modification d'état par assignation</li>
+                                        <li>Utilisation de boucles et conditions</li>
+                                        <li>Variables mutables</li>
+                                    </ul>
+                                </div>
+                                <div class="tooltip-section">
+                                    <h5>🤖 Usage en Robotique :</h5>
+                                    <ul>
+                                        <li>Contrôle séquentiel des moteurs</li>
+                                        <li>Algorithmes de navigation simple</li>
+                                        <li>Scripts de configuration</li>
+                                    </ul>
+                                </div>
+                                <div class="code-example-mini">
+// Exemple impératif - Déplacement robot
+position_x = 0;
+for(int i = 0; i < 10; i++) {
+    position_x += 1;  // Modifier l'état
+    move_motor(position_x);
+}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="paradigm-item">
+                            <span class="paradigm-label" onclick="showTooltip('oop')">
+                                <strong>Orienté Objet</strong> 💡
+                            </span>
+                            <span class="paradigm-desc">Encapsulation des données (Java, C++)</span>
+                            <div id="oop" class="tooltip-content">
+                                <h4>🏗️ Programmation Orientée Objet</h4>
+                                <p><strong>Principe :</strong> Modéliser le monde réel avec des objets qui contiennent données et méthodes.</p>
+                                <div class="tooltip-section">
+                                    <h5>🎯 Principes Fondamentaux :</h5>
+                                    <ul>
+                                        <li><strong>Encapsulation :</strong> Données privées, accès contrôlé</li>
+                                        <li><strong>Héritage :</strong> Réutilisation et spécialisation</li>
+                                        <li><strong>Polymorphisme :</strong> Même interface, comportements différents</li>
+                                        <li><strong>Abstraction :</strong> Masquer la complexité</li>
+                                    </ul>
+                                </div>
+                                <div class="tooltip-section">
+                                    <h5>🤖 Usage en Robotique :</h5>
+                                    <ul>
+                                        <li>Modélisation des composants (Moteur, Capteur, Cobot)</li>
+                                        <li>Architecture modulaire et réutilisable</li>
+                                        <li>Systèmes complexes multi-robots</li>
+                                    </ul>
+                                </div>
+                                <div class="code-example-mini">
+// Exemple OOP - Classe Cobot
+class Cobot {
+private:
+    int position_x, position_y;
+public:
+    void moveTo(int x, int y) {
+        // Logique de déplacement encapsulée
+    }
+    bool isCollaborationSafe() {
+        return checkSafetyLimits();
+    }
+};
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="paradigm-item">
+                            <span class="paradigm-label" onclick="showTooltip('functional')">
+                                <strong>Fonctionnel</strong> 💡
+                            </span>
+                            <span class="paradigm-desc">Fonctions pures (Haskell, LISP)</span>
+                            <div id="functional" class="tooltip-content">
+                                <h4>🔧 Programmation Fonctionnelle</h4>
+                                <p><strong>Principe :</strong> Calculer avec des fonctions mathématiques pures, sans effets de bord.</p>
+                                <div class="tooltip-section">
+                                    <h5>🎯 Caractéristiques :</h5>
+                                    <ul>
+                                        <li><strong>Fonctions pures :</strong> Même entrée = même sortie</li>
+                                        <li><strong>Immutabilité :</strong> Les données ne changent pas</li>
+                                        <li><strong>Récursion :</strong> Remplace les boucles</li>
+                                        <li><strong>Fonctions d'ordre supérieur :</strong> map, filter, reduce</li>
+                                    </ul>
+                                </div>
+                                <div class="tooltip-section">
+                                    <h5>🤖 Usage en Robotique :</h5>
+                                    <ul>
+                                        <li>Traitement de données capteurs</li>
+                                        <li>Algorithmes de vision par ordinateur</li>
+                                        <li>Calculs de trajectoires</li>
+                                        <li>Systèmes prédictifs</li>
+                                    </ul>
+                                </div>
+                                <div class="code-example-mini">
+// Exemple fonctionnel - Traitement capteurs
+sensor_data = [1.2, 2.3, 1.8, 2.1, 1.9]
+
+filtered_data = filter(lambda x: x > 1.5, sensor_data)
+normalized = map(lambda x: x / max(sensor_data), filtered_data)
+average = reduce(lambda a, b: a + b, normalized) / len(normalized)
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="paradigm-item">
+                            <span class="paradigm-label" onclick="showTooltip('declarative')">
+                                <strong>Déclaratif</strong> 💡
+                            </span>
+                            <span class="paradigm-desc">Description du résultat (SQL, HTML)</span>
+                            <div id="declarative" class="tooltip-content">
+                                <h4>📋 Programmation Déclarative</h4>
+                                <p><strong>Principe :</strong> Décrire <em>quoi</em> faire, sans spécifier <em>comment</em> le faire.</p>
+                                <div class="tooltip-section">
+                                    <h5>🎯 Caractéristiques :</h5>
+                                    <ul>
+                                        <li>Description du résultat souhaité</li>
+                                        <li>Le système trouve comment l'obtenir</li>
+                                        <li>Haut niveau d'abstraction</li>
+                                        <li>Moins de code, plus expressif</li>
+                                    </ul>
+                                </div>
+                                <div class="tooltip-section">
+                                    <h5>🤖 Usage en Robotique :</h5>
+                                    <ul>
+                                        <li>Configuration de comportements (YAML, XML)</li>
+                                        <li>Requêtes sur données de capteurs (SQL)</li>
+                                        <li>Interfaces utilisateur (HTML/CSS)</li>
+                                        <li>Règles de sécurité collaborative</li>
+                                    </ul>
+                                </div>
+                                <div class="code-example-mini">
+<!-- Exemple déclaratif - Configuration cobot -->
+<robot_behavior>
+  <safety_zone radius="1.5m" />
+  <max_force value="150N" />
+  <collaboration enabled="true" />
+  <task type="pick_and_place" 
+        speed="moderate" 
+        precision="high" />
+</robot_behavior>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="concept-card">
+                        <h3>⚙️ Choix de Design</h3>
+                        <div class="paradigm-item">
+                            <span class="paradigm-label" onclick="showTooltip('syntax')">
+                                <strong>Syntaxe</strong> 💡
+                            </span>
+                            <span class="paradigm-desc">Lisibilité vs Concision</span>
+                            <div id="syntax" class="tooltip-content">
+                                <h4>✍️ Choix de Syntaxe</h4>
+                                <p><strong>Dilemme :</strong> Faut-il privilégier la lisibilité ou la concision du code ?</p>
+                                <div class="tooltip-section">
+                                    <h5>📖 Syntaxe Lisible (Python, JavaScript) :</h5>
+                                    <ul>
+                                        <li>Mots-clés en anglais naturel</li>
+                                        <li>Indentation significative</li>
+                                        <li>Moins de symboles cryptiques</li>
+                                        <li>Courbe d'apprentissage douce</li>
+                                    </ul>
+                                </div>
+                                <div class="tooltip-section">
+                                    <h5>⚡ Syntaxe Concise (C, Perl) :</h5>
+                                    <ul>
+                                        <li>Symboles et opérateurs nombreux</li>
+                                        <li>Expressions courtes et denses</li>
+                                        <li>Moins de frappe, plus rapide</li>
+                                        <li>Efficace pour experts</li>
+                                    </ul>
+                                </div>
+                                <div class="code-example-mini">
+// Lisible (Python)
+if temperature > maximum_safe_temperature:
+    stop_robot_immediately()
+    send_safety_alert()
+
+// Concis (C)
+temp>max_t?stop(),alert():0;
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="paradigm-item">
+                            <span class="paradigm-label" onclick="showTooltip('typing')">
+                                <strong>Typage</strong> 💡
+                            </span>
+                            <span class="paradigm-desc">Sécurité vs Flexibilité</span>
+                            <div id="typing" class="tooltip-content">
+                                <h4>🔐 Systèmes de Types</h4>
+                                <p><strong>Dilemme :</strong> Contrôler strictement les types ou permettre la flexibilité ?</p>
+                                <div class="tooltip-section">
+                                    <h5>🛡️ Typage Fort (Java, C++) :</h5>
+                                    <ul>
+                                        <li>Déclaration obligatoire des types</li>
+                                        <li>Vérification à la compilation</li>
+                                        <li>Détection d'erreurs précoce</li>
+                                        <li>Code plus sûr et prévisible</li>
+                                    </ul>
+                                </div>
+                                <div class="tooltip-section">
+                                    <h5>🤸 Typage Dynamique (Python, JavaScript) :</h5>
+                                    <ul>
+                                        <li>Types déterminés à l'exécution</li>
+                                        <li>Variables peuvent changer de type</li>
+                                        <li>Développement plus rapide</li>
+                                        <li>Plus de flexibilité</li>
+                                    </ul>
+                                </div>
+                                <div class="code-example-mini">
+// Typage fort (C++)
+double robot_speed = 1.5;  // Doit être un double
+int sensor_count = 6;      // Doit être un entier
+
+// Typage dynamique (Python)
+robot_speed = 1.5          # Peut être n'importe quoi
+robot_speed = "slow"       # Changement de type autorisé
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="paradigm-item">
+                            <span class="paradigm-label" onclick="showTooltip('performance')">
+                                <strong>Performance</strong> 💡
+                            </span>
+                            <span class="paradigm-desc">Vitesse vs Facilité d'usage</span>
+                            <div id="performance" class="tooltip-content">
+                                <h4>🏎️ Performance vs Facilité</h4>
+                                <p><strong>Dilemme :</strong> Optimiser pour la machine ou pour le développeur ?</p>
+                                <div class="tooltip-section">
+                                    <h5>⚡ Orienté Performance (C, Rust) :</h5>
+                                    <ul>
+                                        <li>Contrôle manuel de la mémoire</li>
+                                        <li>Optimisations de bas niveau</li>
+                                        <li>Vitesse d'exécution maximale</li>
+                                        <li>Complexité de développement</li>
+                                    </ul>
+                                </div>
+                                <div class="tooltip-section">
+                                    <h5>👨‍💻 Orienté Développeur (Python, Ruby) :</h5>
+                                    <ul>
+                                        <li>Gestion automatique des ressources</li>
+                                        <li>Syntaxe simple et intuitive</li>
+                                        <li>Développement rapide</li>
+                                        <li>Performance secondaire</li>
+                                    </ul>
+                                </div>
+                                <div class="tooltip-section">
+                                    <h5>🤖 Impact Robotique :</h5>
+                                    <ul>
+                                        <li><strong>Temps réel :</strong> Performance critique</li>
+                                        <li><strong>Prototypage :</strong> Facilité importante</li>
+                                        <li><strong>IA :</strong> Compromis équilibré</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="paradigm-item">
+                            <span class="paradigm-label" onclick="showTooltip('domain')">
+                                <strong>Domaine</strong> 💡
+                            </span>
+                            <span class="paradigm-desc">Spécialisé vs Général</span>
+                            <div id="domain" class="tooltip-content">
+                                <h4>🎯 Spécialisation vs Généralisme</h4>
+                                <p><strong>Dilemme :</strong> Créer un langage spécialisé ou généraliste ?</p>
+                                <div class="tooltip-section">
+                                    <h5>🔬 Langages Spécialisés :</h5>
+                                    <ul>
+                                        <li><strong>MATLAB :</strong> Calcul scientifique</li>
+                                        <li><strong>R :</strong> Statistiques et data science</li>
+                                        <li><strong>SQL :</strong> Bases de données</li>
+                                        <li><strong>VHDL :</strong> Circuits électroniques</li>
+                                    </ul>
+                                </div>
+                                <div class="tooltip-section">
+                                    <h5>🌐 Langages Généralistes :</h5>
+                                    <ul>
+                                        <li><strong>Python :</strong> Web, IA, scripts, etc.</li>
+                                        <li><strong>Java :</strong> Enterprise, mobile, web</li>
+                                        <li><strong>C++ :</strong> Système, jeux, embarqué</li>
+                                        <li><strong>JavaScript :</strong> Web, serveur, desktop</li>
+                                    </ul>
+                                </div>
+                                <div class="tooltip-section">
+                                    <h5>🤖 En Robotique :</h5>
+                                    <ul>
+                                        <li><strong>Spécialisé :</strong> Plus efficace pour une tâche</li>
+                                        <li><strong>Généraliste :</strong> Plus polyvalent, équipe unique</li>
+                                        <li><strong>Tendance :</strong> Python comme lingua franca</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Langage</th>
+                            <th>Conçu Pour</th>
+                            <th>Points Forts</th>
+                            <th>Usage Robotique</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>C++</strong></td>
+                            <td>Performance système</td>
+                            <td>Vitesse, contrôle mémoire</td>
+                            <td>Contrôle temps réel, ROS</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Python</strong></td>
+                            <td>Productivité, science</td>
+                            <td>Simplicité, bibliothèques</td>
+                            <td>IA, vision, prototypage</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Java</strong></td>
+                            <td>Applications d'entreprise</td>
+                            <td>Portabilité, robustesse</td>
+                            <td>Interfaces utilisateur</td>
+                        </tr>
+                        <tr>
+                            <td><strong>JavaScript</strong></td>
+                            <td>Web interactif</td>
+                            <td>Dynamisme, événements</td>
+                            <td>Interfaces web cobots</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="code-example" data-lang="Comparaison">
+// Même algorithme, styles différents
+
+// Style C++ (Impératif)
+for(int i = 0; i < 10; i++) {
+    cout << numbers[i] * 2 << endl;
+}
+
+// Style Python (Plus lisible)
+for number in numbers[:10]:
+    print(number * 2)
+
+// Style Fonctionnel
+doubled = map(lambda x: x * 2, numbers[:10])
+print(list(doubled))
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Compilé vs Interprété -->
+        <div class="section" data-section="compilation">
+            <div class="section-header" onclick="toggleSection(this)">
+                <span>⚡ Langages Compilés vs Interprétés</span>
+                <span class="arrow">▼</span>
+            </div>
+            <div class="section-content">
+                <p>Une distinction fondamentale qui impacte directement les performances de vos applications robotiques.</p>
+
+                <div class="concept-grid">
+                    <div class="concept-card">
+                        <h3>🏃‍♂️ Langages Compilés</h3>
+                        <p>Le code source est traduit en code machine avant l'exécution.</p>
+                        <ul style="margin-top: 10px; margin-left: 20px;">
+                            <li><strong>Avantages :</strong> Performance maximale, optimisations</li>
+                            <li><strong>Exemples :</strong> C, C++, Rust, Go</li>
+                            <li><strong>Robots :</strong> Contrôle temps réel, systèmes embarqués</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="concept-card">
+                        <h3>🐍 Langages Interprétés</h3>
+                        <p>Le code est exécuté ligne par ligne par un interpréteur.</p>
+                        <ul style="margin-top: 10px; margin-left: 20px;">
+                            <li><strong>Avantages :</strong> Flexibilité, développement rapide</li>
+                            <li><strong>Exemples :</strong> Python, JavaScript, Ruby</li>
+                            <li><strong>Robots :</strong> IA, vision, prototypage</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="interactive-demo">
+                    <h3>⏱️ Simulation Temps d'Exécution</h3>
+                    <p>Comparez le temps d'exécution entre approches :</p>
+                    <button class="demo-button" onclick="simulateCompiled()">Exécuter Code Compilé</button>
+                    <button class="demo-button" onclick="simulateInterpreted()">Exécuter Code Interprété</button>
+                    
+                    <div id="executionResults" style="margin-top: 20px; padding: 15px; background: white; border-radius: 10px; min-height: 50px;">
+                        <p>Cliquez sur un bouton pour voir la simulation...</p>
+                    </div>
+                </div>
+
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Aspect</th>
+                            <th>Compilé</th>
+                            <th>Interprété</th>
+                            <th>Hybride (Java, C#)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Vitesse d'exécution</strong></td>
+                            <td>⭐⭐⭐⭐⭐ Très rapide</td>
+                            <td>⭐⭐⭐ Moyenne</td>
+                            <td>⭐⭐⭐⭐ Rapide</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Temps de développement</strong></td>
+                            <td>⭐⭐ Long (compilation)</td>
+                            <td>⭐⭐⭐⭐⭐ Immédiat</td>
+                            <td>⭐⭐⭐ Moyen</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Débogage</strong></td>
+                            <td>⭐⭐ Plus difficile</td>
+                            <td>⭐⭐⭐⭐ Facile</td>
+                            <td>⭐⭐⭐ Bon</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Portabilité</strong></td>
+                            <td>⭐⭐ Spécifique plateforme</td>
+                            <td>⭐⭐⭐⭐⭐ Très portable</td>
+                            <td>⭐⭐⭐⭐ Portable</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="code-example" data-lang="Processus">
+// LANGAGE COMPILÉ (C++)
+Source Code (.cpp) → Compiler → Machine Code (.exe) → Exécution
+   ⏱️ Temps de compilation + ⚡ Exécution rapide
+
+// LANGAGE INTERPRÉTÉ (Python) 
+Source Code (.py) → Interpréteur → Exécution directe
+   ⚡ Pas de compilation + ⏱️ Exécution plus lente
+
+// HYBRIDE (Java)
+Source Code (.java) → Compiler → Bytecode (.class) → JVM → Exécution
+   ⏱️ Compilation + ⚡ Portabilité + Performance équilibrée
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Applications Robotiques -->
+        <div class="section" data-section="robotics">
+            <div class="section-header" onclick="toggleSection(this)">
+                <span>🤖 Applications en Robotique Collaborative</span>
+                <span class="arrow">▼</span>
+            </div>
+            <div class="section-content">
+                <p>Comment choisir le bon langage pour votre projet de cobot selon les besoins spécifiques.</p>
+
+                <div class="concept-grid">
+                    <div class="concept-card">
+                        <h3>🎯 Contrôle Temps Réel</h3>
+                        <p><strong>Langages :</strong> C, C++, Rust</p>
+                        <p><strong>Usage :</strong> Contrôle moteurs, sécurité critique</p>
+                        <p><strong>Exemple :</strong> Boucle de contrôle à 1000 Hz</p>
+                    </div>
+                    
+                    <div class="concept-card">
+                        <h3>🧠 Intelligence Artificielle</h3>
+                        <p><strong>Langages :</strong> Python, R, Julia</p>
+                        <p><strong>Usage :</strong> Vision par ordinateur, apprentissage</p>
+                        <p><strong>Exemple :</strong> Reconnaissance d'objets</p>
+                    </div>
+                    
+                    <div class="concept-card">
+                        <h3>🖥️ Interfaces Utilisateur</h3>
+                        <p><strong>Langages :</strong> JavaScript, Python, Java</p>
+                        <p><strong>Usage :</strong> Interface de programmation cobot</p>
+                        <p><strong>Exemple :</strong> Tableau de bord de contrôle</p>
+                    </div>
+                    
+                    <div class="concept-card">
+                        <h3>🌐 Communication Réseau</h3>
+                        <p><strong>Langages :</strong> Python, Node.js, Go</p>
+                        <p><strong>Usage :</strong> Communication entre robots</p>
+                        <p><strong>Exemple :</strong> Système multi-cobots</p>
+                    </div>
+                </div>
+
+                <div class="interactive-demo">
+                    <h3>🛠️ Simulateur de Choix de Langage</h3>
+                    <p>Sélectionnez votre type de projet robotique :</p>
+                    <button class="demo-button" onclick="showLanguageRecommendation('realtime')">Contrôle Temps Réel</button>
+                    <button class="demo-button" onclick="showLanguageRecommendation('ai')">Intelligence Artificielle</button>
+                    <button class="demo-button" onclick="showLanguageRecommendation('ui')">Interface Utilisateur</button>
+                    <button class="demo-button" onclick="showLanguageRecommendation('network')">Communication Réseau</button>
+                    
+                    <div id="languageRecommendation" style="margin-top: 20px; padding: 20px; background: white; border-radius: 10px; min-height: 80px;">
+                        <p>Choisissez un type de projet pour voir les recommandations...</p>
+                    </div>
+                </div>
+
+                <div class="code-example" data-lang="Architecture Robot">
+// Architecture typique d'un système cobot
+
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Interface Web │    │   Contrôleur    │    │   Moteurs       │
+│   (JavaScript)  │◄──►│   Principal     │◄──►│   (C++)         │
+│                 │    │   (Python)      │    │                 │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+         ▲                       ▲                       ▲
+         │                       │                       │
+         ▼                       ▼                       ▼
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Base de       │    │   Vision par    │    │   Sécurité      │
+│   Données       │    │   Ordinateur    │    │   (C++)         │
+│   (SQL)         │    │   (Python)      │    │                 │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5: Quiz Final -->
+        <div class="section" data-section="quiz">
+            <div class="section-header" onclick="toggleSection(this)">
+                <span>🎓 Quiz Final - Testez Vos Connaissances</span>
+                <span class="arrow">▼</span>
+            </div>
+            <div class="section-content">
+                <div id="finalQuiz">
+                    <div class="quiz-container">
+                        <h3>Question 1/5</h3>
+                        <div class="quiz-question">Quel type de mémoire est automatiquement géré et libéré ?</div>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="nextQuizQuestion(this, true)">A) Stack (Pile)</div>
+                            <div class="quiz-option" onclick="nextQuizQuestion(this, false)">B) Heap (Tas)</div>
+                            <div class="quiz-option" onclick="nextQuizQuestion(this, false)">C) Mémoire statique</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="quizResults" style="display: none;">
+                    <div class="interactive-demo">
+                        <h3>🎉 Félicitations !</h3>
+                        <p>Vous avez terminé le quiz avec un score de <span id="finalScore">0</span>/5</p>
+                        <p id="scoreMessage"></p>
+                        <button class="demo-button" onclick="restartQuiz()">Recommencer le Quiz</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales
+        let memoryBlocks = [];
+        let currentQuizQuestion = 0;
+        let quizScore = 0;
+        let sectionsCompleted = 0;
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeMemoryBlocks();
+            updateProgress();
+        });
+
+        // Gestion des sections
+        function toggleSection(header) {
+            const section = header.parentElement;
+            const isActive = section.classList.contains('active');
+            
+            // Fermer toutes les sections
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            
+            // Ouvrir la section cliquée si elle n'était pas active
+            if (!isActive) {
+                section.classList.add('active');
+                if (!section.dataset.visited) {
+                    section.dataset.visited = 'true';
+                    sectionsCompleted++;
+                    updateProgress();
+                }
+            }
+        }
+
+        // Mise à jour de la barre de progression
+        function updateProgress() {
+            const totalSections = 5;
+            const progressPercent = (sectionsCompleted / totalSections) * 100;
+            document.getElementById('progressBar').style.width = progressPercent + '%';
+        }
+
+        // Gestion de la mémoire
+        function initializeMemoryBlocks() {
+            const container = document.getElementById('memoryBlocks');
+            memoryBlocks = [];
+            container.innerHTML = '';
+            
+            for (let i = 0; i < 32; i++) {
+                const block = document.createElement('div');
+                block.className = 'memory-block';
+                block.textContent = i;
+                block.onclick = () => toggleMemoryBlock(i);
+                container.appendChild(block);
+                memoryBlocks.push({element: block, status: 'free'});
+            }
+            updateMemoryStatus();
+        }
+
+        function allocateMemory() {
+            const freeBlocks = memoryBlocks.filter(b => b.status === 'free');
+            if (freeBlocks.length > 0) {
+                const randomBlock = freeBlocks[Math.floor(Math.random() * freeBlocks.length)];
+                randomBlock.status = 'allocated';
+                randomBlock.element.classList.add('allocated');
+                randomBlock.element.textContent = 'USED';
+                updateMemoryStatus();
+            }
+        }
+
+        function freeMemory() {
+            const allocatedBlocks = memoryBlocks.filter(b => b.status === 'allocated');
+            if (allocatedBlocks.length > 0) {
+                const randomBlock = allocatedBlocks[Math.floor(Math.random() * allocatedBlocks.length)];
+                randomBlock.status = 'freed';
+                randomBlock.element.classList.remove('allocated');
+                randomBlock.element.classList.add('freed');
+                randomBlock.element.textContent = 'FREE';
+                updateMemoryStatus();
+                
+                // Auto-nettoyage après 2 secondes (simulation garbage collector)
+                setTimeout(() => {
+                    if (randomBlock.status === 'freed') {
+                        randomBlock.status = 'free';
+                        randomBlock.element.classList.remove('freed');
+                        randomBlock.element.textContent = memoryBlocks.indexOf(randomBlock);
+                        updateMemoryStatus();
+                    }
+                }, 2000);
+            }
+        }
+
+        function resetMemory() {
+            memoryBlocks.forEach((block, index) => {
+                block.status = 'free';
+                block.element.className = 'memory-block';
+                block.element.textContent = index;
+            });
+            updateMemoryStatus();
+        }
+
+        function toggleMemoryBlock(index) {
+            const block = memoryBlocks[index];
+            if (block.status === 'free') {
+                block.status = 'allocated';
+                block.element.classList.add('allocated');
+                block.element.textContent = 'USED';
+            } else if (block.status === 'allocated') {
+                block.status = 'free';
+                block.element.classList.remove('allocated');
+                block.element.textContent = index;
+            }
+            updateMemoryStatus();
+        }
+
+        function updateMemoryStatus() {
+            const freeCount = memoryBlocks.filter(b => b.status === 'free').length;
+            const allocatedCount = memoryBlocks.filter(b => b.status === 'allocated').length;
+            const freedCount = memoryBlocks.filter(b => b.status === 'freed').length;
+            
+            document.getElementById('memoryStatus').innerHTML = 
+                `Mémoire libre: ${freeCount} blocs | Allouée: ${allocatedCount} blocs | En cours de libération: ${freedCount} blocs`;
+        }
+
+        // Gestion des quiz
+        function checkAnswer(element, isCorrect) {
+            const options = element.parentElement.querySelectorAll('.quiz-option');
+            options.forEach(opt => {
+                opt.style.pointerEvents = 'none';
+                if (opt === element) {
+                    opt.classList.add(isCorrect ? 'correct' : 'incorrect');
+                } else if (opt.onclick.toString().includes('true')) {
+                    opt.classList.add('correct');
+                }
+            });
+            
+            if (isCorrect) {
+                setTimeout(() => {
+                    alert('✅ Correct ! La stack est automatiquement gérée par le système.');
+                }, 500);
+            } else {
+                setTimeout(() => {
+                    alert('❌ Incorrect. La stack (pile) est automatiquement gérée, contrairement au heap.');
+                }, 500);
+            }
+        }
+
+        // Simulation d'exécution
+        function simulateCompiled() {
+            const results = document.getElementById('executionResults');
+            results.innerHTML = '<h4>🏃‍♂️ Exécution Code Compilé</h4>';
+            
+            let step = 0;
+            const steps = [
+                '⏳ Chargement du code machine...',
+                '⚡ Exécution directe par le processeur...',
+                '✅ Calcul terminé en 0.001 secondes !',
+                '📊 Résultat: 1,000,000 opérations/seconde'
+            ];
+            
+            const interval = setInterval(() => {
+                results.innerHTML += `<p style="margin: 5px 0;">${steps[step]}</p>`;
+                step++;
+                if (step >= steps.length) {
+                    clearInterval(interval);
+                    results.innerHTML += '<p style="color: #4CAF50; font-weight: bold;">Performance maximale atteinte ! 🚀</p>';
+                }
+            }, 800);
+        }
+
+        function simulateInterpreted() {
+            const results = document.getElementById('executionResults');
+            results.innerHTML = '<h4>🐍 Exécution Code Interprété</h4>';
+            
+            let step = 0;
+            const steps = [
+                '📖 Lecture ligne 1: for i in range(1000000)...',
+                '🔍 Analyse syntaxique ligne 1...',
+                '⚙️ Conversion en bytecode...',
+                '📖 Lecture ligne 2: result = calculate(i)...',
+                '🔍 Analyse syntaxique ligne 2...',
+                '⚙️ Exécution par la machine virtuelle...',
+                '✅ Calcul terminé en 0.1 secondes !',
+                '📊 Résultat: 10,000 opérations/seconde'
+            ];
+            
+            const interval = setInterval(() => {
+                results.innerHTML += `<p style="margin: 5px 0;">${steps[step]}</p>`;
+                step++;
+                if (step >= steps.length) {
+                    clearInterval(interval);
+                    results.innerHTML += '<p style="color: #ff9800; font-weight: bold;">Plus flexible mais plus lent 🐌</p>';
+                }
+            }, 600);
+        }
+
+        // Recommandations de langage
+        function showLanguageRecommendation(projectType) {
+            const recommendations = {
+                'realtime': {
+                    title: '🎯 Contrôle Temps Réel',
+                    primary: 'C++',
+                    secondary: 'C, Rust',
+                    reason: 'Performance critique, latence minimale',
+                    example: 'Boucle de contrôle moteur à 1000 Hz',
+                    pros: ['Vitesse maximale', 'Contrôle précis des ressources', 'Prédictibilité'],
+                    cons: ['Complexité élevée', 'Développement plus long']
+                },
+                'ai': {
+                    title: '🧠 Intelligence Artificielle',
+                    primary: 'Python',
+                    secondary: 'R, Julia, MATLAB',
+                    reason: 'Écosystème IA mature, bibliothèques riches',
+                    example: 'Vision par ordinateur avec OpenCV et TensorFlow',
+                    pros: ['Développement rapide', 'Nombreuses bibliothèques', 'Communauté active'],
+                    cons: ['Performance moindre', 'Consommation mémoire']
+                },
+                'ui': {
+                    title: '🖥️ Interface Utilisateur',
+                    primary: 'JavaScript',
+                    secondary: 'Python (Tkinter), Java',
+                    reason: 'Flexibilité UI, interfaces web modernes',
+                    example: 'Tableau de bord de contrôle cobot en temps réel',
+                    pros: ['Interfaces modernes', 'Multi-plateforme', 'Mises à jour faciles'],
+                    cons: ['Sécurité à considérer', 'Performance UI complexe']
+                },
+                'network': {
+                    title: '🌐 Communication Réseau',
+                    primary: 'Python',
+                    secondary: 'Node.js, Go, Java',
+                    reason: 'Protocoles réseau simplifiés, gestion asynchrone',
+                    example: 'Coordination de plusieurs cobots via ROS',
+                    pros: ['Protocoles standards', 'Développement rapide', 'Débogage facile'],
+                    cons: ['Latence réseau', 'Gestion des pannes réseau']
+                }
+            };
+
+            const rec = recommendations[projectType];
+            const container = document.getElementById('languageRecommendation');
+            
+            container.innerHTML = `
+                <h4>${rec.title}</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px;">
+                    <div>
+                        <h5 style="color: #4CAF50;">✅ Recommandation Principale</h5>
+                        <p><strong>${rec.primary}</strong></p>
+                        <p><em>${rec.reason}</em></p>
+                        <p><strong>Exemple:</strong> ${rec.example}</p>
+                    </div>
+                    <div>
+                        <h5 style="color: #ff9800;">⚡ Alternatives</h5>
+                        <p>${rec.secondary}</p>
+                        <h6 style="color: #4CAF50; margin-top: 10px;">Avantages:</h6>
+                        <ul style="margin-left: 20px;">
+                            ${rec.pros.map(pro => `<li>${pro}</li>`).join('')}
+                        </ul>
+                        <h6 style="color: #f44336;">Limitations:</h6>
+                        <ul style="margin-left: 20px;">
+                            ${rec.cons.map(con => `<li>${con}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Quiz final
+        const quizQuestions = [
+            {
+                question: "Quel type de mémoire est automatiquement géré et libéré ?",
+                options: ["A) Stack (Pile)", "B) Heap (Tas)", "C) Mémoire statique"],
+                correct: 0,
+                explanation: "La Stack est automatiquement gérée par le système"
+            },
+            {
+                question: "Quel est l'avantage principal des langages compilés ?",
+                options: ["A) Développement plus rapide", "B) Performance d'exécution", "C) Portabilité"],
+                correct: 1,
+                explanation: "Les langages compilés offrent une performance d'exécution maximale"
+            },
+            {
+                question: "Pourquoi Python est-il populaire en IA robotique ?",
+                options: ["A) Performance maximale", "B) Écosystème de bibliothèques", "C) Compilation rapide"],
+                correct: 1,
+                explanation: "Python dispose d'un riche écosystème de bibliothèques IA"
+            },
+            {
+                question: "Quelle approche est préférable pour le contrôle temps réel ?",
+                options: ["A) Langage interprété", "B) Langage compilé", "C) Script web"],
+                correct: 1,
+                explanation: "Les langages compilés offrent la performance nécessaire au temps réel"
+            },
+            {
+                question: "Quel paradigme décrit le mieux la programmation orientée objet ?",
+                options: ["A) Instructions séquentielles", "B) Encapsulation des données", "C) Fonctions mathématiques"],
+                correct: 1,
+                explanation: "L'OOP encapsule les données et les méthodes dans des objets"
+            }
+        ];
+
+        function nextQuizQuestion(element, isCorrect) {
+            // Désactiver les options
+            const options = element.parentElement.querySelectorAll('.quiz-option');
+            options.forEach(opt => opt.style.pointerEvents = 'none');
+            
+            // Marquer la réponse
+            element.classList.add(isCorrect ? 'correct' : 'incorrect');
+            if (!isCorrect) {
+                // Montrer la bonne réponse
+                options[quizQuestions[currentQuizQuestion].correct].classList.add('correct');
+            }
+            
+            if (isCorrect) quizScore++;
+            
+            setTimeout(() => {
+                currentQuizQuestion++;
+                if (currentQuizQuestion < quizQuestions.length) {
+                    showNextQuestion();
+                } else {
+                    showQuizResults();
+                }
+            }, 2000);
+        }
+
+        function showNextQuestion() {
+            const quiz = quizQuestions[currentQuizQuestion];
+            const container = document.getElementById('finalQuiz');
+            
+            container.innerHTML = `
+                <div class="quiz-container">
+                    <h3>Question ${currentQuizQuestion + 1}/${quizQuestions.length}</h3>
+                    <div class="quiz-question">${quiz.question}</div>
+                    <div class="quiz-options">
+                        ${quiz.options.map((option, index) => 
+                            `<div class="quiz-option" onclick="nextQuizQuestion(this, ${index === quiz.correct})">${option}</div>`
+                        ).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function showQuizResults() {
+            document.getElementById('finalQuiz').style.display = 'none';
+            document.getElementById('quizResults').style.display = 'block';
+            document.getElementById('finalScore').textContent = quizScore;
+            
+            let message = '';
+            if (quizScore === 5) {
+                message = '🎉 Parfait ! Vous maîtrisez parfaitement les concepts !';
+            } else if (quizScore >= 3) {
+                message = '👍 Très bien ! Vous avez une bonne compréhension des bases.';
+            } else {
+                message = '📚 Continuez à étudier, vous êtes sur la bonne voie !';
+            }
+            
+            document.getElementById('scoreMessage').textContent = message;
+            sectionsCompleted = 5;
+            updateProgress();
+        }
+
+        function restartQuiz() {
+            currentQuizQuestion = 0;
+            quizScore = 0;
+            document.getElementById('finalQuiz').style.display = 'block';
+            document.getElementById('quizResults').style.display = 'none';
+            showNextQuestion();
+        }
+
+        // Animation d'entrée
+        window.addEventListener('load', function() {
+            document.querySelectorAll('.section').forEach((section, index) => {
+                section.style.opacity = '0';
+                section.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    section.style.transition = 'all 0.5s ease';
+                    section.style.opacity = '1';
+                    section.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+        });
+    </script>
+</body>
+</html>
