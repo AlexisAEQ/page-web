@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Outils d'Analyse de Cobots - Formation Canada</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .tabs {
+            display: flex;
+            background: white;
+            border-radius: 15px 15px 0 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 20px;
+            background: #f8f9fa;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+
+        .tab.active {
+            background: white;
+            border-bottom: 3px solid #667eea;
+            color: #667eea;
+        }
+
+        .content {
+            background: white;
+            border-radius: 0 0 15px 15px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            min-height: 600px;
+        }
+
+        .tool-section {
+            display: none;
+        }
+
+        .tool-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .form-group.full-width {
+            grid-template-columns: 1fr;
+        }
+
+        label {
+            font-weight: 600;
+            color: #495057;
+            display: flex;
+            align-items: center;
+        }
+
+        input, select {
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .calculate-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin: 20px 0;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .results {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 20px;
+            border-left: 5px solid #667eea;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .result-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .manufacturer-info {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+        }
+
+        .recommendation {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .recommendation h3 {
+            color: #0c5460;
+            margin-bottom: 10px;
+        }
+
+        .warning {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            color: #721c24;
+        }
+
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            color: #155724;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 Outils d'Analyse de Cobots</h1>
+            <p>Formation Cobotique - Version Canada</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('roi')">📊 Calcul ROI</button>
+            <button class="tab" onclick="showTab('vision')">📷 Sélection Caméra</button>
+            <button class="tab" onclick="showTab('sizing')">⚖️ Dimensionnement</button>
+        </div>
+
+        <div class="content">
+            <!-- ROI Calculator -->
+            <div id="roi" class="tool-section active">
+                <h2>💰 Calculateur de Retour sur Investissement (ROI)</h2>
+                <p>Évaluez la rentabilité de votre projet cobotique selon les données du marché canadien.</p>
+
+                <div class="form-group">
+                    <label>Coût du cobot (CAD) :</label>
+                    <input type="number" id="cobotCost" placeholder="ex: 60000" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label>Fabricant :</label>
+                    <select id="manufacturer">
+                        <option value="universal">Universal Robots</option>
+                        <option value="abb">ABB</option>
+                        <option value="fanuc">FANUC</option>
+                        <option value="kinova">Kinova (Canada)</option>
+                        <option value="aubot">Aubot</option>
+                        <option value="omron">Omron</option>
+                        <option value="elfin">Elfin</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Préhenseur/Effecteur (CAD) :</label>
+                    <input type="number" id="gripperCost" placeholder="ex: 4000" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label>Installation & Formation (CAD) :</label>
+                    <input type="number" id="installCost" placeholder="ex: 8000" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label>Coût main d'œuvre actuel (CAD/heure) :</label>
+                    <input type="number" id="laborCost" placeholder="ex: 28" min="0" step="0.01">
+                </div>
+
+                <div class="form-group">
+                    <label>Heures travail/année :</label>
+                    <input type="number" id="workHours" placeholder="ex: 2000" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label>Gain de productivité attendu (%) :</label>
+                    <input type="number" id="productivityGain" placeholder="ex: 30" min="0" max="100">
+                </div>
+
+                <div class="form-group">
+                    <label>Réduction des défauts (%) :</label>
+                    <input type="number" id="qualityGain" placeholder="ex: 15" min="0" max="100">
+                </div>
+
+                <div class="form-group">
+                    <label>Coût des défauts actuels (CAD/année) :</label>
+                    <input type="number" id="defectCost" placeholder="ex: 12000" min="0">
+                </div>
+
+                <button class="calculate-btn" onclick="calculateROI()">🧮 Calculer le ROI</button>
+
+                <div id="roiResults" class="results" style="display: none;">
+                    <h3>📈 Résultats de l'analyse ROI</h3>
+                    <div id="roiContent"></div>
+                </div>
+            </div>
+
+            <!-- Vision Camera Selector -->
+            <div id="vision" class="tool-section">
+                <h2>📷 Sélecteur de Caméra pour Vision Industrielle</h2>
+                <p>Choisissez la caméra optimale pour votre application de vision robotique.</p>
+
+                <div class="form-group">
+                    <label>Type d'application :</label>
+                    <select id="visionApp">
+                        <option value="picking">Pick & Place</option>
+                        <option value="inspection">Contrôle Qualité</option>
+                        <option value="assembly">Assemblage Guidé</option>
+                        <option value="welding">Soudage</option>
+                        <option value="measuring">Métrologie</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Taille de l'objet (mm) :</label>
+                    <input type="number" id="objectSize" placeholder="ex: 50" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label>Précision requise (mm) :</label>
+                    <select id="precision">
+                        <option value="0.01">±0.01mm (Très élevée)</option>
+                        <option value="0.05">±0.05mm (Élevée)</option>
+                        <option value="0.1">±0.1mm (Standard)</option>
+                        <option value="0.5">±0.5mm (Modérée)</option>
+                        <option value="1.0">±1.0mm (Faible)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Distance de travail (mm) :</label>
+                    <input type="number" id="workDistance" placeholder="ex: 400" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label>Cadence requise (pièces/min) :</label>
+                    <input type="number" id="cadence" placeholder="ex: 10" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label>Environnement :</label>
+                    <select id="environment">
+                        <option value="clean">Propre (Bureau)</option>
+                        <option value="industrial">Industriel standard</option>
+                        <option value="harsh">Difficile (Poussière/Vibrations)</option>
+                        <option value="food">Alimentaire (Lavage)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Budget disponible (CAD) :</label>
+                    <select id="visionBudget">
+                        <option value="5000">< 5 000$</option>
+                        <option value="10000">5 000$ - 10 000$</option>
+                        <option value="20000">10 000$ - 20 000$</option>
+                        <option value="50000">20 000$ - 50 000$</option>
+                        <option value="100000">> 50 000$</option>
+                    </select>
+                </div>
+
+                <button class="calculate-btn" onclick="selectCamera()">🔍 Sélectionner Caméra</button>
+
+                <div id="visionResults" class="results" style="display: none;">
+                    <h3>📸 Recommandation Caméra</h3>
+                    <div id="visionContent"></div>
+                </div>
+            </div>
+
+            <!-- Robot Sizing Tool -->
+            <div id="sizing" class="tool-section">
+                <h2>⚖️ Dimensionnement Robot/Cobot</h2>
+                <p>Déterminez les spécifications optimales pour votre application robotique.</p>
+
+                <div class="form-group">
+                    <label>Type d'application :</label>
+                    <select id="appType">
+                        <option value="assembly">Assemblage</option>
+                        <option value="handling">Manutention</option>
+                        <option value="welding">Soudage</option>
+                        <option value="painting">Peinture</option>
+                        <option value="machining">Usinage</option>
+                        <option value="packaging">Emballage</option>
+                        <option value="quality">Contrôle qualité</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Masse de la pièce (kg) :</label>
+                    <input type="number" id="partWeight" placeholder="ex: 2.5" min="0" step="0.1">
+                </div>
+
+                <div class="form-group">
+                    <label>Masse de l'effecteur (kg) :</label>
+                    <input type="number" id="toolWeight" placeholder="ex: 1.2" min="0" step="0.1">
+                </div>
+
+                <div class="form-group">
+                    <label>Distance maximale requise (mm) :</label>
+                    <input type="number" id="maxReach" placeholder="ex: 850" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label>Précision requise :</label>
+                    <select id="requiredPrecision">
+                        <option value="high">Haute (±0.05mm)</option>
+                        <option value="medium">Moyenne (±0.1mm)</option>
+                        <option value="standard">Standard (±0.2mm)</option>
+                        <option value="low">Faible (±0.5mm)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Cadence souhaitée (cycles/heure) :</label>
+                    <input type="number" id="targetCadence" placeholder="ex: 300" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label>Collaboration humaine :</label>
+                    <select id="collaboration">
+                        <option value="full">Collaboration directe</option>
+                        <option value="partial">Collaboration partielle</option>
+                        <option value="none">Aucune collaboration</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Budget maximum (CAD) :</label>
+                    <input type="number" id="maxBudget" placeholder="ex: 80000" min="0">
+                </div>
+
+                <button class="calculate-btn" onclick="sizeRobot()">📏 Dimensionner Robot</button>
+
+                <div id="sizingResults" class="results" style="display: none;">
+                    <h3>🎯 Recommandations Robot</h3>
+                    <div id="sizingContent"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            // Hide all sections
+            document.querySelectorAll('.tool-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected section and tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function calculateROI() {
+            const cobotCost = parseFloat(document.getElementById('cobotCost').value) || 0;
+            const manufacturer = document.getElementById('manufacturer').value;
+            const gripperCost = parseFloat(document.getElementById('gripperCost').value) || 0;
+            const installCost = parseFloat(document.getElementById('installCost').value) || 0;
+            const laborCost = parseFloat(document.getElementById('laborCost').value) || 0;
+            const workHours = parseFloat(document.getElementById('workHours').value) || 0;
+            const productivityGain = parseFloat(document.getElementById('productivityGain').value) || 0;
+            const qualityGain = parseFloat(document.getElementById('qualityGain').value) || 0;
+            const defectCost = parseFloat(document.getElementById('defectCost').value) || 0;
+
+            // Calculate total investment
+            const totalInvestment = cobotCost + gripperCost + installCost;
+            
+            // Calculate annual savings
+            const currentLaborCost = laborCost * workHours;
+            const productivitySavings = (currentLaborCost * productivityGain) / 100;
+            const qualitySavings = (defectCost * qualityGain) / 100;
+            const totalAnnualSavings = productivitySavings + qualitySavings;
+            
+            // Calculate maintenance costs (based on manufacturer data)
+            const maintenanceCosts = {
+                'universal': totalInvestment * 0.08,
+                'abb': totalInvestment * 0.12,
+                'fanuc': totalInvestment * 0.05,
+                'kinova': totalInvestment * 0.09,
+                'aubot': totalInvestment * 0.07,
+                'omron': totalInvestment * 0.10,
+                'elfin': totalInvestment * 0.06
+            };
+            
+            const annualMaintenance = maintenanceCosts[manufacturer] || totalInvestment * 0.08;
+            const netAnnualSavings = totalAnnualSavings - annualMaintenance;
+            
+            // Calculate ROI metrics
+            const paybackPeriod = totalInvestment / netAnnualSavings;
+            const roi5Year = ((netAnnualSavings * 5 - totalInvestment) / totalInvestment) * 100;
+            
+            // Manufacturer specific info
+            const manufacturerInfo = {
+                'universal': 'Universal Robots - Écosystème UR+ développé, interface intuitive',
+                'abb': 'ABB - Expertise industrielle, précision exceptionnelle',
+                'fanuc': 'FANUC - Fiabilité légendaire, 8 ans zéro maintenance',
+                'kinova': 'Kinova - Solution canadienne, support local bilingue',
+                'aubot': 'Aubot - Solution économique, rapport qualité-prix attractif',
+                'omron': 'Omron - Vision intégrée, écosystème automation',
+                'elfin': 'Elfin - Prix compétitif, programmation intuitive'
+            };
+
+            const resultsHTML = `
+                <div class="result-item">
+                    <span class="result-label">Investissement total :</span>
+                    <span class="result-value">${totalInvestment.toLocaleString('fr-CA', {style: 'currency', currency: 'CAD'})}</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Économies annuelles nettes :</span>
+                    <span class="result-value">${netAnnualSavings.toLocaleString('fr-CA', {style: 'currency', currency: 'CAD'})}</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Période de retour :</span>
+                    <span class="result-value">${paybackPeriod.toFixed(1)} ans</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">ROI sur 5 ans :</span>
+                    <span class="result-value">${roi5Year.toFixed(1)}%</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Coûts maintenance annuels :</span>
+                    <span class="result-value">${annualMaintenance.toLocaleString('fr-CA', {style: 'currency', currency: 'CAD'})}</span>
+                </div>
+                
+                <div class="manufacturer-info">
+                    <strong>Fabricant sélectionné :</strong> ${manufacturerInfo[manufacturer]}
+                </div>
+                
+                ${paybackPeriod <= 2 ? 
+                    '<div class="success"><strong>✅ Projet rentable :</strong> Retour sur investissement rapide</div>' :
+                    paybackPeriod <= 3 ?
+                    '<div class="recommendation"><strong>⚠️ Projet acceptable :</strong> Retour sur investissement modéré</div>' :
+                    '<div class="warning"><strong>❌ Projet à revoir :</strong> Retour sur investissement lent</div>'
+                }
+            `;
+
+            document.getElementById('roiContent').innerHTML = resultsHTML;
+            document.getElementById('roiResults').style.display = 'block';
+        }
+
+        function selectCamera() {
+            const app = document.getElementById('visionApp').value;
+            const objectSize = parseFloat(document.getElementById('objectSize').value) || 0;
+            const precision = parseFloat(document.getElementById('precision').value) || 0;
+            const workDistance = parseFloat(document.getElementById('workDistance').value) || 0;
+            const cadence = parseFloat(document.getElementById('cadence').value) || 0;
+            const environment = document.getElementById('environment').value;
+            const budget = parseInt(document.getElementById('visionBudget').value) || 0;
+
+            // Calculate required resolution
+            const pixelSize = precision / 4; // 4 pixels minimum per feature
+            const fieldOfView = objectSize * 1.5; // 150% of object size
+            const requiredResolution = Math.ceil(fieldOfView / pixelSize);
+
+            // Camera recommendations based on requirements
+            let recommendations = [];
+
+            if (budget < 10000) {
+                if (precision >= 0.1) {
+                    recommendations.push({
+                        name: "Keyence CV-X100",
+                        price: "8 700$ CAD",
+                        resolution: "2MP",
+                        features: "Interface intuitive, programmation sans code",
+                        suitability: "Excellente pour applications standard"
+                    });
+                }
+                recommendations.push({
+                    name: "Cognex In-Sight 7000",
+                    price: "6 000$ CAD",
+                    resolution: "2MP",
+                    features: "Outils vision intégrés, robuste",
+                    suitability: "Recommandée pour débuter"
+                });
+            } else if (budget < 20000) {
+                recommendations.push({
+                    name: "Cognex In-Sight 9000",
+                    price: "11 400$ CAD",
+                    resolution: "12MP",
+                    features: "IA intégrée, haute résolution",
+                    suitability: "Idéale pour précision élevée"
+                });
+                if (app === "measuring") {
+                    recommendations.push({
+                        name: "Keyence CV-5000",
+                        price: "16 100$ CAD",
+                        resolution: "5MP + 3D",
+                        features: "Vision 3D intégrée, métrologie",
+                        suitability: "Parfaite pour contrôle dimensionnel"
+                    });
+                }
+            } else {
+                recommendations.push({
+                    name: "Zivid Two",
+                    price: "24 100$ CAD",
+                    resolution: "3D couleur",
+                    features: "Nuage de points, précision ±0.1mm",
+                    suitability: "Excellence pour bin-picking complexe"
+                });
+                recommendations.push({
+                    name: "Photoneo PhoXi 3D",
+                    price: "20 100$ CAD",
+                    resolution: "3D haute résolution",
+                    features: "Algorithmes IA, intégration ROS",
+                    suitability: "Applications industrielles avancées"
+                });
+            }
+
+            // Application-specific recommendations
+            const appSpecs = {
+                'picking': 'Recommandé: Vision 3D pour localisation précise des pièces',
+                'inspection': 'Recommandé: Haute résolution avec éclairage contrôlé',
+                'assembly': 'Recommandé: Vision 2D rapide avec guidage temps réel',
+                'welding': 'Recommandé: Vision adaptée aux projections et chaleur',
+                'measuring': 'Recommandé: Vision 3D métrologique haute précision'
+            };
+
+            const resultsHTML = `
+                <div class="recommendation">
+                    <h3>Application: ${app.charAt(0).toUpperCase() + app.slice(1)}</h3>
+                    <p>${appSpecs[app]}</p>
+                </div>
+                
+                <div class="result-item">
+                    <span class="result-label">Résolution minimale requise :</span>
+                    <span class="result-value">${requiredResolution}px</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Champ de vision calculé :</span>
+                    <span class="result-value">${fieldOfView.toFixed(1)}mm</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Taille pixel max :</span>
+                    <span class="result-value">${(pixelSize * 1000).toFixed(1)}µm</span>
+                </div>
+                
+                <h4>💡 Caméras recommandées :</h4>
+                ${recommendations.map(cam => `
+                    <div class="manufacturer-info">
+                        <strong>${cam.name}</strong> - ${cam.price}<br>
+                        <em>Résolution:</em> ${cam.resolution}<br>
+                        <em>Caractéristiques:</em> ${cam.features}<br>
+                        <em>Adaptabilité:</em> ${cam.suitability}
+                    </div>
+                `).join('')}
+                
+                ${environment === 'harsh' ? 
+                    '<div class="warning">⚠️ Environnement difficile: Privilégier indice IP67 et protection vibrations</div>' : ''}
+                ${cadence > 20 ? 
+                    '<div class="recommendation">🏃 Cadence élevée: Privilégier caméras avec traitement embarqué</div>' : ''}
+            `;
+
+            document.getElementById('visionContent').innerHTML = resultsHTML;
+            document.getElementById('visionResults').style.display = 'block';
+        }
+
+        function sizeRobot() {
+            const appType = document.getElementById('appType').value;
+            const partWeight = parseFloat(document.getElementById('partWeight').value) || 0;
+            const toolWeight = parseFloat(document.getElementById('toolWeight').value) || 0;
+            const maxReach = parseFloat(document.getElementById('maxReach').value) || 0;
+            const precision = document.getElementById('requiredPrecision').value;
+            const cadence = parseFloat(document.getElementById('targetCadence').value) || 0;
+            const collaboration = document.getElementById('collaboration').value;
+            const maxBudget = parseFloat(document.getElementById('maxBudget').value) || 0;
+
+            const totalPayload = partWeight + toolWeight;
+            const requiredPayload = Math.ceil(totalPayload * 1.2); // Safety factor
+
+            // Robot recommendations based on requirements
+            let recommendations = [];
+
+            // Light payload robots (≤5kg)
+            if (requiredPayload <= 5 && maxReach <= 900) {
+                if (collaboration !== 'none') {
+                    recommendations.push({
+                        name: "Universal Robots UR3e",
+                        payload: "3 kg",
+                        reach: "500 mm",
+                        price: "47 000$ CAD",
+                        precision: "±0.1 mm",
+                        features: "Compact, interface PolyScope intuitive",
+                        collaboration: "Excellente"
+                    });
+                    recommendations.push({
+                        name: "Universal Robots UR5e",
+                        payload: "5 kg",
+                        reach: "850 mm",
+                        price: "60 000$ CAD",
+                        precision: "±0.1 mm",
+                        features: "Polyvalent, écosystème UR+ développé",
+                        collaboration: "Excellente"
+                    });
+                    if (maxBudget >= 51000) {
+                        recommendations.push({
+                            name: "Kinova Gen3",
+                            payload: "2.5 kg",
+                            reach: "902 mm",
+                            price: "51 000$ CAD",
+                            precision: "±0.1 mm",
+                            features: "7 axes, entreprise canadienne, support bilingue",
+                            collaboration: "Excellente"
+                        });
+                    }
+                }
+                if (precision === 'high') {
+                    recommendations.push({
+                        name: "ABB YuMi Single",
+                        payload: "0.5 kg",
+                        reach: "559 mm",
+                        price: "60 000$ CAD",
+                        precision: "±0.02 mm",
+                        features: "Précision exceptionnelle, assemblage fin",
+                        collaboration: "Bonne"
+                    });
+                }
+            }
+
+            // Medium payload robots (6-10kg)
+            if (requiredPayload > 5 && requiredPayload <= 10) {
+                if (collaboration !== 'none') {
+                    recommendations.push({
+                        name: "Universal Robots UR10e",
+                        payload: "10 kg",
+                        reach: "1300 mm",
+                        price: "74 000$ CAD",
+                        precision: "±0.1 mm",
+                        features: "Manutention moyenne, très polyvalent",
+                        collaboration: "Excellente"
+                    });
+                    recommendations.push({
+                        name: "ABB GoFa 10",
+                        payload: "10 kg",
+                        reach: "950 mm",
+                        price: "70 000$ CAD",
+                        precision: "±0.1 mm",
+                        features: "Robustesse industrielle ABB",
+                        collaboration: "Bonne"
+                    });
+                    if (maxBudget >= 67000) {
+                        recommendations.push({
+                            name: "Kinova Link 6",
+                            payload: "6 kg",
+                            reach: "902 mm",
+                            price: "67 000$ CAD",
+                            precision: "±0.1 mm",
+                            features: "Premier cobot industriel canadien, IP54",
+                            collaboration: "Excellente"
+                        });
+                    }
+                }
+                recommendations.push({
+                    name: "FANUC CRX-10iA",
+                    payload: "10 kg",
+                    reach: "1249 mm",
+                    price: "64 000$ CAD",
+                    precision: "±0.1 mm",
+                    features: "Fiabilité FANUC, maintenance minimale",
+                    collaboration: "Bonne"
+                });
+            }
+
+            // Heavy payload robots (>10kg)
+            if (requiredPayload > 10) {
+                if (collaboration !== 'none') {
+                    recommendations.push({
+                        name: "Universal Robots UR16e",
+                        payload: "16 kg",
+                        reach: "900 mm",
+                        price: "87 000$ CAD",
+                        precision: "±0.1 mm",
+                        features: "Compact pour charges lourdes",
+                        collaboration: "Excellente"
+                    });
+                    recommendations.push({
+                        name: "Universal Robots UR20",
+                        payload: "20 kg",
+                        reach: "1750 mm",
+                        price: "100 000$ CAD",
+                        precision: "±0.1 mm",
+                        features: "Longue portée, manutention lourde",
+                        collaboration: "Excellente"
+                    });
+                }
+                recommendations.push({
+                    name: "FANUC CRX-25iA",
+                    payload: "25 kg",
+                    reach: "1889 mm",
+                    price: "104 000$ CAD",
+                    precision: "±0.2 mm",
+                    features: "Très lourdes charges, robustesse",
+                    collaboration: "Modérée"
+                });
+            }
+
+            // Filter by budget
+            recommendations = recommendations.filter(robot => {
+                const price = parseInt(robot.price.replace(/[^\d]/g, ''));
+                return price <= maxBudget || maxBudget === 0;
+            });
+
+            // Calculate estimated cycle time
+            const baseCycleTime = {
+                'assembly': 45,
+                'handling': 30,
+                'welding': 120,
+                'painting': 180,
+                'machining': 240,
+                'packaging': 25,
+                'quality': 60
+            };
+
+            const estimatedCycleTime = baseCycleTime[appType] || 60;
+            const theoreticalCadence = Math.floor(3600 / estimatedCycleTime);
+            const achievableCadence = Math.floor(theoreticalCadence * 0.8); // 80% efficiency
+
+            // Application-specific considerations
+            const appConsiderations = {
+                'assembly': 'Privilégier précision et capteurs de force pour assemblage délicat',
+                'handling': 'Optimiser vitesse et charge utile pour manutention efficace',
+                'welding': 'Nécessite contrôle de trajectoire précis et gestion des projections',
+                'painting': 'Trajectoires complexes, contrôle débit, cabine étanche requis',
+                'machining': 'Rigidité maximale, gestion copeaux, précision soutenue',
+                'packaging': 'Vitesse élevée, changements de format rapides',
+                'quality': 'Répétabilité exceptionnelle, intégration vision industrielle'
+            };
+
+            const resultsHTML = `
+                <div class="result-item">
+                    <span class="result-label">Charge utile requise :</span>
+                    <span class="result-value">${requiredPayload} kg</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Portée maximale :</span>
+                    <span class="result-value">${maxReach} mm</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Cadence théorique :</span>
+                    <span class="result-value">${theoreticalCadence} cycles/h</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Cadence réalisable :</span>
+                    <span class="result-value">${achievableCadence} cycles/h</span>
+                </div>
+
+                <div class="recommendation">
+                    <h3>Application: ${appType.charAt(0).toUpperCase() + appType.slice(1)}</h3>
+                    <p>${appConsiderations[appType]}</p>
+                </div>
+
+                ${cadence > achievableCadence ? 
+                    '<div class="warning">⚠️ Cadence demandée trop élevée: Considérer robot industriel ou plusieurs postes</div>' : 
+                    cadence > theoreticalCadence * 0.6 ?
+                    '<div class="recommendation">💡 Cadence élevée: Optimisation trajectoires recommandée</div>' : ''}
+
+                <h4>🤖 Robots recommandés :</h4>
+                ${recommendations.length > 0 ? 
+                    recommendations.map(robot => `
+                        <div class="manufacturer-info">
+                            <strong>${robot.name}</strong> - ${robot.price}<br>
+                            <em>Charge:</em> ${robot.payload} | <em>Portée:</em> ${robot.reach} | <em>Précision:</em> ${robot.precision}<br>
+                            <em>Caractéristiques:</em> ${robot.features}<br>
+                            <em>Collaboration:</em> ${robot.collaboration}
+                        </div>
+                    `).join('') :
+                    '<div class="warning">❌ Aucun robot ne correspond à vos critères dans le budget spécifié</div>'
+                }
+
+                ${collaboration === 'full' ? 
+                    '<div class="success">✅ Collaboration directe: Cobots recommandés avec capteurs de sécurité</div>' : 
+                    collaboration === 'partial' ?
+                    '<div class="recommendation">⚡ Collaboration partielle: Zones de sécurité configurables</div>' :
+                    '<div class="manufacturer-info">🏭 Pas de collaboration: Robots industriels possibles pour performances maximales</div>'}
+
+                <div class="recommendation">
+                    <h3>💡 Conseils supplémentaires</h3>
+                    <ul>
+                        <li><strong>Formation:</strong> Prévoir 1-3 jours selon complexité</li>
+                        <li><strong>Installation:</strong> Compter 4 000$ - 13 400$ CAD</li>
+                        <li><strong>Maintenance:</strong> 4-16% coût initial par année</li>
+                        <li><strong>ROI typique:</strong> 12-36 mois selon application</li>
+                        ${collaboration !== 'none' ? '<li><strong>Sécurité:</strong> Certification ISO/TS 15066 requise</li>' : ''}
+                        ${maxBudget < 50000 ? '<li><strong>Budget serré:</strong> Considérer solutions économiques ou location</li>' : ''}
+                    </ul>
+                </div>
+            `;
+
+            document.getElementById('sizingContent').innerHTML = resultsHTML;
+            document.getElementById('sizingResults').style.display = 'block';
+        }
+
+        // Initialize with default values for demonstration
+        window.addEventListener('load', function() {
+            // Set some default values for easier testing
+            document.getElementById('cobotCost').value = '60000';
+            document.getElementById('gripperCost').value = '4000';
+            document.getElementById('installCost').value = '8000';
+            document.getElementById('laborCost').value = '28';
+            document.getElementById('workHours').value = '2000';
+            document.getElementById('productivityGain').value = '30';
+            document.getElementById('qualityGain').value = '15';
+            document.getElementById('defectCost').value = '12000';
+            
+            document.getElementById('objectSize').value = '50';
+            document.getElementById('workDistance').value = '400';
+            document.getElementById('cadence').value = '10';
+            
+            document.getElementById('partWeight').value = '2.5';
+            document.getElementById('toolWeight').value = '1.2';
+            document.getElementById('maxReach').value = '850';
+            document.getElementById('targetCadence').value = '300';
+            document.getElementById('maxBudget').value = '80000';
+        });
+    </script>
+</body>
+</html>
+                        
