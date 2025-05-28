@@ -92,12 +92,15 @@
                 display: none;
             }
         }
-        .logic-diagram-card, .toolbox-card, .norm-card { /* Style partagé pour les cartes de contenu */
+        .logic-diagram-card, .toolbox-card, .norm-card, .fabricant-card, .connectique-card { /* Style partagé pour les cartes de contenu */
             background-color: #2d3748; /* Gris-bleu moyen */
             border: 1px solid #4a5568; /* Gris */
             border-radius: 0.5rem;
             padding: 1.5rem;
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
         .table-container {
             overflow-x: auto;
@@ -118,6 +121,11 @@
         td {
             background-color: #2d3748; /* Gris-bleu moyen */
         }
+        .fabricant-logo {
+            max-height: 50px; /* Ajuster la hauteur max des logos */
+            width: auto;
+            margin-bottom: 0.75rem; /* espace sous le logo */
+        }
     </style>
 </head>
 <body>
@@ -134,7 +142,7 @@
                     <a href="#" class="nav-link text-lg hover:text-blue-400 transition-colors duration-300 px-3 py-2 rounded-md" data-target="accueil">Accueil</a>
                     <a href="#" class="nav-link text-lg hover:text-blue-400 transition-colors duration-300 px-3 py-2 rounded-md" data-target="module1">Module 1</a>
                     <a href="#" class="nav-link text-lg hover:text-blue-400 transition-colors duration-300 px-3 py-2 rounded-md" data-target="module2">Module 2</a>
-                    <a href="#" class="nav-link text-lg hover:text-blue-400 transition-colors duration-300 px-3 py-2 rounded-md" data-target="module-placeholder">Module 3 (À venir)</a>
+                    <a href="#" class="nav-link text-lg hover:text-blue-400 transition-colors duration-300 px-3 py-2 rounded-md" data-target="module3">Module 3</a>
                 </nav>
                 <div class="md:hidden mobile-menu-button-container">
                     <button id="mobile-menu-button" class="text-gray-400 hover:text-white focus:outline-none focus:text-white">
@@ -149,7 +157,7 @@
             <a href="#" class="nav-link block px-4 py-3 text-lg text-gray-300 hover:bg-gray-700 hover:text-blue-400" data-target="accueil">Accueil</a>
             <a href="#" class="nav-link block px-4 py-3 text-lg text-gray-300 hover:bg-gray-700 hover:text-blue-400" data-target="module1">Module 1</a>
             <a href="#" class="nav-link block px-4 py-3 text-lg text-gray-300 hover:bg-gray-700 hover:text-blue-400" data-target="module2">Module 2</a>
-            <a href="#" class="nav-link block px-4 py-3 text-lg text-gray-300 hover:bg-gray-700 hover:text-blue-400" data-target="module-placeholder">Module 3 (À venir)</a>
+            <a href="#" class="nav-link block px-4 py-3 text-lg text-gray-300 hover:bg-gray-700 hover:text-blue-400" data-target="module3">Module 3</a>
         </div>
     </header>
 
@@ -182,15 +190,15 @@
                     <p class="text-gray-400 mb-6">Explorez les normes, fabricants et outils de référence essentiels pour vos projets.</p>
                     <button class="nav-link button-primary font-semibold py-2 px-4 rounded-lg w-full" data-target="module2">Explorer le Module 2</button>
                 </div>
-                 <div class="module-card rounded-lg p-6 shadow-xl opacity-70">
+                 <div class="module-card rounded-lg p-6 shadow-xl hover:shadow-blue-500/30">
                      <div class="flex items-center mb-4">
-                        <svg class="h-12 w-12 text-gray-500 mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <svg class="h-12 w-12 text-blue-400 mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75V18m-7.5-6.75h.008v.008H8.25v-.008zm0 2.25h.008v.008H8.25V13.5zm0 2.25h.008v.008H8.25v-.008zm0 2.25h.008v.008H8.25V18zm2.498-6.75h.007v.008h-.007v-.008zm0 2.25h.007v.008h-.007V13.5zm0 2.25h.007v.008h-.007v-.008zm0 2.25h.007v.008h-.007V18zm2.504-6.75h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V13.5zm0 2.25h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V18zm2.498-6.75h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V13.5zM8.25 6.75h7.5v7.5h-7.5V6.75z" />
                         </svg>
-                        <h3 class="text-2xl font-orbitron font-semibold text-gray-500">Module 3: Labo de Calcul</h3>
+                        <h3 class="text-2xl font-orbitron font-semibold text-blue-300">Module 3: Labo de Calcul</h3>
                     </div>
-                    <p class="text-gray-500 mb-6">Maîtrisez les formules et calculs pratiques pour l'automatisation.</p>
-                    <button class="bg-gray-600 text-gray-400 font-semibold py-2 px-4 rounded-lg w-full cursor-not-allowed">À venir</button>
+                    <p class="text-gray-400 mb-6">Maîtrisez les formules et calculs pratiques pour l'automatisation.</p>
+                    <button class="nav-link button-primary font-semibold py-2 px-4 rounded-lg w-full" data-target="module3">Accéder au Labo</button>
                 </div>
             </div>
         </section>
@@ -460,10 +468,10 @@
                             Normes & Standards
                         </button>
                         <button class="module2-tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-transparent text-gray-500 hover:text-gray-300 hover:border-gray-500" data-target="module2-fabricants">
-                            Fabricants (À venir)
+                            Fabricants
                         </button>
                          <button class="module2-tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-transparent text-gray-500 hover:text-gray-300 hover:border-gray-500" data-target="module2-adressage">
-                            Adressage & Connectique (À venir)
+                            Adressage & Connectique
                         </button>
                     </nav>
                 </div>
@@ -472,7 +480,7 @@
                     <div class="module2-tab-content active" id="module2-normes">
                         <h3 class="text-2xl font-semibold mb-6 text-sky-300">Normes & Standards Essentiels</h3>
                         <p class="text-gray-400 mb-6">Naviguez à travers les normes clés pour assurer la conformité, la sécurité et l'interopérabilité de vos systèmes.</p>
-                        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                        <div id="module2-normes-cards" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                             <div class="interactive-card-item norm-card" data-itemkey="securite_machines">
                                 <h4 class="text-xl font-orbitron font-semibold text-yellow-300 mb-2">Sécurité Machines</h4>
                                 <p class="text-gray-400 text-sm">Principes fondamentaux pour la conception de machines sûres (ex: ISO 12100, IEC 60204-1).</p>
@@ -493,13 +501,76 @@
                         </div>
                     </div>
                     <div class="module2-tab-content" id="module2-fabricants">
-                        <h3 class="text-2xl font-semibold mb-4 text-sky-300">Le Qui-est-Qui des Fabricants</h3>
-                        <p class="text-gray-400">Contenu à venir pour les fabricants...</p>
+                        <h3 class="text-2xl font-semibold mb-6 text-sky-300">Le Qui-est-Qui des Fabricants</h3>
+                        <p class="text-gray-400 mb-6">Découvrez les principaux acteurs du marché de l'automatisation et leurs spécialités.</p>
+                        <div id="module2-fabricants-cards" class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
+                            </div>
+                        <div id="fabricant-details" class="bg-gray-700 p-6 rounded-lg shadow-inner min-h-[200px] md:min-h-[300px] flex flex-col">
+                            <div class="details-content-area fabricant-details-content overflow-y-auto flex-grow pr-2">
+                                 <p class="text-gray-400 text-lg">Sélectionnez un fabricant pour afficher plus d'informations.</p>
+                            </div>
+                        </div>
                     </div>
                     <div class="module2-tab-content" id="module2-adressage">
-                        <h3 class="text-2xl font-semibold mb-4 text-sky-300">Adressage & Connectique</h3>
-                        <p class="text-gray-400">Contenu à venir pour l'adressage et la connectique...</p>
+                        <h3 class="text-2xl font-semibold mb-6 text-sky-300">Adressage IP Industriel & Connectique</h3>
+                        <p class="text-gray-400 mb-6">Une bonne compréhension de l'adressage IP et des types de connecteurs est essentielle pour établir des communications fiables.</p>
+                        
+                        <div class="toolbox-card mb-8">
+                            <h4 class="text-xl font-orbitron font-semibold text-yellow-300 mb-3">Adressage IP en Milieu Industriel</h4>
+                            <p class="text-gray-400 mb-2">Bien que les réseaux industriels puissent utiliser des adresses IP publiques, il est courant d'utiliser des plages d'adresses IP privées pour isoler le réseau de production :</p>
+                            <ul class="list-disc list-inside space-y-1 text-gray-300 mb-4">
+                                <li><code class="bg-gray-900 px-2 py-1 rounded text-sm">10.0.0.0</code> à <code class="bg-gray-900 px-2 py-1 rounded text-sm">10.255.255.255</code> (Classe A privée)</li>
+                                <li><code class="bg-gray-900 px-2 py-1 rounded text-sm">172.16.0.0</code> à <code class="bg-gray-900 px-2 py-1 rounded text-sm">172.31.255.255</code> (Classe B privée)</li>
+                                <li><code class="bg-gray-900 px-2 py-1 rounded text-sm">192.168.0.0</code> à <code class="bg-gray-900 px-2 py-1 rounded text-sm">192.168.255.255</code> (Classe C privée - très courante pour les petites installations)</li>
+                            </ul>
+                            <p class="text-gray-400">Il est crucial d'avoir un plan d'adressage IP bien défini pour éviter les conflits et faciliter la maintenance.</p>
+                        </div>
+
+                        <h4 class="text-xl font-semibold mb-4 text-sky-300">Ports de Communication Courants</h4>
+                        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div class="connectique-card">
+                                <img src="https://placehold.co/150x100/2d3748/63b3ed?text=RJ45&font=orbitron" alt="[Connecteur RJ45]" class="mx-auto mb-3 rounded">
+                                <h5 class="text-lg font-semibold text-blue-300 mb-1">RJ45</h5>
+                                <p class="text-gray-400 text-sm">Utilisé pour Ethernet (Ethernet/IP, PROFINET, Modbus TCP). Standard pour les réseaux locaux.</p>
+                            </div>
+                            <div class="connectique-card">
+                                <img src="https://placehold.co/150x100/2d3748/68d391?text=M12&font=orbitron" alt="[Connecteur M12]" class="mx-auto mb-3 rounded">
+                                <h5 class="text-lg font-semibold text-green-300 mb-1">M12 (Codages variés)</h5>
+                                <p class="text-gray-400 text-sm">Robuste, utilisé pour capteurs, actionneurs et réseaux industriels (ex: Profinet, Ethernet/IP). Différents codages (A, B, D, X) pour différentes applications.</p>
+                            </div>
+                            <div class="connectique-card">
+                                <img src="https://placehold.co/150x100/2d3748/b794f4?text=Sub-D&font=orbitron" alt="[Connecteur Sub-D]" class="mx-auto mb-3 rounded">
+                                <h5 class="text-lg font-semibold text-purple-300 mb-1">Sub-D (DB9, DB25)</h5>
+                                <p class="text-gray-400 text-sm">Utilisé pour les liaisons série (RS-232, RS-485 comme pour Profibus DP) et d'autres interfaces plus anciennes.</p>
+                            </div>
+                             <div class="connectique-card">
+                                <img src="https://placehold.co/150x100/2d3748/f6ad55?text=USB+Industriel&font=orbitron" alt="[Connecteur USB Industriel]" class="mx-auto mb-3 rounded">
+                                <h5 class="text-lg font-semibold text-orange-300 mb-1">USB (Types variés)</h5>
+                                <p class="text-gray-400 text-sm">Utilisé pour la programmation, la configuration, ou la connexion de périphériques. Des versions industrielles robustes existent.</p>
+                            </div>
+                            <div class="connectique-card">
+                                <img src="https://placehold.co/150x100/2d3748/f687b3?text=Bornier&font=orbitron" alt="[Bornier à vis]" class="mx-auto mb-3 rounded">
+                                <h5 class="text-lg font-semibold text-pink-300 mb-1">Borniers à Vis/Ressort</h5>
+                                <p class="text-gray-400 text-sm">Pour le raccordement direct des fils d'alimentation, de capteurs et d'actionneurs.</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 mt-6">Des visualisations interactives des brochages seront ajoutées prochainement !</p>
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="module3" class="content-section">
+            <div class="bg-gray-800 p-6 sm:p-8 rounded-xl shadow-2xl">
+                <div class="flex items-center mb-6">
+                    <svg class="h-10 w-10 text-blue-400 mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                       <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75V18m-7.5-6.75h.008v.008H8.25v-.008zm0 2.25h.008v.008H8.25V13.5zm0 2.25h.008v.008H8.25v-.008zm0 2.25h.008v.008H8.25V18zm2.498-6.75h.007v.008h-.007v-.008zm0 2.25h.007v.008h-.007V13.5zm0 2.25h.007v.008h-.007v-.008zm0 2.25h.007v.008h-.007V18zm2.504-6.75h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V13.5zm0 2.25h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V18zm2.498-6.75h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V13.5zM8.25 6.75h7.5v7.5h-7.5V6.75z" />
+                    </svg>
+                    <h2 class="text-3xl font-orbitron font-bold text-blue-300">Module 3: Le Laboratoire de Calcul</h2>
+                </div>
+                <p class="text-xl text-gray-400">Ce module est en cours de développement. Revenez bientôt pour des calculateurs interactifs et des outils pratiques !</p>
+                <div class="mt-8">
+                    <img src="https://placehold.co/600x400/2d3748/e2e8f0?text=Labo+de+Calcul+en+Construction&font=orbitron" alt="[Image d'un module en construction]" class="rounded-lg shadow-lg mx-auto">
                 </div>
             </div>
         </section>
@@ -674,7 +745,7 @@
         const normesData = {
             securite_machines: {
                 title: "Sécurité des Machines",
-                icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 mx-auto mb-4 text-red-500"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" /></svg>`,
+                icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 mx-auto mb-2 text-red-400"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" /></svg>`,
                 description: "La sécurité des machines est primordiale pour prévenir les accidents. Elle implique une analyse des risques, la mise en place de mesures de protection (protecteurs, dispositifs d'arrêt d'urgence, barrières immatérielles) et le respect des normes en vigueur.",
                 pointsCles: [
                     "Norme principale : ISO 12100 (Principes généraux de conception - Appréciation du risque et réduction du risque).",
@@ -686,7 +757,7 @@
             },
             programmation_automates: {
                 title: "Programmation Automates (IEC 61131-3)",
-                icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 mx-auto mb-4 text-green-500"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" /></svg>`,
+                icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 mx-auto mb-2 text-green-400"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" /></svg>`,
                 description: "La norme IEC 61131-3 standardise les langages de programmation pour les automates programmables industriels (API/PLC), favorisant la portabilité et la compréhension des programmes.",
                 pointsCles: [
                     "Langages graphiques : Ladder Diagram (LD), Function Block Diagram (FBD), Sequential Function Chart (SFC).",
@@ -698,7 +769,7 @@
             },
             communication_industrielle: {
                 title: "Communication Industrielle",
-                icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 mx-auto mb-4 text-blue-500"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h18M21 16.5L16.5 12m0 0L21 7.5m-18 0L7.5 3M7.5 3v4.5m1.125 0L12 12m2.625-4.5L12 12m0 0L8.25 15M12 12l3.75 3M12 12l-3.75 3" /></svg>`,
+                icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 mx-auto mb-2 text-blue-400"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h18M21 16.5L16.5 12m0 0L21 7.5m-18 0L7.5 3M7.5 3v4.5m1.125 0L12 12m2.625-4.5L12 12m0 0L8.25 15M12 12l3.75 3M12 12l-3.75 3" /></svg>`,
                 description: "Les normes de communication industrielle définissent comment les différents équipements (automates, robots, capteurs, HMI, systèmes SCADA) échangent des données de manière fiable et efficace.",
                 pointsCles: [
                     "Bus de terrain : Profibus, DeviceNet, Modbus RTU.",
@@ -707,6 +778,66 @@
                     "Importance de l'interopérabilité et de la cybersécurité."
                 ],
                 image: "https://placehold.co/300x200/1a202c/3b82f6?text=Communication&font=orbitron"
+            }
+        };
+
+        // --- Données des Fabricants (Module 2) ---
+        const fabricantsData = {
+            abb: {
+                title: "ABB",
+                icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 mx-auto mb-3 text-red-500" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.5 15.5v-4H8v-3h2.5V7H14v3.5h2.5v3H14v4h-3.5z"/></svg>`, 
+                description: "ABB est un leader mondial des technologies de l'énergie et de l'automatisation, offrant une large gamme de robots industriels, de variateurs, de moteurs et de systèmes de contrôle.",
+                specialites: ["Robotique (IRB, YuMi, GoFa)", "Variateurs de fréquence (ACS)", "Automates (AC500)", "Systèmes de contrôle distribué (DCS)"],
+                codesEx: "Exemples de codes pour automates ABB (AC500) utilisent souvent CoDeSys (IEC 61131-3). Les robots sont programmés en RAPID.",
+                image: "https://placehold.co/300x150/1a202c/ef4444?text=ABB&font=orbitron"
+            },
+            kuka: {
+                title: "KUKA",
+                icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 mx-auto mb-3 text-orange-500" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 13.5c-2.49 0-4.5-2.01-4.5-4.5S9.51 6.5 12 6.5s4.5 2.01 4.5 4.5-2.01 4.5-4.5 4.5z"/></svg>`, 
+                description: "KUKA est un fabricant allemand de robots industriels et de solutions d'automatisation, réputé pour ses robots oranges et ses applications dans l'industrie automobile.",
+                specialites: ["Robots industriels (KR QUANTEC, KR IONTEC, KR AGILUS)", "Robots collaboratifs (LBR iiwa)", "Logiciels de simulation (KUKA.Sim)"],
+                codesEx: "Programmation des robots KUKA avec KRL (KUKA Robot Language). Intégration avec automates via Profinet, EtherCAT, etc.",
+                image: "https://placehold.co/300x150/1a202c/f97316?text=KUKA&font=orbitron"
+            },
+            fanuc: {
+                title: "FANUC",
+                icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 mx-auto mb-3 text-yellow-500" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 13l-4-4h8l-4 4z"/></svg>`, 
+                description: "FANUC est une entreprise japonaise spécialisée dans l'automatisation industrielle, notamment les robots, les CNC (Commandes Numériques par Calculateur) et les machines-outils.",
+                specialites: ["Robots industriels (jaunes)", "Systèmes CNC", "Robodrills, Robocuts, Roboshots"],
+                codesEx: "Programmation des robots FANUC en KAREL ou via des interfaces graphiques. Automates FANUC avec leur propre logique.",
+                image: "https://placehold.co/300x150/1a202c/eab308?text=FANUC&font=orbitron"
+            },
+            siemens: {
+                title: "Siemens",
+                icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 mx-auto mb-3 text-teal-500" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.5 13.5H12v-3h4.5v3zm0-5H7.5v-3h9v3z"/></svg>`, 
+                description: "Siemens est un conglomérat allemand majeur dans les domaines de l'industrie, de l'énergie, de la santé et des infrastructures. Sa division Digital Industries propose une vaste gamme de solutions d'automatisation.",
+                specialites: ["Automates (SIMATIC S7 : S7-1200, S7-1500, S7-300/400)", "HMI (SIMATIC HMI Panels)", "Variateurs (SINAMICS)", "Logiciel TIA Portal"],
+                codesEx: "Programmation avec TIA Portal (STEP 7) utilisant les langages IEC 61131-3 (LAD, FBD, SCL, STL, GRAPH/SFC).",
+                image: "https://placehold.co/300x150/1a202c/14b8a6?text=Siemens&font=orbitron"
+            },
+            schneider: {
+                title: "Schneider Electric",
+                icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 mx-auto mb-3 text-green-500" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 15.5c-3.03 0-5.5-2.47-5.5-5.5s2.47-5.5 5.5-5.5 5.5 2.47 5.5 5.5-2.47 5.5-5.5 5.5z"/></svg>`, 
+                description: "Schneider Electric est une entreprise française spécialisée dans la gestion de l'énergie et les automatismes industriels, offrant des solutions pour l'efficacité énergétique et la durabilité.",
+                specialites: ["Automates (Modicon : M221, M340, M580)", "HMI (Magelis)", "Variateurs (Altivar)", "Logiciel EcoStruxure Machine Expert (anciennement SoMachine)"],
+                codesEx: "Programmation avec EcoStruxure Machine Expert, supportant les langages IEC 61131-3.",
+                image: "https://placehold.co/300x150/1a202c/22c55e?text=Schneider&font=orbitron"
+            },
+            allen_bradley: {
+                title: "Allen-Bradley (Rockwell Automation)",
+                icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 mx-auto mb-3 text-blue-500" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14h-3v-4h3v4zm4 0h-3v-4h3v4zm0-6h-7V6h7v4z"/></svg>`, 
+                description: "Allen-Bradley est une marque de Rockwell Automation, un fournisseur américain de solutions d'automatisation industrielle et d'information.",
+                specialites: ["Automates (ControlLogix, CompactLogix, MicroLogix)", "HMI (PanelView)", "Variateurs (PowerFlex)", "Logiciel Studio 5000 Logix Designer"],
+                codesEx: "Programmation principalement en Ladder Logic (LD), Function Block Diagram (FBD), Structured Text (ST) et Sequential Function Chart (SFC) avec Studio 5000.",
+                image: "https://placehold.co/300x150/1a202c/3b82f6?text=Allen-Bradley&font=orbitron"
+            },
+             universal_robots: {
+                title: "Universal Robots",
+                icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 mx-auto mb-3 text-sky-500" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 12c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>`, 
+                description: "Universal Robots (UR) est un fabricant danois pionnier dans le domaine des robots collaboratifs (cobots), conçus pour travailler en toute sécurité aux côtés des humains.",
+                specialites: ["Robots collaboratifs (UR3e, UR5e, UR10e, UR16e, UR20)", "Interface de programmation intuitive Polyscope", "Écosystème UR+ de périphériques et logiciels"],
+                codesEx: "Programmation via l'interface graphique Polyscope, ou en utilisant URScript (langage de script basé sur Python).",
+                image: "https://placehold.co/300x150/1a202c/0ea5e9?text=Universal+Robots&font=orbitron"
             }
         };
 
@@ -736,10 +867,10 @@
             // Initialisation spécifique au module si la section active est un module
             if (targetId === 'module1') {
                 const firstTabButton = document.querySelector('.module1-tab-button[data-target="etape1-composants"]');
-                if (firstTabButton) firstTabButton.click(); // Active le premier onglet
+                if (firstTabButton && !firstTabButton.classList.contains('border-blue-500')) firstTabButton.click(); 
             } else if (targetId === 'module2') {
                 const firstTabButton = document.querySelector('.module2-tab-button[data-target="module2-normes"]');
-                 if (firstTabButton) firstTabButton.click(); // Active le premier onglet
+                 if (firstTabButton && !firstTabButton.classList.contains('border-blue-500')) firstTabButton.click();
             }
         }
 
@@ -756,14 +887,17 @@
         });
 
         // --- Logique d'interaction pour les listes et détails (générique) ---
-        function setupInteractiveList(listId, detailsDivId, dataObject) {
-            const listItems = document.querySelectorAll(`#${listId} .interactive-list-item`);
+        function setupInteractiveList(listId, detailsDivId, dataObject, type = 'list') { 
+            const listOrCardItems = document.querySelectorAll(`#${listId} .interactive-${type}-item`);
             const detailsDiv = document.getElementById(detailsDivId).querySelector('.details-content-area');
 
             function displayDetails(itemKey) {
                 const data = dataObject[itemKey];
                 if (data) {
                     let pointsHtml = '';
+                    let specialitesHtml = ''; 
+                    let codesExHtml = ''; 
+
                     if (data.pointsCles && data.pointsCles.length > 0) {
                         pointsHtml = '<h4 class="text-xl font-semibold mt-6 mb-3 text-sky-200">Points Clés :</h4><ul class="list-disc list-inside space-y-1 text-gray-300">';
                         data.pointsCles.forEach(point => {
@@ -771,35 +905,74 @@
                         });
                         pointsHtml += '</ul>';
                     }
+                    if (data.specialites && data.specialites.length > 0) {
+                        specialitesHtml = '<h4 class="text-xl font-semibold mt-6 mb-3 text-sky-200">Spécialités :</h4><ul class="list-disc list-inside space-y-1 text-gray-300">';
+                        data.specialites.forEach(point => {
+                            specialitesHtml += `<li>${point}</li>`;
+                        });
+                        specialitesHtml += '</ul>';
+                    }
+                    if (data.codesEx) {
+                        codesExHtml = `<h4 class="text-xl font-semibold mt-6 mb-3 text-sky-200">Exemples Codes / Programmation :</h4><p class="text-gray-300">${data.codesEx}</p>`;
+                    }
+
                     detailsDiv.innerHTML = `
                         <div class="text-center">${data.icon || ''}</div>
                         <h3 class="text-3xl font-orbitron font-semibold mb-4 text-center text-blue-300">${data.title}</h3>
                         <p class="text-lg text-gray-300 mb-4">${data.description}</p>
                         ${pointsHtml}
-                        <img src="${data.image}" alt="[Image de ${data.title}]" class="mt-6 rounded-lg shadow-md mx-auto" onerror="this.src='https://placehold.co/300x200/1a202c/e2e8f0?text=Image+Indisponible&font=orbitron'; this.alt='Image par défaut pour ${data.title}'">
+                        ${specialitesHtml}
+                        ${codesExHtml}
+                        ${data.image ? `<img src="${data.image}" alt="[Image de ${data.title}]" class="mt-6 rounded-lg shadow-md mx-auto" onerror="this.src='https://placehold.co/300x200/1a202c/e2e8f0?text=Image+Indisponible&font=orbitron'; this.alt='Image par défaut pour ${data.title}'">` : ''}
                     `;
                 } else {
-                    detailsDiv.innerHTML = `<p class="text-gray-400 text-lg">Sélectionnez un élément dans la liste pour voir ses informations ici.</p>`;
+                    detailsDiv.innerHTML = `<p class="text-gray-400 text-lg">Sélectionnez un élément pour voir ses informations ici.</p>`;
                 }
             }
 
-            listItems.forEach(item => {
+            listOrCardItems.forEach(item => {
                 item.addEventListener('click', () => {
-                    listItems.forEach(i => i.classList.remove('active', 'bg-blue-600', 'text-white'));
-                    item.classList.add('active', 'bg-blue-600', 'text-white');
+                    listOrCardItems.forEach(i => i.classList.remove('active', 'bg-blue-600', 'text-white', 'border-blue-400')); 
+                    item.classList.add('active');
+                    if (type === 'list') {
+                        item.classList.add('bg-blue-600', 'text-white');
+                    } else { 
+                        item.classList.add('bg-blue-700', 'border-blue-400'); 
+                    }
                     const itemKey = item.dataset.itemkey; 
                     displayDetails(itemKey);
                 });
             });
             
-            if (listItems.length > 0) {
-                const isActive = Array.from(listItems).some(item => item.classList.contains('active'));
+            if (listOrCardItems.length > 0) {
+                const isActive = Array.from(listOrCardItems).some(item => item.classList.contains('active'));
                 if (!isActive) { 
-                    listItems[0].click();
+                    listOrCardItems[0].click();
                 }
             } else {
                  detailsDiv.innerHTML = `<p class="text-gray-400 text-lg">Aucun élément à afficher.</p>`;
             }
+        }
+
+        // --- Génération dynamique des cartes Fabricants ---
+        function populateFabricantCards() {
+            const container = document.getElementById('module2-fabricants-cards');
+            if (!container) return;
+            let cardsHtml = '';
+            for (const key in fabricantsData) {
+                const fabricant = fabricantsData[key];
+                cardsHtml += `
+                    <div class="interactive-card-item fabricant-card" data-itemkey="${key}">
+                        <div>
+                            ${fabricant.icon || `<img src="${fabricant.image || 'https://placehold.co/80x40/2d3748/e2e8f0?text=Logo&font=orbitron'}" alt="Logo ${fabricant.title}" class="fabricant-logo mx-auto">`}
+                            <h4 class="text-xl font-orbitron font-semibold text-yellow-300 mb-2 text-center">${fabricant.title}</h4>
+                            <p class="text-gray-400 text-sm text-center">${fabricant.description.substring(0, 70)}...</p>
+                        </div>
+                        <button class="mt-4 button-primary font-semibold py-1 px-3 rounded-md text-sm w-full opacity-70 hover:opacity-100">Voir détails</button>
+                    </div>
+                `;
+            }
+            container.innerHTML = cardsHtml;
         }
         
         // --- Navigation par Onglets pour Modules ---
@@ -822,84 +995,33 @@
                         content.classList.toggle('active', content.id === targetId);
                     });
 
-                    // Initialiser la liste interactive pour l'onglet actif si des données sont mappées
                     if (dataMapping && dataMapping[targetId]) {
-                        const {listId, detailsId, data} = dataMapping[targetId];
-                        setupInteractiveList(listId, detailsId, data);
-                    } else if (targetId === 'module2-normes') { // Cas spécifique pour les cartes de normes
-                        setupInteractiveCardList('module2-normes-cards', 'norme-details', normesData);
+                        const {listId, detailsId, data, type} = dataMapping[targetId];
+                        setupInteractiveList(listId, detailsId, data, type || 'list');
+                    } else if (targetId === 'module2-normes') { 
+                        setupInteractiveList('module2-normes-cards', 'norme-details', normesData, 'card');
+                    } else if (targetId === 'module2-fabricants') {
+                        populateFabricantCards(); 
+                        setupInteractiveList('module2-fabricants-cards', 'fabricant-details', fabricantsData, 'card');
                     }
                 });
             });
-             // Activer l'onglet par défaut
             const defaultButton = document.querySelector(`.${tabButtonClass}[data-target="${defaultTabTarget}"]`);
             if (defaultButton) {
                 defaultButton.click();
             }
         }
 
-        // Initialisation des onglets pour Module 1
         setupModuleTabs('module1', 'module1-tab-button', 'module1-tab-content', 'etape1-composants', {
             'etape1-composants': { listId: 'component-list', detailsId: 'component-details', data: componentData },
             'etape1-protocoles': { listId: 'protocol-list', detailsId: 'protocol-details', data: protocolData }
         });
 
-        // Initialisation des onglets pour Module 2
         setupModuleTabs('module2', 'module2-tab-button', 'module2-tab-content', 'module2-normes', {
-            // 'module2-normes' sera géré par setupInteractiveCardList
+            // 'module2-normes' et 'module2-fabricants' sont gérés dans le click handler du bouton d'onglet
         });
-
-        // --- Logique pour les cartes interactives (Module 2 - Normes) ---
-        function setupInteractiveCardList(cardsContainerId, detailsDivId, dataObject) {
-            const cardItems = document.querySelectorAll(`#${cardsContainerId} .interactive-card-item`);
-            const detailsDiv = document.getElementById(detailsDivId).querySelector('.details-content-area');
-
-            function displayDetails(itemKey) {
-                const data = dataObject[itemKey];
-                 if (data) {
-                    let pointsHtml = '';
-                    if (data.pointsCles && data.pointsCles.length > 0) {
-                        pointsHtml = '<h4 class="text-xl font-semibold mt-6 mb-3 text-sky-200">Points Clés / Exemples :</h4><ul class="list-disc list-inside space-y-1 text-gray-300">';
-                        data.pointsCles.forEach(point => {
-                            pointsHtml += `<li>${point}</li>`;
-                        });
-                        pointsHtml += '</ul>';
-                    }
-                    detailsDiv.innerHTML = `
-                        <div class="text-center">${data.icon || ''}</div>
-                        <h3 class="text-3xl font-orbitron font-semibold mb-4 text-center text-blue-300">${data.title}</h3>
-                        <p class="text-lg text-gray-300 mb-4">${data.description}</p>
-                        ${pointsHtml}
-                        ${data.image ? `<img src="${data.image}" alt="[Image de ${data.title}]" class="mt-6 rounded-lg shadow-md mx-auto" onerror="this.src='https://placehold.co/300x200/1a202c/e2e8f0?text=Image+Indisponible&font=orbitron'; this.alt='Image par défaut pour ${data.title}'">` : ''}
-                    `;
-                } else {
-                    detailsDiv.innerHTML = `<p class="text-gray-400 text-lg">Sélectionnez une catégorie de norme pour afficher plus d'informations.</p>`;
-                }
-            }
-
-            cardItems.forEach(item => {
-                item.addEventListener('click', () => {
-                    cardItems.forEach(i => i.classList.remove('active', 'bg-blue-700', 'border-blue-400'));
-                    item.classList.add('active', 'bg-blue-700', 'border-blue-400');
-                    const itemKey = item.dataset.itemkey;
-                    displayDetails(itemKey);
-                });
-            });
-             if (cardItems.length > 0) {
-                 const isActive = Array.from(cardItems).some(item => item.classList.contains('active'));
-                if (!isActive) {
-                    cardItems[0].click(); // Sélectionne la première carte par défaut
-                }
-            } else {
-                detailsDiv.innerHTML = `<p class="text-gray-400 text-lg">Aucune norme à afficher.</p>`;
-            }
-        }
-
-
-        // Année actuelle dans le pied de page
+        
         document.getElementById('currentYear').textContent = new Date().getFullYear();
-
-        // Activer la section "Accueil" par défaut
         setActiveSection('accueil');
         
     </script>
