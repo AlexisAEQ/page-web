@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Outil d'Analyse de Risques Cobotiques</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #b71c1c 0%, #d32f2f 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            color: #b71c1c;
+            margin-bottom: 0.5rem;
+            font-size: 1.8rem;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .risk-badge {
+            display: inline-block;
+            background: #d32f2f;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .container {
+            flex: 1;
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .main-content {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .analysis-panel {
+            background: #fff3e0;
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 2px solid #ff9800;
+        }
+
+        .analysis-panel h3 {
+            color: #e65100;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .step-section {
+            background: #f5f5f5;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #ff9800;
+        }
+
+        .step-section h4 {
+            color: #e65100;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .input-group select, .input-group input, .input-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-group select:focus, .input-group input:focus, .input-group textarea:focus {
+            outline: none;
+            border-color: #ff9800;
+        }
+
+        .input-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .risk-matrix {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 2px;
+            margin: 1rem 0;
+            background: #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .risk-cell {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .risk-cell:hover {
+            transform: scale(1.05);
+            z-index: 2;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .risk-low { background: #4CAF50; }
+        .risk-medium { background: #ff9800; }
+        .risk-high { background: #f44336; }
+        .risk-critical { background: #b71c1c; }
+
+        .calculate-btn {
+            background: #d32f2f;
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .calculate-btn:hover {
+            background: #b71c1c;
+            transform: scale(1.02);
+        }
+
+        .results-section {
+            grid-column: 1 / -1;
+            margin-top: 2rem;
+            display: none;
+        }
+
+        .risk-result {
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            border: 3px solid;
+        }
+
+        .risk-result.low {
+            background: #e8f5e8;
+            border-color: #4CAF50;
+            color: #2e7d32;
+        }
+
+        .risk-result.medium {
+            background: #fff3e0;
+            border-color: #ff9800;
+            color: #ef6c00;
+        }
+
+        .risk-result.high {
+            background: #ffebee;
+            border-color: #f44336;
+            color: #c62828;
+        }
+
+        .risk-result.critical {
+            background: #ffebee;
+            border-color: #b71c1c;
+            color: #b71c1c;
+        }
+
+        .risk-score {
+            font-size: 2rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .risk-actions {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+        }
+
+        .risk-actions h4 {
+            color: #d32f2f;
+            margin-bottom: 1rem;
+        }
+
+        .risk-actions ul {
+            margin-left: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .risk-actions li {
+            margin-bottom: 0.5rem;
+        }
+
+        .hazard-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 0.5rem;
+            background: white;
+        }
+
+        .hazard-item {
+            padding: 0.5rem;
+            margin: 0.25rem 0;
+            background: #f9f9f9;
+            border-radius: 4px;
+            border-left: 3px solid #ff9800;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .hazard-item:hover {
+            background: #fff3e0;
+            border-left-color: #e65100;
+        }
+
+        .hazard-item.selected {
+            background: #fff3e0;
+            border-left-color: #d32f2f;
+        }
+
+        .info-panel {
+            background: #e3f2fd;
+            border: 2px solid #2196F3;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .info-panel h3 {
+            color: #1976D2;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-panel p {
+            color: #333;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .standards-ref {
+            background: #f3e5f5;
+            border: 2px solid #9c27b0;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .standards-ref h4 {
+            color: #7b1fa2;
+            margin-bottom: 0.5rem;
+        }
+
+        .reset-btn {
+            background: #607d8b;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .reset-btn:hover {
+            background: #546e7a;
+        }
+
+        @media (max-width: 768px) {
+            .analysis-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            .main-content {
+                padding: 1.5rem;
+            }
+            
+            .risk-matrix {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>⚠️ Outil d'Analyse de Risques Cobotiques</h1>
+        <p>Évaluation systématique des risques selon ISO 12100 et normes canadiennes</p>
+        <div class="risk-badge">🛡️ SÉCURITÉ CRITIQUE</div>
+    </div>
+
+    <div class="container">
+        <div class="main-content">
+            <div class="info-panel">
+                <h3>🎯 Méthodologie d'analyse</h3>
+                <p>Cet outil suit la méthodologie d'évaluation des risques conforme aux exigences canadiennes (CSA Z432, CNESST, WSIB) et aux normes internationales (ISO 12100, ISO 10218, ISO/TS 15066). L'analyse couvre l'identification des dangers, l'estimation des risques et la définition des mesures de protection.</p>
+            </div>
+
+            <div class="analysis-grid">
+                <div class="analysis-panel">
+                    <h3>🔍 Étape 1: Identification des Dangers</h3>
+                    
+                    <div class="step-section">
+                        <h4>Application cobotique</h4>
+                        <div class="input-group">
+                            <label>Type d'application :</label>
+                            <select id="applicationType">
+                                <option value="">Sélectionnez...</option>
+                                <option value="assemblage">Assemblage collaboratif</option>
+                                <option value="pickplace">Pick & Place</option>
+                                <option value="soudage">Soudage collaboratif</option>
+                                <option value="usinage">Usinage léger</option>
+                                <option value="controle">Contrôle qualité</option>
+                                <option value="palettisation">Palettisation</option>
+                                <option value="finition">Finition/Polissage</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Mode de collaboration :</label>
+                            <select id="collaborationMode">
+                                <option value="">Sélectionnez...</option>
+                                <option value="mode1">Mode 1: Arrêt de sécurité surveillé</option>
+                                <option value="mode2">Mode 2: Guidage manuel</option>
+                                <option value="mode3">Mode 3: Surveillance vitesse/séparation</option>
+                                <option value="mode4">Mode 4: Limitation puissance/force</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Environnement de travail :</label>
+                            <select id="environment">
+                                <option value="">Sélectionnez...</option>
+                                <option value="atelier">Atelier manufacturier standard</option>
+                                <option value="propre">Salle propre/contrôlée</option>
+                                <option value="industriel">Environnement industriel lourd</option>
+                                <option value="laboratoire">Laboratoire/R&D</option>
+                                <option value="medical">Environnement médical</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="step-section">
+                        <h4>Dangers identifiés</h4>
+                        <p style="margin-bottom: 1rem; font-size: 0.9rem; color: #666;">Cliquez sur les dangers applicables à votre installation :</p>
+                        <div class="hazard-list" id="hazardList">
+                            <!-- Généré par JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="analysis-panel">
+                    <h3>📊 Étape 2: Évaluation des Risques</h3>
+                    
+                    <div class="step-section">
+                        <h4>Paramètres de risque</h4>
+                        
+                        <div class="input-group">
+                            <label>Gravité des dommages :</label>
+                            <select id="severity">
+                                <option value="">Évaluez...</option>
+                                <option value="1">1 - Négligeable (inconfort léger)</option>
+                                <option value="2">2 - Mineure (blessure légère)</option>
+                                <option value="3">3 - Modérée (blessure nécessitant soins)</option>
+                                <option value="4">4 - Grave (blessure permanente/invalidité)</option>
+                                <option value="5">5 - Catastrophique (décès)</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Probabilité d'occurrence :</label>
+                            <select id="probability">
+                                <option value="">Évaluez...</option>
+                                <option value="1">1 - Très faible (< 1/an)</option>
+                                <option value="2">2 - Faible (1-5/an)</option>
+                                <option value="3">3 - Modérée (5-50/an)</option>
+                                <option value="4">4 - Élevée (> 50/an)</option>
+                                <option value="5">5 - Très élevée (quotidienne)</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Fréquence d'exposition :</label>
+                            <select id="exposure">
+                                <option value="">Évaluez...</option>
+                                <option value="1">1 - Rare (< 1h/semaine)</option>
+                                <option value="2">2 - Occasionnelle (1h/jour)</option>
+                                <option value="3">3 - Fréquente (1-4h/jour)</option>
+                                <option value="4">4 - Continue (> 4h/jour)</option>
+                                <option value="5">5 - Permanente (poste complet)</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Possibilité d'évitement :</label>
+                            <select id="avoidance">
+                                <option value="">Évaluez...</option>
+                                <option value="1">1 - Élevée (facile à éviter)</option>
+                                <option value="2">2 - Possible (évitable avec attention)</option>
+                                <option value="3">3 - Difficile (formation nécessaire)</option>
+                                <option value="4">4 - Très difficile (réflexes rapides requis)</option>
+                                <option value="5">5 - Impossible (pas de possibilité d'évitement)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="step-section">
+                        <h4>Matrice de criticité</h4>
+                        <p style="margin-bottom: 0.5rem; font-size: 0.9rem;">Score = Gravité × Probabilité × Exposition × Évitement</p>
+                        <div class="risk-matrix" id="riskMatrix">
+                            <!-- Généré par JavaScript -->
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: #666; margin-top: 0.5rem;">
+                            <span>Faible (1-50)</span>
+                            <span>Modéré (51-150)</span>
+                            <span>Élevé (151-400)</span>
+                            <span>Critique (401-625)</span>
+                        </div>
+                    </div>
+
+                    <button class="calculate-btn" onclick="calculateRisk()">⚠️ Évaluer le Risque</button>
+                </div>
+            </div>
+
+            <div id="resultsSection" class="results-section">
+                <div id="riskResult" class="risk-result">
+                    <div id="riskScore" class="risk-score"></div>
+                    <div id="riskLevel"></div>
+                    <div id="riskDescription"></div>
+                </div>
+
+                <div class="risk-actions" id="riskActions">
+                    <h4>🛡️ Actions de réduction des risques</h4>
+                    <div id="actionsList"></div>
+                </div>
+
+                <div class="standards-ref">
+                    <h4>📋 Références normatives applicables</h4>
+                    <div id="standardsRef"></div>
+                </div>
+
+                <button class="reset-btn" onclick="resetAnalysis()">🔄 Nouvelle Analyse</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Base de données des dangers par application
+        const hazardDatabase = {
+            assemblage: [
+                "Écrasement entre robot et pièce",
+                "Cisaillement par l'effecteur",
+                "Projection de pièces ou composants",
+                "Contact avec outils tranchants",
+                "Happement de vêtements/cheveux",
+                "Contraintes posturales",
+                "Fatigue visuelle (précision)",
+                "Exposition à colles/solvants"
+            ],
+            pickplace: [
+                "Impact lors des mouvements rapides",
+                "Chute d'objets manipulés",
+                "Écrasement pied/main",
+                "Collision avec convoyeurs",
+                "Surpression pneumatique",
+                "Projections de débris",
+                "Mouvements répétitifs",
+                "Zones d'accès restreint"
+            ],
+            soudage: [
+                "Brûlures par arc/métal chaud",
+                "Inhalation de fumées",
+                "Rayonnement UV/infrarouge",
+                "Projections de métal en fusion",
+                "Électrocution",
+                "Incendie/explosion",
+                "Contact avec surfaces chaudes",
+                "Émanations toxiques"
+            ],
+            usinage: [
+                "Contact avec outils coupants rotatifs",
+                "Projection de copeaux/lubrifiant",
+                "Bruit excessif",
+                "Vibrations mécaniques",
+                "Poussières métalliques",
+                "Écrasement par pièces lourdes",
+                "Coupures par bavures",
+                "Glissades sur lubrifiant"
+            ],
+            controle: [
+                "Contraintes posturales répétées",
+                "Fatigue visuelle prolongée",
+                "Exposition radiations (rayons X)",
+                "Contact avec produits chimiques",
+                "Mouvements précis répétitifs",
+                "Stress psychologique",
+                "Bruit équipements mesure",
+                "Décharges électrostatiques"
+            ],
+            palettisation: [
+                "Chute d'objets de hauteur",
+                "Écrasement par charges lourdes",
+                "Basculement de palettes",
+                "Coincement dans structures",
+                "Efforts physiques excessifs",
+                "Troubles musculo-squelettiques",
+                "Collision avec équipements",
+                "Instabilité des charges"
+            ],
+            finition: [
+                "Inhalation de poussières/vapeurs",
+                "Contact avec abrasifs",
+                "Projections de produits chimiques",
+                "Vibrations outils",
+                "Bruit des équipements",
+                "Contraintes posturales",
+                "Irritations cutanées",
+                "Risques oculaires"
+            ]
+        };
+
+        // Variables globales
+        let selectedHazards = [];
+        let currentRiskScore = 0;
+
+        // Initialisation de l'interface
+        document.getElementById('applicationType').addEventListener('change', updateHazardList);
+
+        function updateHazardList() {
+            const applicationType = document.getElementById('applicationType').value;
+            const hazardList = document.getElementById('hazardList');
+            
+            hazardList.innerHTML = '';
+            selectedHazards = [];
+            
+            if (applicationType && hazardDatabase[applicationType]) {
+                hazardDatabase[applicationType].forEach((hazard, index) => {
+                    const hazardItem = document.createElement('div');
+                    hazardItem.className = 'hazard-item';
+                    hazardItem.textContent = hazard;
+                    hazardItem.onclick = () => toggleHazard(hazardItem, hazard);
+                    hazardList.appendChild(hazardItem);
+                });
+                
+                // Ajouter dangers génériques cobots
+                const genericHazards = [
+                    "Défaillance capteurs de sécurité",
+                    "Erreur de programmation",
+                    "Maintenance inadéquate",
+                    "Formation insuffisante opérateurs",
+                    "Modifications non autorisées"
+                ];
+                
+                genericHazards.forEach(hazard => {
+                    const hazardItem = document.createElement('div');
+                    hazardItem.className = 'hazard-item';
+                    hazardItem.style.borderLeftColor = '#607d8b';
+                    hazardItem.textContent = '⚙️ ' + hazard;
+                    hazardItem.onclick = () => toggleHazard(hazardItem, hazard);
+                    hazardList.appendChild(hazardItem);
+                });
+            }
+        }
+
+        function toggleHazard(element, hazard) {
+            if (element.classList.contains('selected')) {
+                element.classList.remove('selected');
+                selectedHazards = selectedHazards.filter(h => h !== hazard);
+            } else {
+                element.classList.add('selected');
+                selectedHazards.push(hazard);
+            }
+        }
+
+        function calculateRisk() {
+            const applicationType = document.getElementById('applicationType').value;
+            const collaborationMode = document.getElementById('collaborationMode').value;
+            const environment = document.getElementById('environment').value;
+            const severity = parseInt(document.getElementById('severity').value);
+            const probability = parseInt(document.getElementById('probability').value);
+            const exposure = parseInt(document.getElementById('exposure').value);
+            const avoidance = parseInt(document.getElementById('avoidance').value);
+
+            // Validation des entrées
+            if (!applicationType || !collaborationMode || !environment) {
+                alert('Veuillez renseigner tous les paramètres de l\'application.');
+                return;
+            }
+
+            if (!severity || !probability || !exposure || !avoidance) {
+                alert('Veuillez évaluer tous les paramètres de risque.');
+                return;
+            }
+
+            if (selectedHazards.length === 0) {
+                alert('Veuillez sélectionner au moins un danger identifié.');
+                return;
+            }
+
+            // Calcul du score de risque
+            currentRiskScore = severity * probability * exposure * avoidance;
+
+            // Détermination du niveau de risque
+            let riskLevel, riskClass, riskDescription;
+            
+            if (currentRiskScore <= 50) {
+                riskLevel = "RISQUE FAIBLE";
+                riskClass = "low";
+                riskDescription = "Le risque est acceptable. Surveillance continue recommandée.";
+            } else if (currentRiskScore <= 150) {
+                riskLevel = "RISQUE MODÉRÉ";
+                riskClass = "medium";
+                riskDescription = "Mesures de réduction recommandées. Surveillance renforcée nécessaire.";
+            } else if (currentRiskScore <= 400) {
+                riskLevel = "RISQUE ÉLEVÉ";
+                riskClass = "high";
+                riskDescription = "Actions correctives obligatoires avant mise en service.";
+            } else {
+                riskLevel = "RISQUE CRITIQUE";
+                riskClass = "critical";
+                riskDescription = "INACCEPTABLE - Révision complète de la conception requise.";
+            }
+
+            displayResults(riskLevel, riskClass, riskDescription);
+        }
+
+        function displayResults(riskLevel, riskClass, riskDescription) {
+            const resultsSection = document.getElementById('resultsSection');
+            const riskResult = document.getElementById('riskResult');
+            const riskScore = document.getElementById('riskScore');
+            const riskLevelDiv = document.getElementById('riskLevel');
+            const riskDescriptionDiv = document.getElementById('riskDescription');
+
+            // Affichage du résultat
+            riskResult.className = `risk-result ${riskClass}`;
+            riskScore.textContent = `Score: ${currentRiskScore}`;
+            riskLevelDiv.innerHTML = `<h3>${riskLevel}</h3>`;
+            riskDescriptionDiv.textContent = riskDescription;
+
+            // Actions recommandées
+            generateRiskActions(riskClass);
+            
+            // Références normatives
+            generateStandardsReferences();
+
+            resultsSection.style.display = 'block';
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function generateRiskActions(riskClass) {
+            const actionsList = document.getElementById('riskActions');
+            let actions = [];
+
+            // Actions selon le niveau de risque
+            switch (riskClass) {
+                case 'low':
+                    actions = [
+                        "Maintenir les mesures de sécurité actuelles",
+                        "Surveillance périodique des conditions d'exploitation",
+                        "Formation continue des opérateurs",
+                        "Révision annuelle de l'analyse de risques",
+                        "Documentation des procédures de sécurité"
+                    ];
+                    break;
+
+                case 'medium':
+                    actions = [
+                        "Installer des équipements de protection complémentaires",
+                        "Renforcer la formation des opérateurs (certification)",
+                        "Mettre en place une surveillance renforcée",
+                        "Définir des procédures d'urgence spécifiques",
+                        "Effectuer des tests de sécurité trimestriels",
+                        "Envisager des modifications ergonomiques"
+                    ];
+                    break;
+
+                case 'high':
+                    actions = [
+                        "🚨 ACTIONS CORRECTIVES OBLIGATOIRES:",
+                        "Installer des barrières de sécurité supplémentaires",
+                        "Réduire les vitesses opérationnelles",
+                        "Implémenter des systèmes de sécurité redondants",
+                        "Formation intensive avec certification obligatoire",
+                        "Supervision permanente pendant l'exploitation",
+                        "Tests de sécurité hebdomadaires",
+                        "Audit de sécurité par organisme externe"
+                    ];
+                    break;
+
+                case 'critical':
+                    actions = [
+                        "🛑 ARRÊT IMMÉDIAT DE L'INSTALLATION",
+                        "Révision complète de la conception",
+                        "Évaluation par expert en sécurité cobotique",
+                        "Modifications majeures des systèmes de sécurité",
+                        "Tests de validation complets",
+                        "Certification par organisme agréé obligatoire",
+                        "Formation spécialisée de toutes les équipes",
+                        "Mise en place d'un plan de surveillance permanent"
+                    ];
+                    break;
+            }
+
+            // Actions spécifiques aux dangers sélectionnés
+            if (selectedHazards.includes("Défaillance capteurs de sécurité")) {
+                actions.push("Implémenter une architecture de sécurité redondante (ISO 13849 PLd)");
+            }
+            if (selectedHazards.includes("Erreur de programmation")) {
+                actions.push("Validation des programmes par double contrôle");
+            }
+            if (selectedHazards.includes("Formation insuffisante opérateurs")) {
+                actions.push("Programme de formation certifiant selon CNESST/WSIB");
+            }
+
+            const actionsHTML = `
+                <ul>
+                    ${actions.map(action => `<li>${action}</li>`).join('')}
+                </ul>
+                
+                <h5 style="margin-top: 1.5rem; color: #d32f2f;">🎯 Hiérarchie des mesures de protection (ISO 12100):</h5>
+                <ol style="margin-left: 1.5rem; line-height: 1.6;">
+                    <li><strong>Élimination:</strong> Supprimer le danger à la source</li>
+                    <li><strong>Substitution:</strong> Remplacer par une solution moins dangereuse</li>
+                    <li><strong>Protection collective:</strong> Barrières, capteurs de sécurité</li>
+                    <li><strong>Protection individuelle:</strong> EPI spécifiques</li>
+                    <li><strong>Formation/Information:</strong> Procédures et sensibilisation</li>
+                </ol>
+            `;
+
+            actionsList.innerHTML = `<h4>🛡️ Actions de réduction des risques</h4>${actionsHTML}`;
+        }
+
+        function generateStandardsReferences() {
+            const collaborationMode = document.getElementById('collaborationMode').value;
+            const environment = document.getElementById('environment').value;
+            
+            let standards = [
+                "📋 <strong>ISO 12100</strong> - Sécurité des machines (Principes généraux)",
+                "🤖 <strong>ISO 10218-1/2</strong> - Robots industriels (Exigences de sécurité)",
+                "🤝 <strong>ISO/TS 15066</strong> - Robots collaboratifs (Spécifications techniques)",
+                "🇨🇦 <strong>CSA Z432</strong> - Protection des machines (Canada)",
+                "⚖️ <strong>CSA Z434</strong> - Sécurité des machines industrielles"
+            ];
+
+            // Standards spécifiques selon le contexte
+            if (collaborationMode === 'mode4') {
+                standards.push("💪 <strong>ISO/TS 15066 Annexe A</strong> - Limites de force et pression");
+            }
+
+            if (environment === 'medical') {
+                standards.push("🏥 <strong>IEC 60601-1</strong> - Équipements électromédicaux");
+            }
+
+            // Standards provinciaux canadiens
+            standards.push("🏛️ <strong>CNESST (Québec)</strong> - Loi sur la santé et sécurité du travail");
+            standards.push("🏛️ <strong>WSIB (Ontario)</strong> - Workplace Safety and Insurance Act");
+
+            // Standards de certification
+            standards.push("✅ <strong>Certification CSA</strong> - Marquage obligatoire Canada");
+            standards.push("🔍 <strong>Évaluation de conformité</strong> - Organismes agréés (TÜV, CSA Group)");
+
+            const standardsHTML = `
+                <ul style="line-height: 1.8;">
+                    ${standards.map(std => `<li>${std}</li>`).join('')}
+                </ul>
+                
+                <div style="margin-top: 1rem; padding: 1rem; background: #fff3e0; border-radius: 8px; border-left: 4px solid #ff9800;">
+                    <strong>⚠️ Important :</strong> Cette analyse doit être validée par un expert en sécurité cobotique 
+                    et complétée par des tests pratiques selon les normes applicables.
+                </div>
+            `;
+
+            document.getElementById('standardsRef').innerHTML = standardsHTML;
+        }
+
+        function resetAnalysis() {
+            // Réinitialiser tous les champs
+            document.getElementById('applicationType').value = '';
+            document.getElementById('collaborationMode').value = '';
+            document.getElementById('environment').value = '';
+            document.getElementById('severity').value = '';
+            document.getElementById('probability').value = '';
+            document.getElementById('exposure').value = '';
+            document.getElementById('avoidance').value = '';
+
+            // Réinitialiser la liste des dangers
+            document.getElementById('hazardList').innerHTML = '';
+            selectedHazards = [];
+            currentRiskScore = 0;
+
+            // Masquer les résultats
+            document.getElementById('resultsSection').style.display = 'none';
+
+            // Remonter en haut
+            window.scrollTo(0, 0);
+        }
+
+        // Génération de la matrice de risque visuelle
+        function generateRiskMatrix() {
+            const riskMatrix = document.getElementById('riskMatrix');
+            const matrixData = [
+                { score: 5, class: 'risk-low', label: '5' },
+                { score: 10, class: 'risk-low', label: '10' },
+                { score: 15, class: 'risk-low', label: '15' },
+                { score: 20, class: 'risk-low', label: '20' },
+                { score: 25, class: 'risk-low', label: '25' },
+                
+                { score: 50, class: 'risk-low', label: '50' },
+                { score: 75, class: 'risk-medium', label: '75' },
+                { score: 100, class: 'risk-medium', label: '100' },
+                { score: 125, class: 'risk-medium', label: '125' },
+                { score: 150, class: 'risk-medium', label: '150' },
+                
+                { score: 200, class: 'risk-high', label: '200' },
+                { score: 250, class: 'risk-high', label: '250' },
+                { score: 300, class: 'risk-high', label: '300' },
+                { score: 350, class: 'risk-high', label: '350' },
+                { score: 400, class: 'risk-high', label: '400' },
+                
+                { score: 450, class: 'risk-critical', label: '450' },
+                { score: 500, class: 'risk-critical', label: '500' },
+                { score: 550, class: 'risk-critical', label: '550' },
+                { score: 600, class: 'risk-critical', label: '600' },
+                { score: 625, class: 'risk-critical', label: '625' }
+            ];
+
+            riskMatrix.innerHTML = '';
+            matrixData.forEach(item => {
+                const cell = document.createElement('div');
+                cell.className = `risk-cell ${item.class}`;
+                cell.textContent = item.label;
+                cell.title = `Score: ${item.score}`;
+                riskMatrix.appendChild(cell);
+            });
+        }
+
+        // Initialisation au chargement de la page
+        window.onload = function() {
+            generateRiskMatrix();
+        };
+    </script>
+</body>
+</html>
