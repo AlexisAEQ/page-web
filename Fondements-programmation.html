@@ -264,10 +264,12 @@
             border-color: #4CAF50;
         }
 
+        /* Styles pour l'infobulle (tooltip) */
         .paradigm-item {
             margin: 15px 0;
             position: relative;
         }
+
 
         .paradigm-label {
             background: linear-gradient(135deg, #4CAF50, #45a049);
@@ -293,15 +295,18 @@
             color: #666;
         }
 
+        /* Contenu de l'infobulle (la fenêtre modale) */
         .tooltip-content {
             display: none;
-            position: absolute;
-            top: 40px;
-            left: 0;
-            right: 0;
+            position: fixed; /* Utiliser fixed pour centrer par rapport à la fenêtre */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%); /* Centrer l'élément */
             background: white;
             border: 2px solid #4CAF50;
             border-radius: 15px;
+            max-width: 90%; /* Largeur max sur petits écrans */
+            width: 600px; /* Largeur préférée */
             padding: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             z-index: 1000;
@@ -370,11 +375,19 @@
             backdrop-filter: blur(2px);
         }
 
+        /* Overlay semi-transparent */
         .tooltip-overlay.active {
             display: block;
         }
 
+        /* Appliquer le flou au contenu principal quand l'overlay est actif */
+        .container.blurred {
+            filter: blur(3px); /* Ajustez l'intensité du flou si nécessaire */
+            pointer-events: none; /* Désactiver les clics sur le contenu flouté */
+        }
+
         @keyframes tooltipSlideIn {
+            /* Animation d'ouverture */
             from {
                 opacity: 0;
                 transform: translateY(-10px) scale(0.95);
@@ -385,6 +398,7 @@
             }
         }
 
+        /* Bouton de fermeture de l'infobulle */
         .close-tooltip {
             position: absolute;
             top: 10px;
@@ -408,6 +422,7 @@
             transform: scale(1.1);
         }
 
+        /* Barre de progression */
         .progress-bar {
             width: 100%;
             height: 8px;
@@ -424,6 +439,7 @@
             transition: width 0.5s ease;
         }
 
+        /* Media queries pour l'adaptabilité */
         @media (max-width: 768px) {
             .header h1 {
                 font-size: 2em;
@@ -1100,6 +1116,9 @@ Source Code (.java) → Compiler → Bytecode (.class) → JVM → Exécution
         let quizScore = 0;
         let sectionsCompleted = 0;
 
+        // Référence au conteneur principal pour appliquer le flou
+        const mainContainer = document.querySelector('.container');
+
         // Initialisation
         document.addEventListener('DOMContentLoaded', function() {
             initializeMemoryBlocks();
@@ -1125,10 +1144,12 @@ Source Code (.java) → Compiler → Bytecode (.class) → JVM → Exécution
             if (isCurrentlyActive) {
                 // Si l'infobulle cliquée était déjà active, on la ferme (et l'overlay)
                 tooltipOverlay.classList.remove('active');
+                mainContainer.classList.remove('blurred'); // Retirer le flou
             } else {
                 // Sinon, on active l'infobulle cliquée et l'overlay
                 tooltip.classList.add('active');
                 tooltipOverlay.classList.add('active');
+                mainContainer.classList.add('blurred'); // Appliquer le flou
                 // Ajouter un bouton de fermeture s'il n'existe pas
                 if (!tooltip.querySelector('.close-tooltip')) {
                     const closeButton = document.createElement('button');
@@ -1148,6 +1169,7 @@ Source Code (.java) → Compiler → Bytecode (.class) → JVM → Exécution
                 activeTooltip.classList.remove('active');
             });
             tooltipOverlay.classList.remove('active');
+            mainContainer.classList.remove('blurred'); // Retirer le flou
         }
 
         tooltipOverlay.addEventListener('click', closeCurrentTooltip);
