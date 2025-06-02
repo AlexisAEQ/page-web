@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation HMI Borne Universelle</title>
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --primary-hover-color: #0056b3;
+            --secondary-color: #6c757d;
+            --light-gray: #f8f9fa;
+            --medium-gray: #e9ecef;
+            --dark-gray: #343a40;
+            --text-color: #212529;
+            --text-muted: #6c757d;
+            --border-color: #dee2e6;
+            --code-bg: #eef1f3;
+            --pre-bg: #f9fbfd;
+            --pre-border: #4a90e2; /* Bleu pour accentuer les blocs de code */
+            --card-bg: #ffffff;
+            --card-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            --font-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            --font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        body {
+            font-family: var(--font-sans-serif);
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--light-gray);
+            padding: 0;
+            margin: 0;
+        }
+
+        .page-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .content-wrapper {
+            display: flex;
+            flex-direction: row;
+            flex-grow: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .main-header {
+            background-color: var(--dark-gray);
+            color: var(--light-gray);
+            padding: 2rem 1rem;
+            text-align: center;
+            border-bottom: 5px solid var(--primary-color);
+        }
+
+        .main-header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 0.5rem;
+            font-weight: 300;
+        }
+
+        .main-header .subtitle {
+            font-size: 1.2rem;
+            color: var(--medium-gray);
+            font-weight: 300;
+        }
+
+        #toc {
+            width: 300px;
+            flex-shrink: 0;
+            padding: 20px;
+            position: sticky;
+            top: 20px;
+            align-self: flex-start;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
+            border-right: 1px solid var(--border-color);
+            background-color: var(--card-bg);
+        }
+
+        #toc h2 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+        }
+
+        #toc ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        #toc ul li a {
+            text-decoration: none;
+            color: var(--text-color);
+            display: block;
+            padding: 0.4rem 0.2rem;
+            border-radius: 4px;
+            transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+            font-size: 0.95rem;
+        }
+
+        #toc ul li a:hover,
+        #toc ul li a.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        #toc ul ul {
+            padding-left: 1rem;
+            margin-top: 0.25rem;
+        }
+        #toc ul ul li a {
+            font-size: 0.85rem;
+            color: var(--secondary-color);
+        }
+        #toc ul ul li a:hover,
+        #toc ul ul li a.active {
+            background-color: var(--primary-hover-color);
+            color: white;
+        }
+
+
+        main {
+            flex-grow: 1;
+            padding: 25px;
+            max-width: calc(100% - 300px); /* Adjust if ToC width changes */
+        }
+
+        section {
+            margin-bottom: 2.5rem;
+            padding: 1.5rem;
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: var(--card-shadow);
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+            font-weight: 500;
+            color: var(--dark-gray);
+        }
+
+        h1 { font-size: 2.5rem; }
+        h2 { font-size: 2rem; color: var(--primary-color); border-bottom: 1px solid var(--medium-gray); padding-bottom: 0.5rem;}
+        h3 { font-size: 1.75rem; color: var(--primary-hover-color); }
+        h4 { font-size: 1.5rem; } /* Component name */
+        h5 { font-size: 1.2rem; margin-top: 1rem; color: var(--secondary-color); } /* "Descriptor Properties", "Example" */
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        ul, ol {
+            margin-bottom: 1rem;
+            padding-left: 20px;
+        }
+        ul li, ol li {
+            margin-bottom: 0.5rem;
+        }
+
+        code {
+            font-family: var(--font-monospace);
+            background-color: var(--code-bg);
+            padding: 0.2em 0.4em;
+            border-radius: 3px;
+            font-size: 0.9em;
+            color: var(--primary-hover-color);
+        }
+
+        pre {
+            background-color: var(--pre-bg);
+            border: 1px solid var(--border-color);
+            border-left: 5px solid var(--pre-border);
+            color: var(--dark-gray);
+            page-break-inside: avoid;
+            font-family: var(--font-monospace);
+            font-size: 0.95em;
+            line-height: 1.5;
+            margin-bottom: 1.6em;
+            max-width: 100%;
+            overflow: auto;
+            padding: 1em 1.5em;
+            display: block;
+            word-wrap: break-word;
+            border-radius: 0 4px 4px 0;
+        }
+
+        pre code {
+            background-color: transparent;
+            padding: 0;
+            border-radius: 0;
+            font-size: inherit;
+            color: inherit;
+        }
+
+        .component-card {
+            border: 1px solid var(--border-color);
+            border-left: 5px solid var(--primary-color);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .component-card h4 { /* Component name, e.g., rx-bool */
+            font-size: 1.6rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        .component-card .component-anchor {
+            font-size: 1rem;
+            color: var(--primary-color);
+            text-decoration: none;
+            margin-left: 8px;
+            visibility: hidden;
+        }
+        .component-card h4:hover .component-anchor {
+            visibility: visible;
+        }
+
+        .toggle-json-btn {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+            transition: background-color 0.2s ease;
+        }
+
+        .toggle-json-btn:hover {
+            background-color: #5a6268;
+        }
+
+        .json-example {
+            background-color: var(--pre-bg);
+            border: 1px solid var(--border-color);
+            border-left: 5px solid var(--secondary-color);
+            margin-top: 0.5rem;
+            transition: max-height 0.3s ease-out, opacity 0.3s ease;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .json-example.show {
+            max-height: 1000px; /* Adjust as needed for large JSON */
+            opacity: 1;
+            padding: 1em 1.5em; /* Padding only when shown */
+        }
+
+
+        .main-footer {
+            text-align: center;
+            padding: 1.5rem;
+            background-color: var(--dark-gray);
+            color: var(--light-gray);
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 1000px) {
+            .content-wrapper {
+                flex-direction: column;
+            }
+            #toc {
+                width: 100%;
+                position: static;
+                max-height: none;
+                overflow-y: visible;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+                margin-bottom: 1rem;
+                padding: 15px;
+            }
+            main {
+                max-width: 100%;
+                padding: 15px;
+            }
+        }
+        @media (max-width: 768px) {
+            .main-header h1 { font-size: 2.2rem; }
+            .main-header .subtitle { font-size: 1rem; }
+            h2 { font-size: 1.75rem; }
+            h3 { font-size: 1.5rem; }
+            .component-card h4 { font-size: 1.4rem; }
+            pre { font-size: 0.85em; }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <header class="main-header">
+            <h1>HMI</h1>
+            <p class="subtitle">An Open-Source Web object modeling for embedded systems</p>
+        </header>
+
+        <div class="content-wrapper">
+            <nav id="toc">
+                <h2>Table des matières</h2>
+                <ul>
+                    <li><a href="#what-is">Qu'est-ce que Borne Universelle HMI ?</a></li>
+                    <li><a href="#dev-setup">Configuration initiale de développement</a></li>
+                    <li><a href="#nodejs-updates">Mises à jour Node.js pour Windows</a></li>
+                    <li><a href="#updating-dependencies">Mise à jour des dépendances</a></li>
+                    <li><a href="#new-components-impl">Comment implémenter de nouveaux composants ?</a></li>
+                    <li><a href="#build-esp32">Compiler le projet pour ESP32</a>
+                        <ul>
+                            <li><a href="#build-summary">Résumé du processus `npm run build`</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#component-docs">Documentation des composants Web</a>
+                        <ul>
+                            <li><a href="#input-components">Composants d'entrée (Rx-)</a></li>
+                            <li><a href="#output-components">Composants de sortie (Tx-)</a></li>
+                            <li><a href="#container-components">Composants conteneurs</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+
+            <main>
+                <section id="what-is">
+                    <h2>Qu'est-ce que Borne Universelle HMI ?</h2>
+                    <p>Borne Universelle HMI is a web application that allows you to create a model of your embedded system and generate the code for it. 
+It is based on the Actor design pattern and it is written in Vanilla JS and WebComponents on the front-end,  C++ for the embedded systems and Flask/Python for the data processing and api requirements.</p>
+                </section>
+
+                <section id="dev-setup">
+                    <h2>Configuration initiale de développement</h2>
+                    <ol>
+                        <li>
+                            Install necessary npm dependencies:
+                            <pre><code>npm install</code></pre>
+                        </li>
+                        <li>
+                            If no ESP32 is available, you need to run the stub server to test the application. Install the python dependencies, you can use the following command in your terminal from the root of this project directory:
+                            <pre><code class="language-bash">pip install -r requirements.txt</code></pre>
+                            Start the <code>Server.py</code> in a terminal
+                            <pre><code class="language-bash">python3 Server.py</code></pre>
+                            And start the <code>websocket/WebSocket.py</code> in another terminal.
+                            <pre><code class="language-bash">cd server
+python3 WebSocket.py</code></pre>
+                            These commands will run by default on port 5050, you can specify the port by adding the argument <code>--port ####</code>
+                            <br><br>
+                            Then, you can open the application (index.html) in your browser by clicking the http local IP link on the server terminal. Example:
+                            <pre><code>* Running on http://127.0.0.1:5000</code></pre>
+                        </li>
+                    </ol>
+                </section>
+
+                <section id="nodejs-updates">
+                    <h2>Mises à jour Node.js pour Windows</h2>
+                    <p>To update node.js easily, install nvm: <a href="https://github.com/coreybutler/nvm-windows/releases/" target="_blank" rel="noopener noreferrer">https://github.com/coreybutler/nvm-windows/releases/</a></p>
+                    <pre><code>nvm install &lt;version&gt;      # Install specific version
+nvm use &lt;version&gt;          # Switch to it
+nvm list                   # See installed versions
+nvm uninstall &lt;version&gt;    # Delete old version</code></pre>
+                </section>
+
+                <section id="updating-dependencies">
+                    <h2>Mise à jour des dépendances</h2>
+                    <ol>
+                        <li>
+                            Check for available updates:
+                            <pre><code class="language-bash">npm outdated</code></pre>
+                        </li>
+                        <li>
+                            Run the update script:
+                            <pre><code class="language-bash">npm run update</code></pre>
+                        </li>
+                    </ol>
+                    <p>This will:</p>
+                    <ul>
+                        <li>Update all dependencies to their latest versions</li>
+                        <li>Install the updates</li>
+                    </ul>
+                    <p>If you encounter issues, check the <a href="https://rollupjs.org/migration/" target="_blank" rel="noopener noreferrer">Rollup migration guide</a> for major version changes.</p>
+                </section>
+
+                <section id="new-components-impl">
+                    <h2>Comment implémenter de nouveaux composants ?</h2>
+                    <p>The <code>ConnectedElement</code> class is designed to interface with a WebSocket server, updating its state and rendering based on incoming data. This class is intended to be extended by other custom elements that implement specific behavior for <code>onclick</code>, <code>onchange</code>, <code>onsubmit</code>, and <code>render</code> methods.</p>
+                    <p>Your new components should be added in the <code>static/components</code> folder and extend from <code>ConnectedElement</code>. See <code>rx-greenlight.js</code> as an example.</p>
+                </section>
+
+                <section id="build-esp32">
+                    <h2>Compiler le projet pour ESP32</h2>
+                    <p>Once all the changes done, you just need to run the following commands:</p>
+                    <ol>
+                        <li>
+                            <strong>Build the project</strong>:
+                            <pre><code>npm run build</code></pre>
+                        </li>
+                    </ol>
+                    
+                    <h3 id="build-summary">Résumé du processus `npm run build`</h3>
+                    
+                    <h4>Rollup Initialization</h4>
+                    <ul>
+                        <li>See <code>package.json</code> scripts section:
+                            <ul>
+                                <li>Rollup reads the configuration from <code>rollup.config.mjs</code> in the <code>rollup-scripts</code> folder</li>
+                                <li>Plugins are loaded, including the custom build plugin</li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                    <h4>1. Custom Build Plugin: Pre-build</h4>
+                    <ul>
+                        <li>Reads the current version from <code>package.json</code></li>
+                    </ul>
+
+                    <h4>2. Rollup Build Process</h4>
+                    <ul>
+                        <li>Bundles JavaScript files</li>
+                        <li>Processes HTML, CSS, and other assets</li>
+                        <li>Applies transformations and optimizations</li>
+                    </ul>
+
+                    <h4>3. Custom Build Plugin: Post-build</h4>
+                    <ul>
+                        <li>Increments the version number</li>
+                        <li>Updates version in:
+                            <ul>
+                                <li>Root <code>index.html</code></li>
+                                <li><code>dist/esp32/index.html</code></li>
+                                <li><code>package.json</code></li>
+                            </ul>
+                        </li>
+                        <li>Updates <code>SOCKET_URL</code> in the built <code>index.js</code>
+                        <br>From <code>const LOCAL_SOCKET_URL = "localhost:5050";</code> -&gt; <code>const SOCKET_URL = "localhost:80" + "/ws";</code>
+                        <br>Make it directly ready for ESP32 usage.</li>
+                    </ul>
+
+                    <h4>4. File Operations</h4>
+                    <ul>
+                        <li>Cleans the Shoelace assets directory</li>
+                        <li>Copies only necessary files to the distribution folder</li>
+                    </ul>
+
+                    <h4>5. Build Completion</h4>
+                    <ul>
+                        <li>Rollup finalizes the build</li>
+                        <li>Output is generated in the <code>dist/esp32</code> directory</li>
+                    </ul>
+                    <p>The custom build plugin ensures version consistency across files and makes necessary updates to the built files. Major updates can be set in the <code>package.json</code>, the build just increments the last third digit.</p>
+                </section>
+
+                <section id="component-docs">
+                    <h2>Documentation des composants Web</h2>
+                    <p>Using web component In <code>config.json</code> file</p>
+
+                    <section id="input-components">
+                        <h3>Composants d'entrée (Rx-)</h3>
+                        
+                        <div class="component-card">
+                            <h4 id="rx-bool-comp">rx-bool <a href="#rx-bool-comp" class="component-anchor" aria-label="Lien direct vers rx-bool">#</a></h4>
+                            <p>A boolean indicator component that displays a switch in a read-only state.</p>
+                            <h5>Propriétés du descripteur :</h5>
+                            <ul>
+                                <li><code>name</code> (string): Label for the switch</li>
+                                <li><code>disable</code> (boolean): Whether the component is disabled</li>
+                            </ul>
+                            <button class="toggle-json-btn" aria-expanded="false">Afficher l'exemple JSON</button>
+                            <pre class="json-example"><code>{
+  "id": 1,
+  "name": "Status",
+  "component": "rx-bool",
+  "disable": false,
+  "hash": 2250121094
+}</code></pre>
+                        </div>
+
+                        <div class="component-card">
+                            <h4 id="rx-indicator-comp">rx-indicator <a href="#rx-indicator-comp" class="component-anchor" aria-label="Lien direct vers rx-indicator">#</a></h4>
+                            <p>A visual indicator that can blink to reflect state with customizable colors.</p>
+                            <h5>Propriétés du descripteur :</h5>
+                            <ul>
+                                <li><code>name</code> (string): Label for the indicator</li>
+                                <li><code>inverse</code> (boolean): Inverts the logic of the value</li>
+                                <li><code>blink</code> (boolean): Enables blinking effect</li>
+                                <li><code>color</code> (string): Custom color for the indicator (hex or valid CSS color)</li>
+                                <li><code>disable</code> (boolean): Whether the component is disabled</li>
+                            </ul>
+                            <button class="toggle-json-btn" aria-expanded="false">Afficher l'exemple JSON</button>
+                            <pre class="json-example"><code>{
+  "id": 7,
+  "name": "Connection Status",
+  "component": "rx-indicator",
+  "blink": true,
+  "color": "#4CAF50",
+  "inverse": false,
+  "disable": false,
+  "hash": 2079543781
+}</code></pre>
+                        </div>
+
+                        <div class="component-card">
+                             <h4 id="rx-label-comp">rx-label <a href="#rx-label-comp" class="component-anchor" aria-label="Lien direct vers rx-label">#</a></h4>
+                            <p>A stylish label for displaying state with dynamic color coding and optional blinking.</p>
+                            <h5>Propriétés du descripteur :</h5>
+                            <ul>
+                                <li><code>name</code> (string): The label text to display</li>
+                                <li><code>state</code> (string): Affects text color - "neutral", "success", "warning", "danger"</li>
+                                <li><code>isBlinking</code> (boolean): Whether the state value should blink</li>
+                                <li><code>disable</code> (boolean): Whether the component is disabled</li>
+                            </ul>
+                            <button class="toggle-json-btn" aria-expanded="false">Afficher l'exemple JSON</button>
+                            <pre class="json-example"><code>{
+  "id": 1,
+  "name": "Current State:",
+  "component": "rx-label",
+  "state": "success",
+  "isBlinking": false,
+  "disable": false,
+  "hash": 1708159393
+}</code></pre>
+                        </div>
+
+                        <div class="component-card">
+                            <h4 id="rx-level-bar-comp">rx-level-bar <a href="#rx-level-bar-comp" class="component-anchor" aria-label="Lien direct vers rx-level-bar">#</a></h4>
+                            <p>A customizable visual indicator for monitoring values within a defined range.</p>
+                            <h5>Propriétés du descripteur :</h5>
+                            <ul>
+                                <li><code>name</code> (string): Title for the level bar</li>
+                                <li><code>orientation</code> (string): "vertical" or "horizontal"</li>
+                                <li><code>barLength</code> (string): Custom length for the bar (e.g., "200px")</li>
+                                <li><code>unit</code> (string): Unit of measurement</li>
+                                <li><code>max</code> (number): Maximum value</li>
+                                <li><code>min</code> (number): Minimum value</li>
+                                <li><code>isLabelAlarmWarningOn</code> (boolean): Display alarm and warning labels</li>
+                                <li><code>alarmHigh</code> (number): High alarm threshold</li>
+                                <li><code>warningHigh</code> (number): High warning threshold</li>
+                                <li><code>consigne</code> (number): Target value/setpoint</li>
+                                <li><code>warningLow</code> (number): Low warning threshold</li>
+                                <li><code>alarmLow</code> (number): Low alarm threshold</li>
+                                <li><code>disable</code> (boolean): Whether the component is disabled</li>
+                            </ul>
+                            <button class="toggle-json-btn" aria-expanded="false">Afficher l'exemple JSON</button>
+                            <pre class="json-example"><code>{
+  "id": 1,
+  "name": "Temperature Level",
+  "component": "rx-level-bar",
+  "orientation": "vertical",
+  "barLength": "200px",
+  "unit": "°C",
+  "max": 100,
+  "min": -100,
+  "isLabelAlarmWarningOn": true,
+  "alarmHigh": 75,
+  "warningHigh": 25,
+  "consigne": 0,
+  "warningLow": -25,
+  "alarmLow": -75,
+  "disable": false,
+  "hash": 1708159391
+}</code></pre>
+                        </div>
+
+                        <div class="component-card">
+                            <h4 id="rx-numeric-comp">rx-numeric <a href="#rx-numeric-comp" class="component-anchor" aria-label="Lien direct vers rx-numeric">#</a></h4>
+                            <p>A read-only numeric display component that can format numbers with configurable decimal places.</p>
+                            <h5>Propriétés du descripteur :</h5>
+                            <ul>
+                                <li><code>name</code> (string): Label for the numeric display</li>
+                                <li><code>disable</code> (boolean): Whether the component is disabled</li>
+                                <li><code>nb_digits_ap</code> (number): Number of decimal places to display (defaults to 2 if not specified)</li>
+                            </ul>
+                            <h5>Comportement :</h5>
+                            <p>If the value is an integer, it will be displayed without decimal places.
+                            If the value is a decimal number, it will be rounded to the specified number of decimal places.
+                            If no value is provided, displays "0".</p>
+                            <button class="toggle-json-btn" aria-expanded="false">Afficher l'exemple JSON</button>
+                            <pre class="json-example"><code>{
+  "id": 1,
+  "name": "Sensor Reading",
+  "component": "rx-numeric",
+  "nb_digits_ap": 3,
+  "disable": false,
+  "hash": 3917250185
+}</code></pre>
+                        </div>
+
+                    </section>
+
+                    <section id="output-components">
+                        <h3>Composants de sortie (Tx-)</h3>
+                        
+                        <div class="component-card">
+                            <h4 id="tx-bool-comp">tx-bool <a href="#tx-bool-comp" class="component-anchor" aria-label="Lien direct vers tx-bool">#</a></h4>
+                            <p>An interactive switch component that sends boolean state changes.</p>
+                            <h5>Propriétés du descripteur :</h5>
+                            <ul>
+                                <li><code>name</code> (string): Label for the switch</li>
+                                <li><code>disable</code> (boolean): Whether the component is disabled</li>
+                            </ul>
+                            <button class="toggle-json-btn" aria-expanded="false">Afficher l'exemple JSON</button>
+                            <pre class="json-example"><code>{
+  "id": 1,
+  "name": "Power Control",
+  "component": "tx-bool",
+  "disable": false,
+  "hash": 3976453248
+}</code></pre>
+                        </div>
+
+                        <div class="component-card">
+                            <h4 id="tx-button-comp">tx-button <a href="#tx-button-comp" class="component-anchor" aria-label="Lien direct vers tx-button">#</a></h4>
+                            <p>A clickable button that sends a state message when clicked.</p>
+                            <h5>Propriétés du descripteur :</h5>
+                            <ul>
+                                <li><code>name</code> (string): Button label</li>
+                                <li><code>color</code> (string): Button color variant ("success", "danger", "neutral", "warning", "primary")</li>
+                                <li><code>disable</code> (boolean): Whether the component is disabled</li>
+                            </ul>
+                            <button class="toggle-json-btn" aria-expanded="false">Afficher l'exemple JSON</button>
+                            <pre class="json-example"><code>{
+  "id": 1,
+  "name": "Start Process",
+  "component": "tx-button",
+  "color": "success",
+  "disable": false,
+  "hash": 4029808943
+}</code></pre>
+                        </div>
+
+                        <div class="component-card">
+                             <h4 id="tx-button-hold-comp">tx-button-hold <a href="#tx-button-hold-comp" class="component-anchor" aria-label="Lien direct vers tx-button-hold">#</a></h4>
+                            <p>A button that sends different states when held down and released.</p>
+                            <h5>Propriétés du descripteur :</h5>
+                            <ul>
+                                <li><code>name</code> (string): Button label</li>
+                                <li><code>color</code> (string): Button color variant ("success", "danger", "neutral", "warning", "primary")</li>
+                                <li><code>disable</code> (boolean): Whether the component is disabled</li>
+                            </ul>
+                            <button class="toggle-json-btn" aria-expanded="false">Afficher l'exemple JSON</button>
+                            <pre class="json-example"><code>{
+  "id": 1,
+  "name": "Emergency Override",
+  "component": "tx-button-hold",
+  "color": "warning",
+  "disable": false,
+  "hash": 4029808944
+}</code></pre>
+                        </div>
+
+                        <div class="component-card">
+                            <h4 id="tx-dropdown-comp">tx-dropdown <a href="#tx-dropdown-comp" class="component-anchor" aria-label="Lien direct vers tx-dropdown">#</a></h4>
+                            <p>A dropdown menu component for selecting from predefined options.</p>
+                            <h5>Propriétés du descripteur :</h5>
+                            <ul>
+                                <li><code>name</code> (string): Dropdown label</li>
+                                <li><code>items</code> (array): List of selectable options</li>
+                                <li><code>disable</code> (boolean): Whether the component is disabled</li>
+                            </ul>
+                            <button class="toggle-json-btn" aria-expanded="false">Afficher l'exemple JSON</button>
+                            <pre class="json-example"><code>{
+  "id": 1,
+  "name": "Select Mode",
+  "component": "tx-dropdown",
+  "items": ["Mode 1", "Mode 2", "Mode 3"],
+  "disable": false,
+  "hash": 1708159392
+}</code></pre>
+                        </div>
+
+                        <div class="component-card">
+                             <h4 id="tx-numeric-comp">tx-numeric <a href="#tx-numeric-comp" class="component-anchor" aria-label="Lien direct vers tx-numeric">#</a></h4>
+                            <p>A numeric input field with validation and limits.</p>
+                            <h5>Propriétés du descripteur :</h5>
+                            <ul>
+                                <li><code>name</code> (string): Label for the input</li>
+                                <li><code>high</code> (number): Upper limit for input value</li>
+                                <li><code>low</code> (number): Lower limit for input value</li>
+                                <li><code>disable</code> (boolean): Whether the component is disabled</li>
+                            </ul>
+                            <button class="toggle-json-btn" aria-expanded="false">Afficher l'exemple JSON</button>
+                            <pre class="json-example"><code>{
+  "id": 1,
+  "name": "Set Temperature",
+  "component": "tx-numeric",
+  "high": 100,
+  "low": 0,
+  "disable": false,
+  "hash": 3917250186
+}</code></pre>
+                        </div>
+
+                        <div class="component-card">
+                            <h4 id="tx-qr-comp">tx-qr <a href="#tx-qr-comp" class="component-anchor" aria-label="Lien direct vers tx-qr">#</a></h4>
+                            <p>A QR code scanner component with camera support.</p>
+                            <h5>Propriétés du descripteur :</h5>
+                            <ul>
+                                <li><code>name</code> (string): Button label</li>
+                                <li><code>color</code> (string): Button color variant</li>
+                                <li><code>disable</code> (boolean): Whether the component is disabled</li>
+                            </ul>
+                            <button class="toggle-json-btn" aria-expanded="false">Afficher l'exemple JSON</button>
+                            <pre class="json-example"><code>{
+  "id": 1,
+  "name": "Scan Code",
+  "component": "tx-qr",
+  "color": "primary",
+  "disable": false,
+  "hash": 1516240741
+}</code></pre>
+                        </div>
+
+                        <div class="component-card">
+                            <h4 id="tx-slider-comp">tx-slider <a href="#tx-slider-comp" class="component-anchor" aria-label="Lien direct vers tx-slider">#</a></h4>
+                            <p>A sliding control for numeric input.</p>
+                            <h5>Propriétés du descripteur :</h5>
+                            <ul>
+                                <li><code>name</code> (string): Slider label</li>
+                                <li><code>high</code> (number): Maximum value</li>
+                                <li><code>low</code> (number): Minimum value</li>
+                                <li><code>value</code> (number): Initial value</li>
+                                <li><code>disable</code> (boolean): Whether the component is disabled</li>
+                            </ul>
+                            <button class="toggle-json-btn" aria-expanded="false">Afficher l'exemple JSON</button>
+                            <pre class="json-example"><code>{
+  "id": 1,
+  "name": "Volume Control",
+  "component": "tx-slider",
+  "high": 100,
+  "low": 0,
+  "value": 50,
+  "disable": false,
+  "hash": 3917250187
+}</code></pre>
+                        </div>
+
+                        <div class="component-card">
+                             <h4 id="tx-string-comp">tx-string <a href="#tx-string-comp" class="component-anchor" aria-label="Lien direct vers tx-string">#</a></h4>
+                            <p>A text input field with length validation.</p>
+                            <h5>Propriétés du descripteur :</h5>
+                            <ul>
+                                <li><code>name</code> (string): Label for the input</li>
+                                <li><code>maxLength</code> (number): Maximum string length</li>
+                                <li><code>minLength</code> (number): Minimum string length</li>
+                                <li><code>disable</code> (boolean): Whether the component is disabled</li>
+                            </ul>
+                            <button class="toggle-json-btn" aria-expanded="false">Afficher l'exemple JSON</button>
+                            <pre class="json-example"><code>{
+  "id": 1,
+  "name": "User Input",
+  "component": "tx-string",
+  "maxLength": 50,
+  "minLength": 3,
+  "disable": false,
+  "hash": 1708159394
+}</code></pre>
+                        </div>
+                    </section>
+
+                    <section id="container-components">
+                        <h3>Composants conteneurs</h3>
+                        
+                        <div class="component-card">
+                             <h4 id="hw-dock-comp">hw-dock <a href="#hw-dock-comp" class="component-anchor" aria-label="Lien direct vers hw-dock">#</a></h4>
+                            <p>A container component for grouping related controls.</p>
+                            <h5>Propriétés du descripteur :</h5>
+                            <ul>
+                                <li><code>name</code> (string): Section title</li>
+                                <li><code>type</code> (string): Type of dock</li>
+                                <li><code>children</code> (array): Array of child components</li>
+                            </ul>
+                            <button class="toggle-json-btn" aria-expanded="false">Afficher l'exemple JSON</button>
+                            <pre class="json-example"><code>{
+  "name": "Control Panel",
+  "hardware": "Kincony_KC868_A8S",
+  "component": "hw-dock",
+  "type": "ModbusWriteHoldingRegister",
+  "children": [
+    {
+      "id": 1,
+      "name": "Status",
+      "component": "rx-label",
+      "hash": 1708159393
+    }
+  ]
+}</code></pre>
+                        </div>
+
+                        <div class="component-card">
+                            <h4 id="hw-section-comp">hw-section <a href="#hw-section-comp" class="component-anchor" aria-label="Lien direct vers hw-section">#</a></h4>
+                            <p>A collapsible section component with a toggle button.</p>
+                            <h5>Propriétés du descripteur :</h5>
+                            <ul>
+                                <li><code>name</code> (string): Section title</li>
+                                <li><code>type</code> (string): Type of section</li>
+                                <li><code>children</code> (array): Array of child components</li>
+                            </ul>
+                            <button class="toggle-json-btn" aria-expanded="false">Afficher l'exemple JSON</button>
+                            <pre class="json-example"><code>{
+  "name": "System Controls",
+  "hardware": "N4D3E12",
+  "component": "hw-section",
+  "type": "ModbusWriteHoldingRegister",
+  "children": [
+    {
+      "id": 13,
+      "name": "Status Display",
+      "component": "rx-label",
+      "hash": 1516240741
+    }
+  ]
+}</code></pre>
+                        </div>
+                    </section>
+                </section>
+            </main>
+        </div>
+        <footer class="main-footer">
+            <p>Généré à partir du fichier README.md &bull; Borne Universelle HMI</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Toggle JSON examples
+            const toggleButtons = document.querySelectorAll('.toggle-json-btn');
+            toggleButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const preElement = button.nextElementSibling;
+                    if (preElement && preElement.classList.contains('json-example')) {
+                        const isExpanded = button.getAttribute('aria-expanded') === 'true';
+                        if (preElement.classList.contains('show')) {
+                            preElement.classList.remove('show');
+                            button.textContent = "Afficher l'exemple JSON";
+                            button.setAttribute('aria-expanded', 'false');
+                        } else {
+                            preElement.classList.add('show');
+                            button.textContent = "Masquer l'exemple JSON";
+                            button.setAttribute('aria-expanded', 'true');
+                        }
+                    }
+                });
+            });
+
+            // Active state for ToC links based on scroll
+            const mainSections = document.querySelectorAll('main section > h2, main section > h3, main section > h4[id]');
+            const tocLinks = document.querySelectorAll('#toc ul li a');
+            
+            const onScroll = () => {
+                let currentSectionId = '';
+                mainSections.forEach(section => {
+                    const sectionTop = section.offsetTop - 100; // Adjust offset as needed
+                     // Check if section is an H2 (main section title) or an H3/H4 inside component-docs
+                    let sectionTitleElement = section;
+                    if (section.tagName === 'H3' || section.tagName === 'H4') { // Sub-section titles
+                        // Find parent section with ID for component group (e.g., #input-components)
+                        // or use the h4's own ID if it's a specific component.
+                        const parentSectionWithId = section.closest('section[id]');
+                        if(section.id && section.id.endsWith('-comp')) { // Specific component like rx-bool-comp
+                           sectionTitleElement = section;
+                        } else if (parentSectionWithId) {
+                           sectionTitleElement = parentSectionWithId.querySelector('h2, h3'); // or just parentSectionWithId.id
+                        }
+                    }
+
+
+                    if (window.scrollY >= sectionTop) {
+                        if (sectionTitleElement.id) {
+                           currentSectionId = sectionTitleElement.id;
+                        } else if (section.id) { // Fallback for sections that are H2s
+                           currentSectionId = section.id;
+                        }
+                    }
+                });
+
+                tocLinks.forEach(link => {
+                    link.classList.remove('active');
+                    // Match href without the '#'
+                    if (link.getAttribute('href').substring(1) === currentSectionId) {
+                        link.classList.add('active');
+                        // Optional: If ToC is scrollable, scroll active link into view
+                        // link.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }
+                });
+            };
+
+            window.addEventListener('scroll', onScroll);
+            onScroll(); // Call once on load
+        });
+    </script>
+</body>
+</html>
