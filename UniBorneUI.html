@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interface de Contrôle ESP32</title>
+    <style>
+        body {
+            background-color: #2c2c2c;
+            color: #e0e0e0;
+            font-family: sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            background-color: #3c3c3c;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #555;
+            margin-bottom: 20px;
+        }
+
+        header .tabs button {
+            background-color: transparent;
+            color: #e0e0e0;
+            border: none;
+            padding: 10px 15px;
+            margin-right: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        header .tabs button.active, header .tabs button:hover {
+            background-color: #555;
+        }
+
+        header .version {
+            font-size: 14px;
+            background-color: #007bff;
+            color: white;
+            padding: 5px 8px;
+            border-radius: 4px;
+        }
+
+        .section {
+            background-color: #4a4a4a;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .section h2 {
+            margin-top: 0;
+            color: #e0e0e0;
+            border-bottom: 1px solid #666;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+        }
+
+        .controls, .status-indicators, .mode-selection {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .control-item, .status-item, .mode-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 120px;
+            position: relative; /* For tooltip positioning */
+        }
+
+        .control-item button, .control-item .status-display {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            min-width: 120px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        .control-item button:hover {
+            transform: scale(1.05);
+        }
+
+        .btn-green { background-color: #28a745; color: white; }
+        .btn-yellow { background-color: #ffc107; color: #333; }
+        .btn-red { background-color: #dc3545; color: white; }
+
+        .status-display {
+            background-color: #5a5a5a;
+            color: #e0e0e0;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 14px;
+            text-align: center;
+            min-height: 40px; /* Ensure consistent height */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .indicator {
+            width: 30px;
+            height: 30px;
+            background-color: #6c757d; /* Default off color */
+            border-radius: 50%;
+            margin-bottom: 8px;
+            border: 2px solid #888;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.3);
+        }
+
+        .indicator.active {
+            background-color: #28a745; /* Green for active */
+            box-shadow: 0 0 10px #28a745, inset 0 0 5px rgba(0,0,0,0.3);
+        }
+        .indicator.alarm {
+            background-color: #dc3545; /* Red for alarm */
+            box-shadow: 0 0 10px #dc3545, inset 0 0 5px rgba(0,0,0,0.3);
+        }
+
+
+        .status-item label, .mode-item label {
+            font-size: 12px;
+            margin-top: 5px;
+            color: #ccc;
+        }
+        .status-item .indicator + label { /* Label for indicator lights */
+            margin-top: 0;
+            margin-bottom: 5px;
+        }
+
+
+        .input-field {
+            background-color: #5a5a5a;
+            border: 1px solid #666;
+            color: #e0e0e0;
+            padding: 8px;
+            border-radius: 4px;
+            width: 80px;
+            text-align: center;
+        }
+
+        /* Toggle Switch Styles */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+            margin-bottom: 8px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #6c757d;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #007bff; /* Blue for active toggle */
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Tooltip Styles */
+        .tooltip {
+            visibility: hidden;
+            width: 200px;
+            background-color: #1a1a1a;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%; /* Position above the element */
+            left: 50%;
+            margin-left: -100px; /* Center the tooltip */
+            opacity: 0;
+            transition: opacity 0.3s, visibility 0.3s;
+            font-size: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        }
+
+        .tooltip::after { /* Arrow */
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #1a1a1a transparent transparent transparent;
+        }
+
+        [data-tooltip]:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <div class="tabs">
+                <button class="active" data-tooltip-text="Affiche la page principale de contrôle et de statut de l'équipement.">Page principale <span class="tooltip">Affiche la page principale de contrôle et de statut de l'équipement.</span></button>
+                <button data-tooltip-text="Permet de visualiser les données de fonctionnement en temps réel, graphiques et logs. (Fonctionnalité non implémentée dans cette démo)">Monitoring <span class="tooltip">Permet de visualiser les données de fonctionnement en temps réel, graphiques et logs. (Fonctionnalité non implémentée dans cette démo)</span></button>
+                <button data-tooltip-text="Permet de configurer les paramètres de l'ESP32, les nodes (E/S, Modbus, Servo), les paramètres réseau (WiFi) via les fichiers JSON. (Fonctionnalité non implémentée dans cette démo)">Configuration <span class="tooltip">Permet de configurer les paramètres de l'ESP32, les nodes (E/S, Modbus, Servo), les paramètres réseau (WiFi) via les fichiers JSON. (Fonctionnalité non implémentée dans cette démo)</span></button>
+            </div>
+            <div class="version" data-tooltip-text="Indique la version actuelle du firmware de l'ESP32.">Version 1.1.23 <span class="tooltip">Indique la version actuelle du firmware de l'ESP32.</span></div>
+        </header>
+
+        <div class="section">
+            <h2>Opération</h2>
+            <div class="controls">
+                <div class="control-item" data-tooltip-text="Lance le cycle de fonctionnement automatisé défini dans la configuration de l'ESP32.">
+                    <button class="btn-green">Départ cycle</button>
+                    <span class="tooltip">Lance le cycle de fonctionnement automatisé défini dans la configuration de l'ESP32.</span>
+                </div>
+                <div class="control-item" data-tooltip-text="Met en pause le cycle de fonctionnement en cours. L'état actuel est conservé pour une reprise ultérieure.">
+                    <button class="btn-yellow">Pause</button>
+                    <span class="tooltip">Met en pause le cycle de fonctionnement en cours. L'état actuel est conservé pour une reprise ultérieure.</span>
+                </div>
+                <div class="control-item" data-tooltip-text="Arrête immédiatement le cycle de fonctionnement en cours. Peut nécessiter une réinitialisation pour redémarrer.">
+                    <button class="btn-red">Arrêt cycle</button>
+                    <span class="tooltip">Arrête immédiatement le cycle de fonctionnement en cours. Peut nécessiter une réinitialisation pour redémarrer.</span>
+                </div>
+                <div class="control-item" data-tooltip-text="Réinitialise les alarmes et défauts enregistrés par le système (ex: alarme servo, erreur de communication Modbus).">
+                    <button class="btn-yellow">Reset défauts</button>
+                    <span class="tooltip">Réinitialise les alarmes et défauts enregistrés par le système (ex: alarme servo, erreur de communication Modbus).</span>
+                </div>
+                <div class="control-item" data-tooltip-text="Affiche l'état actuel de la machine ou de l'automatisation (ex: En attente, En cycle, En pause, Erreur).">
+                    <div class="status-display">État machine<br>En attente</div>
+                    <span class="tooltip">Affiche l'état actuel de la machine ou de l'automatisation (ex: En attente, En cycle, En pause, Erreur).</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Statut</h2>
+            <div class="status-indicators">
+                <div class="status-item" data-tooltip-text="Indicateur d'alarme pour un servomoteur. S'allume en rouge si un défaut est détecté sur un des servomoteurs connectés (via Modbus ou directement).">
+                    <div class="indicator"></div>
+                    <label>Alarme Servo</label>
+                    <span class="tooltip">Indicateur d'alarme pour un servomoteur. S'allume en rouge si un défaut est détecté sur un des servomoteurs connectés (via Modbus ou directement).</span>
+                </div>
+                <div class="status-item" data-tooltip-text="Indicateur d'état de l'arrêt d'urgence (E-Stop). S'allume (souvent en rouge) si le bouton d'arrêt d'urgence physique est activé, coupant l'alimentation des actionneurs.">
+                    <div class="indicator"></div>
+                    <label>E-Stop</label>
+                    <span class="tooltip">Indicateur d'état de l'arrêt d'urgence (E-Stop). S'allume (souvent en rouge) si le bouton d'arrêt d'urgence physique est activé, coupant l'alimentation des actionneurs.</span>
+                </div>
+                <div class="status-item" data-tooltip-text="Indique si un cylindre (pneumatique ou hydraulique) est en position ouverte. L'état est lu depuis une entrée isolée connectée à un capteur de position.">
+                    <div class="indicator active"></div>
+                    <label>Cylindre Ouvert</label>
+                    <span class="tooltip">Indique si un cylindre (pneumatique ou hydraulique) est en position ouverte. L'état est lu depuis une entrée isolée connectée à un capteur de position.</span>
+                </div>
+                 <div class="status-item" data-tooltip-text="Affiche la position actuelle d'un axe motorisé, typiquement un servomoteur. La valeur est lue via Modbus ou une entrée codeur.">
+                    <label for="current-pos">Position actuelle</label>
+                    <input type="text" id="current-pos" class="input-field" value="0" readonly>
+                     <span class="tooltip">Affiche la position actuelle d'un axe motorisé, typiquement un servomoteur. La valeur est lue via Modbus ou une entrée codeur.</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Mode de fonctionnement</h2>
+            <div class="mode-selection">
+                <div class="mode-item" data-tooltip-text="Sélectionne le type de matériau à traiter (Aluminium ou Acier). Ce choix peut influencer les paramètres du cycle (vitesse, force, etc.) gérés par l'ESP32.">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="material-toggle">
+                        <span class="slider"></span>
+                    </label>
+                    <label for="material-toggle">Alu/Acier</label>
+                    <span class="tooltip">Sélectionne le type de matériau à traiter (Aluminium ou Acier). Ce choix peut influencer les paramètres du cycle (vitesse, force, etc.) gérés par l'ESP32.</span>
+                </div>
+                <div class="mode-item" data-tooltip-text="Permet de choisir entre un mode de fonctionnement simple face ou double face pour une pièce. L'ESP32 adaptera la séquence d'opérations.">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="face-toggle">
+                        <span class="slider"></span>
+                    </label>
+                    <label for="face-toggle">Simple/Double Face</label>
+                    <span class="tooltip">Permet de choisir entre un mode de fonctionnement simple face ou double face pour une pièce. L'ESP32 adaptera la séquence d'opérations.</span>
+                </div>
+                <div class="mode-item" data-tooltip-text="Définit un mode de fonctionnement spécifique, par exemple 'Propre' pour un cycle standard et 'Sale' pour un cycle incluant un nettoyage ou adapté à des pièces sales.">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="condition-toggle">
+                        <span class="slider"></span>
+                    </label>
+                    <label for="condition-toggle">Propre/Sale</label>
+                    <span class="tooltip">Définit un mode de fonctionnement spécifique, par exemple 'Propre' pour un cycle standard et 'Sale' pour un cycle incluant un nettoyage ou adapté à des pièces sales.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Script pour les tooltips (déjà géré par CSS :hover, mais on peut l'améliorer ou le rendre dynamique si besoin)
+    // Pour l'instant, le CSS fait le travail pour afficher les tooltips.
+    // On pourrait ajouter du JS pour un positionnement plus dynamique si la page est complexe.
+
+    // Exemple d'interactivité pour les indicateurs (simulation)
+    const indicators = document.querySelectorAll('.indicator');
+    indicators.forEach(indicator => {
+        // Simuler un changement d'état pour l'exemple
+        if (indicator.nextElementSibling && indicator.nextElementSibling.textContent === 'Alarme Servo') {
+            // Simuler une alarme après un délai
+            setTimeout(() => {
+                // indicator.classList.add('alarm');
+                // Pour correspondre à l'image, laissons-le éteint par défaut
+            }, 2000);
+        }
+    });
+
+    // Simuler un clic sur les boutons d'opération pour changer l'état machine
+    const departButton = document.querySelector('.btn-green');
+    const pauseButton = document.querySelectorAll('.btn-yellow')[0]; // Premier bouton jaune (Pause)
+    const arretButton = document.querySelector('.btn-red');
+    const resetButton = document.querySelectorAll('.btn-yellow')[1]; // Second bouton jaune (Reset défauts)
+    const etatMachineDisplay = document.querySelector('.status-display');
+
+    if (departButton) {
+        departButton.addEventListener('click', () => {
+            etatMachineDisplay.innerHTML = 'État machine<br>En cycle';
+            alert('Départ cycle lancé !');
+        });
+    }
+    if (pauseButton) {
+        pauseButton.addEventListener('click', () => {
+            etatMachineDisplay.innerHTML = 'État machine<br>En pause';
+            alert('Cycle mis en pause.');
+        });
+    }
+    if (arretButton) {
+        arretButton.addEventListener('click', () => {
+            etatMachineDisplay.innerHTML = 'État machine<br>Arrêté';
+            alert('Cycle arrêté !');
+        });
+    }
+     if (resetButton) {
+        resetButton.addEventListener('click', () => {
+            etatMachineDisplay.innerHTML = 'État machine<br>En attente';
+            // Simuler la désactivation des alarmes
+            const alarmeServo = document.querySelector('.status-item[data-tooltip-text*="Alarme Servo"] .indicator');
+            if (alarmeServo) alarmeServo.classList.remove('alarm');
+            alert('Défauts réinitialisés. Aucune alarme active simulée pour l\'instant.');
+        });
+    }
+
+
+    // Ajout des textes de tooltip dynamiquement aux éléments ayant l'attribut data-tooltip-text
+    // La structure HTML inclut déjà des span.tooltip, mais cette approche JS est plus maintenable
+    // si on veut charger les tooltips depuis une source de données ou les modifier.
+    // Pour cette version, nous allons nous assurer que les span.tooltip sont correctement gérés.
+
+    const tooltipElements = document.querySelectorAll('[data-tooltip-text]');
+    tooltipElements.forEach(el => {
+        // On s'assure que l'élément a un conteneur relatif si ce n'est pas déjà un item.
+        if (!el.classList.contains('control-item') && !el.classList.contains('status-item') && !el.classList.contains('mode-item') && !el.classList.contains('tabs') && !el.classList.contains('version')) {
+            // Pour les boutons de l'entête par exemple, il faut que leur parent direct ait le position: relative ou eux-mêmes
+            // Pour simplifier, on s'assure que le tooltip est bien un enfant direct pour le ciblage CSS.
+        }
+        // L'HTML a déjà le span.tooltip, donc pas besoin de le créer ici.
+        // On pourrait ajouter du JS pour afficher/cacher si on ne veut pas utiliser :hover.
+    });
+});
+</script>
+
+</body>
+</html>
