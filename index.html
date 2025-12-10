@@ -3,1182 +3,1758 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RoboPro Académie - Automatisation & Robotique</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <title>UniBorne | Solution PLC Nouvelle Génération</title>
+    <meta name="description" content="UniBorne - Solution PLC modulaire basée sur ESP32. Automatisez intelligemment, simplifiez radicalement. 70-80% moins cher qu'un automate traditionnel.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <style>
+        :root {
+            --primary: #0a0f1c;
+            --secondary: #111827;
+            --accent: #22d3ee;
+            --accent-glow: rgba(34, 211, 238, 0.4);
+            --highlight: #f97316;
+            --success: #10b981;
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --text-dim: #64748b;
+            --border: rgba(148, 163, 184, 0.1);
+            --card-bg: rgba(17, 24, 39, 0.6);
+            --gradient-1: linear-gradient(135deg, #0a0f1c 0%, #1e293b 100%);
+            --gradient-accent: linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%);
+            --font-display: 'Outfit', sans-serif;
+            --font-mono: 'Space Mono', monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #1a202c; /* Gris-bleu foncé */
-            color: #e2e8f0; /* Gris clair */
-        }
-        .font-orbitron {
-            font-family: 'Orbitron', sans-serif;
-        }
-        .content-section {
-            display: none;
-        }
-        .content-section.active {
-            display: block;
-        }
-        .module-card {
-            background-color: #2d3748; /* Gris-bleu moyen */
-            border: 1px solid #4a5568; /* Gris */
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .module-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgba(74, 85, 104, 0.5), 0 4px 6px -2px rgba(74, 85, 104, 0.3);
-        }
-        .interactive-list-item, .interactive-card-item { /* Classe générique pour les éléments cliquables */
-            cursor: pointer;
-            transition: background-color 0.2s ease, border-color 0.2s ease;
-        }
-        .interactive-list-item:hover, .interactive-list-item.active,
-        .interactive-card-item:hover, .interactive-card-item.active {
-            background-color: #4a5568; /* Gris */
-            border-color: #63b3ed; /* Bleu clair pour la bordure active/survolée */
-        }
-        .button-primary {
-            background-color: #4299e1; /* Bleu */
-            color: white;
-            transition: background-color 0.3s ease;
-        }
-        .button-primary:hover {
-            background-color: #2b6cb0; /* Bleu plus foncé */
-        }
-        /* Scrollbar personnalisé */
-        .details-content-area::-webkit-scrollbar { /* Classe générique pour les zones de détails */
-            width: 8px;
-        }
-        .details-content-area::-webkit-scrollbar-track {
-            background: #2d3748; /* Gris-bleu moyen */
-            border-radius: 10px;
-        }
-        .details-content-area::-webkit-scrollbar-thumb {
-            background-color: #4a5568; /* Gris */
-            border-radius: 10px;
-            border: 2px solid #2d3748; /* Gris-bleu moyen pour créer un espacement */
-        }
-        .details-content-area::-webkit-scrollbar-thumb:hover {
-            background-color: #718096; /* Gris plus clair */
+            font-family: var(--font-display);
+            background: var(--primary);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
         }
 
-        /* Styles menu mobile */
-        .mobile-menu {
-            display: none;
-        }
-        @media (max-width: 768px) {
-            .desktop-nav {
-                display: none;
-            }
-            .mobile-menu-button-container {
-                display: flex;
-            }
-            .module-tabs-nav { /* Permettre le défilement horizontal des onglets sur mobile */
-                overflow-x: auto;
-                white-space: nowrap; /* Empêcher le retour à la ligne des onglets */
-                -webkit-overflow-scrolling: touch; /* Défilement fluide sur iOS */
-            }
-            .module-tabs-nav::-webkit-scrollbar { /* Cacher la scrollbar pour l'esthétique */
-                display: none;
-            }
-            .module-tabs-nav > button { /* S'assurer que les boutons ne rétrécissent pas trop */
-                flex-shrink: 0;
-            }
-        }
-         @media (min-width: 769px) {
-            .mobile-menu-button-container {
-                display: none;
-            }
-        }
-        .logic-diagram-card, .toolbox-card, .norm-card, .fabricant-card, .connectique-card, .calculator-card { /* Style partagé pour les cartes de contenu */
-            background-color: #2d3748; /* Gris-bleu moyen */
-            border: 1px solid #4a5568; /* Gris */
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-        .table-container {
-            overflow-x: auto;
-        }
-        table {
+        /* Noise texture overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            border: 1px solid #4a5568; /* Gris */
-            padding: 0.75rem;
-            text-align: left;
-        }
-        th {
-            background-color: #2c5282; /* Bleu foncé */
-            color: #e2e8f0; /* Gris clair */
-        }
-        td {
-            background-color: #2d3748; /* Gris-bleu moyen */
-        }
-        .fabricant-logo {
-            max-height: 50px; /* Ajuster la hauteur max des logos */
-            width: auto;
-            margin-bottom: 0.75rem; /* espace sous le logo */
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 1000;
         }
 
-        /* Styles pour Ladder et GRAFCET interactifs */
-        .ladder-diagram, .grafcet-diagram {
-            background-color: #374151; /* Gris un peu plus clair */
-            padding: 1rem;
-            border-radius: 0.375rem;
-            margin-top: 1rem;
-            min-height: 150px;
+        /* Grid pattern background */
+        .grid-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(34, 211, 238, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(34, 211, 238, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 1.5rem 3rem;
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            border: 2px dashed #4a5568;
+            background: rgba(10, 15, 28, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            transition: all 0.3s ease;
         }
-        .ladder-element, .grafcet-element {
-            cursor: pointer;
-            transition: transform 0.1s ease-out, fill 0.2s ease, stroke 0.2s ease;
-            margin: 5px;
+
+        .logo {
+            font-family: var(--font-mono);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-decoration: none;
+            letter-spacing: -1px;
         }
-        .ladder-element:hover, .grafcet-element:hover {
-            transform: scale(1.1);
+
+        .logo span {
+            color: var(--text);
         }
-        .ladder-info, .grafcet-info {
-            margin-top: 1rem;
-            padding: 0.75rem;
-            background-color: #1f2937; /* Gris encore plus foncé */
-            border-radius: 0.375rem;
-            text-align: center;
-            color: #9ca3af; /* Gris moyen-clair */
-            min-height: 50px;
-        }
-        .grafcet-step {
-            border: 2px solid #9ca3af;
-            width: 60px;
-            height: 40px;
+
+        .nav-links {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 5px;
-            margin-top: 5px;
+            gap: 2.5rem;
+            list-style: none;
         }
-        .grafcet-transition {
-            width: 40px;
-            height: 2px;
-            background-color: #9ca3af;
-            margin-bottom: 5px;
-            margin-top: 5px;
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.3s ease;
             position: relative;
         }
-        .grafcet-transition-label {
+
+        .nav-links a::after {
+            content: '';
             position: absolute;
-            left: 110%;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 0.8rem;
-            color: #9ca3af;
-            white-space: nowrap;
-        }
-        .grafcet-line {
-            width: 2px;
-            height: 20px;
-            background-color: #9ca3af;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s ease;
         }
 
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-cta {
+            background: var(--gradient-accent);
+            color: var(--primary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px var(--accent-glow);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 8rem 3rem 4rem;
+            overflow: hidden;
+        }
+
+        .hero-glow {
+            position: absolute;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+            top: -200px;
+            right: -200px;
+            pointer-events: none;
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        .hero-glow-2 {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(249, 115, 22, 0.2) 0%, transparent 70%);
+            bottom: -100px;
+            left: -100px;
+            pointer-events: none;
+            animation: pulse 10s ease-in-out infinite reverse;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.1); }
+        }
+
+        .hero-content {
+            max-width: 900px;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(34, 211, 238, 0.1);
+            border: 1px solid rgba(34, 211, 238, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            color: var(--accent);
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .hero-badge::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: blink 2s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 0.8s ease 0.1s both;
+        }
+
+        .hero h1 .highlight {
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-tagline {
+            font-size: 1.4rem;
+            color: var(--text-muted);
+            margin-bottom: 3rem;
+            font-weight: 300;
+            animation: fadeInUp 0.8s ease 0.2s both;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 4rem;
+            margin-bottom: 3rem;
+            animation: fadeInUp 0.8s ease 0.3s both;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-family: var(--font-mono);
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            animation: fadeInUp 0.8s ease 0.4s both;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient-accent);
+            color: var(--primary);
+            box-shadow: 0 4px 30px var(--accent-glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 50px var(--accent-glow);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Section styles */
+        section {
+            padding: 8rem 3rem;
+            position: relative;
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 5rem;
+        }
+
+        .section-label {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        /* Problem Section */
+        .problems {
+            background: var(--gradient-1);
+        }
+
+        .problems-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .problem-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .problem-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--highlight);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .problem-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(249, 115, 22, 0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .problem-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .problem-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .problem-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+            color: var(--text);
+        }
+
+        .problem-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Solution Section */
+        .solution {
+            background: var(--primary);
+        }
+
+        .solution-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .solution-text h3 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .solution-text p {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .solution-features {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--card-bg);
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover {
+            border-color: var(--accent);
+            transform: translateX(10px);
+        }
+
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(34, 211, 238, 0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .feature-text {
+            font-weight: 500;
+        }
+
+        .solution-visual {
+            position: relative;
+        }
+
+        .code-block {
+            background: var(--secondary);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .code-block::before {
+            content: 'config.json';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 0.75rem 1.5rem;
+            background: rgba(0, 0, 0, 0.3);
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .code-block pre {
+            margin-top: 1.5rem;
+            color: var(--text-muted);
+            white-space: pre-wrap;
+            line-height: 1.8;
+        }
+
+        .code-block .key {
+            color: var(--accent);
+        }
+
+        .code-block .value {
+            color: var(--highlight);
+        }
+
+        .code-block .string {
+            color: var(--success);
+        }
+
+        /* Architecture Section */
+        .architecture {
+            background: var(--gradient-1);
+        }
+
+        .arch-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .arch-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2.5rem;
+            text-align: center;
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .arch-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+        }
+
+        .arch-card.featured {
+            background: linear-gradient(135deg, rgba(34, 211, 238, 0.1) 0%, rgba(6, 182, 212, 0.05) 100%);
+            border-color: rgba(34, 211, 238, 0.3);
+            transform: scale(1.05);
+        }
+
+        .arch-card.featured:hover {
+            transform: scale(1.05) translateY(-10px);
+        }
+
+        .arch-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(34, 211, 238, 0.1);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2.5rem;
+        }
+
+        .arch-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+        }
+
+        .arch-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .arch-specs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        .spec-tag {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.4rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            border: 1px solid var(--border);
+        }
+
+        /* Components Section */
+        .components {
+            background: var(--primary);
+        }
+
+        .components-showcase {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .component-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .component-chip {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: all 0.3s ease;
+            cursor: default;
+        }
+
+        .component-chip:hover {
+            border-color: var(--accent);
+            transform: scale(1.05);
+            box-shadow: 0 10px 40px rgba(34, 211, 238, 0.1);
+        }
+
+        .component-chip .icon {
+            font-size: 1.3rem;
+        }
+
+        .component-chip .label {
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .component-chip .type {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--accent);
+            background: rgba(34, 211, 238, 0.1);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        /* Advantages Section */
+        .advantages {
+            background: var(--gradient-1);
+        }
+
+        .adv-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .adv-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2.5rem;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .adv-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .adv-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(34, 211, 238, 0.3);
+        }
+
+        .adv-card:hover::after {
+            opacity: 0.3;
+        }
+
+        .adv-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .adv-icon {
+            font-size: 2rem;
+        }
+
+        .adv-metric {
+            font-family: var(--font-mono);
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            line-height: 1;
+        }
+
+        .adv-metric-label {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .adv-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.75rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .adv-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Comparison Table */
+        .comparison {
+            background: var(--primary);
+        }
+
+        .comparison-table {
+            max-width: 900px;
+            margin: 0 auto;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .table-header {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            background: var(--secondary);
+            padding: 1.5rem 2rem;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .table-header .col:nth-child(2) {
+            color: var(--accent);
+            text-align: center;
+        }
+
+        .table-header .col:nth-child(3) {
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        .table-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            padding: 1.25rem 2rem;
+            border-bottom: 1px solid var(--border);
+            transition: background 0.3s ease;
+        }
+
+        .table-row:last-child {
+            border-bottom: none;
+        }
+
+        .table-row:hover {
+            background: rgba(34, 211, 238, 0.03);
+        }
+
+        .table-row .col {
+            display: flex;
+            align-items: center;
+        }
+
+        .table-row .col:nth-child(2),
+        .table-row .col:nth-child(3) {
+            justify-content: center;
+            text-align: center;
+        }
+
+        .check {
+            color: var(--success);
+            font-size: 1.2rem;
+        }
+
+        .neutral {
+            color: var(--text-dim);
+        }
+
+        /* Use Case Section */
+        .usecase {
+            background: var(--gradient-1);
+        }
+
+        .usecase-content {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .usecase-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .usecase-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--gradient-accent);
+        }
+
+        .usecase-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            color: var(--success);
+            margin-bottom: 1.5rem;
+        }
+
+        .usecase-card h3 {
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .usecase-card blockquote {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            line-height: 1.8;
+            font-style: italic;
+            margin-bottom: 2rem;
+            padding-left: 1.5rem;
+            border-left: 2px solid var(--border);
+        }
+
+        .usecase-tags {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .usecase-tag {
+            background: rgba(34, 211, 238, 0.1);
+            color: var(--accent);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        /* Applications Grid */
+        .applications-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            max-width: 1200px;
+            margin: 4rem auto 0;
+        }
+
+        .app-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .app-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-4px);
+        }
+
+        .app-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .app-card h4 {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .app-card p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* CTA Section */
+        .cta {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            height: 400px;
+            background: radial-gradient(ellipse, var(--accent-glow) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 1;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .cta h2 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            margin-bottom: 1rem;
+        }
+
+        .cta p {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--secondary);
+            padding: 4rem 3rem 2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 4rem;
+        }
+
+        .footer-brand .logo {
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .footer-brand p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            max-width: 300px;
+        }
+
+        .footer-links h4 {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-dim);
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent);
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 3rem auto 0;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-dim);
+            font-size: 0.85rem;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .arch-grid {
+                grid-template-columns: 1fr;
+                max-width: 500px;
+            }
+
+            .arch-card.featured {
+                transform: none;
+            }
+
+            .arch-card.featured:hover {
+                transform: translateY(-10px);
+            }
+
+            .solution-content {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                padding: 1rem 1.5rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .nav-cta {
+                display: none;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            section {
+                padding: 4rem 1.5rem;
+            }
+
+            .hero {
+                padding: 6rem 1.5rem 3rem;
+            }
+
+            .hero-stats {
+                flex-direction: column;
+                gap: 2rem;
+            }
+
+            .hero-cta {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .table-header,
+            .table-row {
+                grid-template-columns: 1.5fr 1fr 1fr;
+                padding: 1rem;
+                font-size: 0.85rem;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+        }
+
+        /* Scroll animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Limitations Section */
+        .limitations {
+            background: var(--primary);
+        }
+
+        .limitations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .limitation-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1.5rem;
+            background: rgba(249, 115, 22, 0.05);
+            border: 1px solid rgba(249, 115, 22, 0.2);
+            border-radius: 12px;
+        }
+
+        .limitation-item .icon {
+            color: var(--highlight);
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .limitation-item p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
-    <header class="bg-gray-900 shadow-lg sticky top-0 z-50">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-20">
-                <div class="flex items-center">
-                    <svg class="h-10 w-10 text-blue-400 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7.014A7.989 7.989 0 0122 12c0 3.182C19.667 12.667 14 15 14 15a7.989 7.989 0 013.657 3.657zM9.343 17.657A8 8 0 0118.657 6.343S17 9 15 10c0-2-.5-5-2.986-7.014A7.989 7.989 0 002 12c0 3.182C4.333 12.667 10 15 10 15a7.989 7.989 0 00-.657 2.657z" />
-                    </svg>
-                    <h1 class="text-3xl font-orbitron text-blue-400">RoboPro Académie</h1>
+    <div class="grid-bg"></div>
+
+    <!-- Navigation -->
+    <nav>
+        <a href="#" class="logo">Uni<span>Borne</span></a>
+        <ul class="nav-links">
+            <li><a href="#probleme">Problème</a></li>
+            <li><a href="#solution">Solution</a></li>
+            <li><a href="#architecture">Architecture</a></li>
+            <li><a href="#avantages">Avantages</a></li>
+            <li><a href="#applications">Applications</a></li>
+        </ul>
+        <a href="#contact" class="nav-cta">Nous contacter</a>
+        <button class="mobile-menu-btn">☰</button>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-glow"></div>
+        <div class="hero-glow-2"></div>
+        <div class="hero-content">
+            <span class="hero-badge">En production chez nos clients</span>
+            <h1>Automatisez <span class="highlight">intelligemment</span></h1>
+            <p class="hero-tagline">Solution PLC nouvelle génération basée sur ESP32.<br>Simplifiez radicalement vos automatismes industriels.</p>
+            
+            <div class="hero-stats">
+                <div class="stat">
+                    <span class="stat-value">70-80%</span>
+                    <span class="stat-label">Économie vs PLC traditionnel</span>
                 </div>
-                <nav class="hidden md:flex space-x-6 items-center desktop-nav">
-                    <a href="#" class="nav-link text-lg hover:text-blue-400 transition-colors duration-300 px-3 py-2 rounded-md" data-target="accueil">Accueil</a>
-                    <a href="#" class="nav-link text-lg hover:text-blue-400 transition-colors duration-300 px-3 py-2 rounded-md" data-target="module1">Module 1</a>
-                    <a href="#" class="nav-link text-lg hover:text-blue-400 transition-colors duration-300 px-3 py-2 rounded-md" data-target="module2">Module 2</a>
-                    <a href="#" class="nav-link text-lg hover:text-blue-400 transition-colors duration-300 px-3 py-2 rounded-md" data-target="module3">Module 3</a>
-                </nav>
-                <div class="md:hidden mobile-menu-button-container">
-                    <button id="mobile-menu-button" class="text-gray-400 hover:text-white focus:outline-none focus:text-white">
-                        <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-                        </svg>
-                    </button>
+                <div class="stat">
+                    <span class="stat-value">&lt;1000$</span>
+                    <span class="stat-label">Système complet</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-value">~100</span>
+                    <span class="stat-label">Nœuds E/S</span>
+                </div>
+            </div>
+
+            <div class="hero-cta">
+                <a href="#contact" class="btn btn-primary">
+                    Demander une démo
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </a>
+                <a href="#solution" class="btn btn-secondary">Découvrir la solution</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem Section -->
+    <section class="problems" id="probleme">
+        <div class="section-header fade-in">
+            <span class="section-label">Le constat</span>
+            <h2 class="section-title">L'automatisation industrielle mérite mieux</h2>
+            <p class="section-subtitle">Les solutions traditionnelles présentent des freins majeurs pour les PME et les projets de taille moyenne.</p>
+        </div>
+
+        <div class="problems-grid">
+            <div class="problem-card fade-in">
+                <span class="problem-icon">💰</span>
+                <h3>Coût prohibitif</h3>
+                <p>Les automates industriels représentent un investissement disproportionné pour des applications de petite et moyenne taille. Licences logicielles, matériel propriétaire...</p>
+            </div>
+            <div class="problem-card fade-in">
+                <span class="problem-icon">⏱️</span>
+                <h3>Développement long</h3>
+                <p>La programmation en Ladder ou texte structuré nécessite une expertise spécifique et des outils propriétaires différents pour chaque fabricant.</p>
+            </div>
+            <div class="problem-card fade-in">
+                <span class="problem-icon">🔒</span>
+                <h3>Interfaces rigides</h3>
+                <p>Les interfaces HMI traditionnelles sont difficiles à modifier sur site et nécessitent un ordinateur avec le logiciel propriétaire pour chaque changement.</p>
+            </div>
+            <div class="problem-card fade-in">
+                <span class="problem-icon">📚</span>
+                <h3>Formation coûteuse</h3>
+                <p>Former les équipes aux outils propriétaires de chaque fabricant représente un coût caché significatif et une dépendance technique.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solution Section -->
+    <section class="solution" id="solution">
+        <div class="section-header fade-in">
+            <span class="section-label">Notre réponse</span>
+            <h2 class="section-title">UniBorne réinvente l'automatisation</h2>
+            <p class="section-subtitle">Une architecture moderne où la configuration remplace la programmation complexe.</p>
+        </div>
+
+        <div class="solution-content">
+            <div class="solution-text fade-in">
+                <h3>La puissance de la simplicité</h3>
+                <p>UniBorne combine un microcontrôleur ESP32 puissant, une architecture logicielle moderne en C++, et une interface web accessible sur tablette. Vos équipements, interfaces et logique métier sont définis dans des fichiers JSON lisibles.</p>
+                
+                <div class="solution-features">
+                    <div class="feature-item">
+                        <div class="feature-icon">📱</div>
+                        <span class="feature-text">Interface web modifiable directement sur tablette</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">⚡</div>
+                        <span class="feature-text">Configuration JSON — pas de logiciel propriétaire</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🔧</div>
+                        <span class="feature-text">Hardware flexible : Kincony, M5Stack, et plus</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🔄</div>
+                        <span class="feature-text">60-70% du code réutilisable entre projets</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="solution-visual fade-in">
+                <div class="code-block">
+                    <pre><code>{
+  <span class="key">"name"</span>: <span class="string">"Servo Control"</span>,
+  <span class="key">"hardware"</span>: <span class="string">"SureServo"</span>,
+  <span class="key">"type"</span>: <span class="string">"ModbusRTU"</span>,
+  <span class="key">"address"</span>: <span class="value">127</span>,
+  <span class="key">"children"</span>: [
+    {
+      <span class="key">"name"</span>: <span class="string">"Position"</span>,
+      <span class="key">"hash"</span>: <span class="value">4045003206</span>
+    },
+    {
+      <span class="key">"name"</span>: <span class="string">"Jog Speed"</span>,
+      <span class="key">"hash"</span>: <span class="value">3187488644</span>
+    }
+  ]
+}</code></pre>
                 </div>
             </div>
         </div>
-        <div id="mobile-menu" class="md:hidden mobile-menu bg-gray-800">
-            <a href="#" class="nav-link block px-4 py-3 text-lg text-gray-300 hover:bg-gray-700 hover:text-blue-400" data-target="accueil">Accueil</a>
-            <a href="#" class="nav-link block px-4 py-3 text-lg text-gray-300 hover:bg-gray-700 hover:text-blue-400" data-target="module1">Module 1</a>
-            <a href="#" class="nav-link block px-4 py-3 text-lg text-gray-300 hover:bg-gray-700 hover:text-blue-400" data-target="module2">Module 2</a>
-            <a href="#" class="nav-link block px-4 py-3 text-lg text-gray-300 hover:bg-gray-700 hover:text-blue-400" data-target="module3">Module 3</a>
+    </section>
+
+    <!-- Architecture Section -->
+    <section class="architecture" id="architecture">
+        <div class="section-header fade-in">
+            <span class="section-label">Architecture</span>
+            <h2 class="section-title">Trois piliers, une solution complète</h2>
         </div>
-    </header>
 
-    <main class="container mx-auto p-4 sm:p-6 lg:p-8">
-        <section id="accueil" class="content-section active">
-            <div class="text-center mb-12">
-                <h2 class="text-4xl font-orbitron font-bold mb-4 text-blue-300">Bienvenue à l'Usine Virtuelle d'Apprentissage !</h2>
-                <p class="text-xl text-gray-400 max-w-3xl mx-auto">Prêt à assembler les connaissances et à maîtriser les secrets de l'automatisation et de la robotique ? Explorez nos modules interactifs et devenez un pro de la Tech !</p>
-            </div>
-
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="module-card rounded-lg p-6 shadow-xl hover:shadow-blue-500/30">
-                    <div class="flex items-center mb-4">
-                         <svg class="h-12 w-12 text-blue-400 mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
-                        </svg>
-                        <h3 class="text-2xl font-orbitron font-semibold text-blue-300">Module 1: Atelier de Conception</h3>
-                    </div>
-                    <p class="text-gray-400 mb-6">Définissez les fondations de votre projet d'automatisation : composants, protocoles, logique et tags.</p>
-                    <button class="nav-link button-primary font-semibold py-2 px-4 rounded-lg w-full" data-target="module1">Commencer le Module 1</button>
-                </div>
-
-                <div class="module-card rounded-lg p-6 shadow-xl hover:shadow-blue-500/30">
-                     <div class="flex items-center mb-4">
-                        <svg class="h-12 w-12 text-blue-400 mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.472-2.472a3.75 3.75 0 00-5.303-5.303L6.25 9.75M11.42 15.17L5.877 21m5.543-5.83l2.472-2.472a3.75 3.75 0 00-5.303-5.303L6.25 9.75M15 11.25l-2.472-2.472" />
-                        </svg>
-                        <h3 class="text-2xl font-orbitron font-semibold text-blue-300">Module 2: Boîte à Outils</h3>
-                    </div>
-                    <p class="text-gray-400 mb-6">Explorez les normes, fabricants et outils de référence essentiels pour vos projets.</p>
-                    <button class="nav-link button-primary font-semibold py-2 px-4 rounded-lg w-full" data-target="module2">Explorer le Module 2</button>
-                </div>
-                 <div class="module-card rounded-lg p-6 shadow-xl hover:shadow-blue-500/30">
-                     <div class="flex items-center mb-4">
-                        <svg class="h-12 w-12 text-blue-400 mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                           <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75V18m-7.5-6.75h.008v.008H8.25v-.008zm0 2.25h.008v.008H8.25V13.5zm0 2.25h.008v.008H8.25v-.008zm0 2.25h.008v.008H8.25V18zm2.498-6.75h.007v.008h-.007v-.008zm0 2.25h.007v.008h-.007V13.5zm0 2.25h.007v.008h-.007v-.008zm0 2.25h.007v.008h-.007V18zm2.504-6.75h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V13.5zm0 2.25h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V18zm2.498-6.75h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V13.5zM8.25 6.75h7.5v7.5h-7.5V6.75z" />
-                        </svg>
-                        <h3 class="text-2xl font-orbitron font-semibold text-blue-300">Module 3: Labo de Calcul</h3>
-                    </div>
-                    <p class="text-gray-400 mb-6">Maîtrisez les formules et calculs pratiques pour l'automatisation.</p>
-                    <button class="nav-link button-primary font-semibold py-2 px-4 rounded-lg w-full" data-target="module3">Accéder au Labo</button>
+        <div class="arch-grid">
+            <div class="arch-card fade-in">
+                <div class="arch-icon">🔩</div>
+                <h3>Hardware Flexible</h3>
+                <p>Compatible avec tout ESP32. Cartes recommandées avec E/S isolées, montage rail DIN.</p>
+                <div class="arch-specs">
+                    <span class="spec-tag">Kincony A8S</span>
+                    <span class="spec-tag">M5Stack</span>
+                    <span class="spec-tag">8 E/S isolées</span>
+                    <span class="spec-tag">24V DC</span>
                 </div>
             </div>
-        </section>
 
-        <section id="module1" class="content-section">
-            <div class="bg-gray-800 p-6 sm:p-8 rounded-xl shadow-2xl">
-                <div class="flex items-center mb-6">
-                    <svg class="h-10 w-10 text-blue-400 mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
+            <div class="arch-card featured fade-in">
+                <div class="arch-icon">📱</div>
+                <h3>Interface Web</h3>
+                <p>Serveur web intégré. Contrôle temps réel depuis n'importe quelle tablette via WiFi.</p>
+                <div class="arch-specs">
+                    <span class="spec-tag">WebSocket</span>
+                    <span class="spec-tag">Temps réel</span>
+                    <span class="spec-tag">Multi-pages</span>
+                    <span class="spec-tag">Modifiable sur site</span>
+                </div>
+            </div>
+
+            <div class="arch-card fade-in">
+                <div class="arch-icon">⚙️</div>
+                <h3>Logiciel Moderne</h3>
+                <p>Architecture C++ modulaire avec design patterns. Machine d'états complète avec historique.</p>
+                <div class="arch-specs">
+                    <span class="spec-tag">~34 cycles/s</span>
+                    <span class="spec-tag">Interruptions</span>
+                    <span class="spec-tag">Watchdog</span>
+                    <span class="spec-tag">Logs</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Components Section -->
+    <section class="components">
+        <div class="section-header fade-in">
+            <span class="section-label">Interface</span>
+            <h2 class="section-title">Composants riches et intuitifs</h2>
+            <p class="section-subtitle">Une bibliothèque complète de composants pour créer des interfaces opérateur professionnelles.</p>
+        </div>
+
+        <div class="components-showcase fade-in">
+            <div class="component-row">
+                <div class="component-chip">
+                    <span class="icon">💡</span>
+                    <span class="label">Indicateurs LED</span>
+                    <span class="type">rx-indicator</span>
+                </div>
+                <div class="component-chip">
+                    <span class="icon">🔢</span>
+                    <span class="label">Affichage numérique</span>
+                    <span class="type">rx-numeric</span>
+                </div>
+                <div class="component-chip">
+                    <span class="icon">📊</span>
+                    <span class="label">Jauges & barres</span>
+                    <span class="type">rx-level-bar</span>
+                </div>
+                <div class="component-chip">
+                    <span class="icon">📈</span>
+                    <span class="label">Graphiques</span>
+                    <span class="type">rx-graph</span>
+                </div>
+            </div>
+            <div class="component-row">
+                <div class="component-chip">
+                    <span class="icon">🔘</span>
+                    <span class="label">Boutons d'action</span>
+                    <span class="type">tx-button</span>
+                </div>
+                <div class="component-chip">
+                    <span class="icon">✋</span>
+                    <span class="label">Boutons maintien</span>
+                    <span class="type">tx-button-hold</span>
+                </div>
+                <div class="component-chip">
+                    <span class="icon">🎚️</span>
+                    <span class="label">Sliders</span>
+                    <span class="type">tx-slider</span>
+                </div>
+                <div class="component-chip">
+                    <span class="icon">📋</span>
+                    <span class="label">Listes déroulantes</span>
+                    <span class="type">tx-dropdown</span>
+                </div>
+            </div>
+            <div class="component-row">
+                <div class="component-chip">
+                    <span class="icon">🔀</span>
+                    <span class="label">Interrupteurs</span>
+                    <span class="type">tx-bool</span>
+                </div>
+                <div class="component-chip">
+                    <span class="icon">⌨️</span>
+                    <span class="label">Saisie texte</span>
+                    <span class="type">tx-string</span>
+                </div>
+                <div class="component-chip">
+                    <span class="icon">📷</span>
+                    <span class="label">Scanner QR</span>
+                    <span class="type">tx-qr</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Advantages Section -->
+    <section class="advantages" id="avantages">
+        <div class="section-header fade-in">
+            <span class="section-label">Avantages</span>
+            <h2 class="section-title">Un ROI incomparable</h2>
+        </div>
+
+        <div class="adv-grid">
+            <div class="adv-card fade-in">
+                <div class="adv-header">
+                    <span class="adv-icon">💰</span>
+                    <div>
+                        <span class="adv-metric">70-80%</span>
+                        <span class="adv-metric-label">d'économie</span>
+                    </div>
+                </div>
+                <h3>Coût Total Réduit</h3>
+                <p>Matériel accessible, pas de licence logicielle propriétaire, développement plus rapide. Un système complet avec servo drive pour moins de 1000$.</p>
+            </div>
+
+            <div class="adv-card fade-in">
+                <div class="adv-header">
+                    <span class="adv-icon">🚀</span>
+                    <div>
+                        <span class="adv-metric">60-70%</span>
+                        <span class="adv-metric-label">réutilisable</span>
+                    </div>
+                </div>
+                <h3>Développement Rapide</h3>
+                <p>Architecture modulaire avec classes réutilisables entre projets. Configuration JSON au lieu de programmation Ladder complexe.</p>
+            </div>
+
+            <div class="adv-card fade-in">
+                <div class="adv-header">
+                    <span class="adv-icon">📱</span>
+                    <div>
+                        <span class="adv-metric">Web</span>
+                        <span class="adv-metric-label">interface</span>
+                    </div>
+                </div>
+                <h3>Interface Moderne</h3>
+                <p>Accessible sur n'importe quelle tablette. Modifiable sur site sans ordinateur. Multi-pages avec protection par mot de passe.</p>
+            </div>
+
+            <div class="adv-card fade-in">
+                <div class="adv-header">
+                    <span class="adv-icon">🔧</span>
+                    <div>
+                        <span class="adv-metric">Sur site</span>
+                        <span class="adv-metric-label">maintenance</span>
+                    </div>
+                </div>
+                <h3>Maintenance Simplifiée</h3>
+                <p>Logs détaillés en temps réel, diagnostic intégré, historique des états machine. Modification de l'interface directement depuis la tablette.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comparison Section -->
+    <section class="comparison">
+        <div class="section-header fade-in">
+            <span class="section-label">Comparatif</span>
+            <h2 class="section-title">UniBorne vs Automate Traditionnel</h2>
+        </div>
+
+        <div class="comparison-table fade-in">
+            <div class="table-header">
+                <div class="col">Critère</div>
+                <div class="col">UniBorne</div>
+                <div class="col">PLC Standard</div>
+            </div>
+            <div class="table-row">
+                <div class="col">Configuration E/S</div>
+                <div class="col"><span class="check">✓</span> Fichier JSON</div>
+                <div class="col"><span class="neutral">Logiciel propriétaire</span></div>
+            </div>
+            <div class="table-row">
+                <div class="col">Interface HMI</div>
+                <div class="col"><span class="check">✓</span> Modifiable sur site</div>
+                <div class="col"><span class="neutral">Ordinateur requis</span></div>
+            </div>
+            <div class="table-row">
+                <div class="col">Coût système complet</div>
+                <div class="col"><span class="check">✓</span> &lt; 1000$</div>
+                <div class="col"><span class="neutral">3000$ - 10000$+</span></div>
+            </div>
+            <div class="table-row">
+                <div class="col">Logs & diagnostic</div>
+                <div class="col"><span class="check">✓</span> Temps réel intégré</div>
+                <div class="col"><span class="neutral">Outils fabricant</span></div>
+            </div>
+            <div class="table-row">
+                <div class="col">Réutilisation code</div>
+                <div class="col"><span class="check">✓</span> 60-70%</div>
+                <div class="col"><span class="neutral">Limitée</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Use Case Section -->
+    <section class="usecase" id="applications">
+        <div class="section-header fade-in">
+            <span class="section-label">En production</span>
+            <h2 class="section-title">Cas client : Industrie du bois</h2>
+        </div>
+
+        <div class="usecase-content fade-in">
+            <div class="usecase-card">
+                <span class="usecase-badge">
+                    <span>✓</span>
+                    Client satisfait
+                </span>
+                <h3>Machine de production haute précision</h3>
+                <blockquote>
+                    Notre client utilise UniBorne pour piloter une machine de production dans le secteur du bois où la précision et la sécurité sont primordiales. Le système contrôle un servo drive Sure Servo 2 via Modbus, gère les recettes de coupe, et offre une interface opérateur intuitive sur tablette. La flexibilité de configuration a permis des ajustements rapides selon les besoins spécifiques.
+                </blockquote>
+                <div class="usecase-tags">
+                    <span class="usecase-tag">✓ Précision de positionnement</span>
+                    <span class="usecase-tag">✓ Gestion des alarmes</span>
+                    <span class="usecase-tag">✓ Interface modifiable</span>
+                    <span class="usecase-tag">✓ Recettes de coupe</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="applications-grid fade-in">
+            <div class="app-card">
+                <span class="app-icon">🏭</span>
+                <div>
+                    <h4>Machines autonomes</h4>
+                    <p>Petite et moyenne complexité, jusqu'à ~100 E/S</p>
+                </div>
+            </div>
+            <div class="app-card">
+                <span class="app-icon">🔄</span>
+                <div>
+                    <h4>Retrofitting</h4>
+                    <p>Modernisation de machines existantes</p>
+                </div>
+            </div>
+            <div class="app-card">
+                <span class="app-icon">🧪</span>
+                <div>
+                    <h4>Prototypes</h4>
+                    <p>Séries limitées, validation de concepts</p>
+                </div>
+            </div>
+            <div class="app-card">
+                <span class="app-icon">📊</span>
+                <div>
+                    <h4>Gestion de recettes</h4>
+                    <p>Systèmes avec paramétrage complexe</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Limitations Section -->
+    <section class="limitations">
+        <div class="section-header fade-in">
+            <span class="section-label">Transparence</span>
+            <h2 class="section-title">Limitations actuelles</h2>
+            <p class="section-subtitle">En toute honnêteté, voici les points à considérer.</p>
+        </div>
+
+        <div class="limitations-grid fade-in">
+            <div class="limitation-item">
+                <span class="icon">⚠️</span>
+                <p>Une seule connexion tablette à la fois (gateway multi-périphériques envisageable)</p>
+            </div>
+            <div class="limitation-item">
+                <span class="icon">⚠️</span>
+                <p>Pas de certification industrielle CE/UL pour l'instant</p>
+            </div>
+            <div class="limitation-item">
+                <span class="icon">⚠️</span>
+                <p>Mise à jour à distance en cours de développement</p>
+            </div>
+            <div class="limitation-item">
+                <span class="icon">⚠️</span>
+                <p>Logique métier en C++ (compétences requises)</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta" id="contact">
+        <div class="cta-content fade-in">
+            <h2>Prêt à automatiser autrement ?</h2>
+            <p>Contactez notre équipe technique pour une démonstration personnalisée et découvrez comment UniBorne peut transformer vos projets d'automatisation.</p>
+            <div class="cta-buttons">
+                <a href="mailto:contact@uniborne.com" class="btn btn-primary">
+                    Demander une démo
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
                     </svg>
-                    <h2 class="text-3xl font-orbitron font-bold text-blue-300">Module 1: L'Atelier de Conception</h2>
-                </div>
-                <p class="text-lg text-gray-400 mb-8">Cette première étape est cruciale. Elle consiste à identifier tous les éléments qui interagiront dans votre système automatisé, comment ils communiqueront, et comment la logique de commande sera structurée.</p>
-
-                <div class="mb-8 border-b border-gray-700">
-                    <nav class="-mb-px flex space-x-4 sm:space-x-8 overflow-x-auto pb-px module-tabs-nav" aria-label="Tabs">
-                        <button class="module1-tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-blue-500 text-blue-400" data-target="etape1-composants">
-                            Étape 1: Composants
-                        </button>
-                        <button class="module1-tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-transparent text-gray-500 hover:text-gray-300 hover:border-gray-500" data-target="etape1-protocoles">
-                            Étape 2: Protocoles
-                        </button>
-                         <button class="module1-tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-transparent text-gray-500 hover:text-gray-300 hover:border-gray-500" data-target="etape1-logique">
-                            Étape 3: Logique
-                        </button>
-                        <button class="module1-tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-transparent text-gray-500 hover:text-gray-300 hover:border-gray-500" data-target="etape1-tags">
-                            Étape 4: Tags & E/S
-                        </button>
-                    </nav>
-                </div>
-
-                <div id="module1-content">
-                    <div class="module1-tab-content active" id="etape1-composants">
-                        <h3 class="text-2xl font-semibold mb-6 text-sky-300">Étape 1: Définir les Composants d'Interaction</h3>
-                        <p class="text-gray-400 mb-6">Cliquez sur un composant pour afficher ses détails et comprendre son rôle.</p>
-                        
-                        <div class="flex flex-col md:flex-row gap-6">
-                            <div class="md:w-1/3 bg-gray-700 p-4 rounded-lg shadow">
-                                <h4 class="text-xl font-semibold mb-4 text-gray-200">Composants Clés :</h4>
-                                <ul id="component-list" class="space-y-2">
-                                    <li class="interactive-list-item component-item p-3 rounded-md text-gray-300 hover:text-white" data-itemkey="drives">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 inline-block mr-2 text-green-400">
-                                          <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
-                                        </svg>
-                                        Variateurs (Drives)
-                                    </li>
-                                    <li class="interactive-list-item component-item p-3 rounded-md text-gray-300 hover:text-white" data-itemkey="capteurs">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 inline-block mr-2 text-yellow-400">
-                                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m3-.75H9M9 16.5h.008v.008H9v-.008Zm0 0h.008v.008H9v-.008Zm0 0h.008v.008H9v-.008Zm7.5-3.75h.008v.008H16.5v-.008Zm0 0h.008v.008H16.5v-.008Zm0 0h.008v.008H16.5v-.008Zm-7.5 0h.008v.008H9v-.008Zm0 0h.008v.008H9v-.008Zm0 0h.008v.008H9v-.008Z" />
-                                          <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048l5.962-5.962a.75.75 0 011.06 0l2.25 2.25a.75.75 0 010 1.06l-2.25 2.25m0 0l2.25 2.25a.75.75 0 010 1.06l-2.25 2.25m0 0l2.25-2.25" />
-                                        </svg>
-                                        Capteurs
-                                    </li>
-                                    <li class="interactive-list-item component-item p-3 rounded-md text-gray-300 hover:text-white" data-itemkey="hmi">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 inline-block mr-2 text-purple-400">
-                                          <path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25" />
-                                        </svg>
-                                        Interface Homme-Machine (HMI)
-                                    </li>
-                                    <li class="interactive-list-item component-item p-3 rounded-md text-gray-300 hover:text-white" data-itemkey="es_deportees">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 inline-block mr-2 text-teal-400">
-                                          <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z" />
-                                        </svg>
-                                        E/S Déportées
-                                    </li>
-                                    <li class="interactive-list-item component-item p-3 rounded-md text-gray-300 hover:text-white" data-itemkey="encodeurs">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 inline-block mr-2 text-pink-400">
-                                          <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6A2.25 2.25 0 008.25 8.25v3.75a2.25 2.25 0 002.25 2.25h3a2.25 2.25 0 002.25-2.25V8.25a2.25 2.25 0 00-2.25-2.25h-3z" />
-                                          <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                          <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12a9.75 9.75 0 0115.546-7.44L17.25 6M2.25 12a9.75 9.75 0 0015.546 7.44L17.25 18M12 2.25a9.75 9.75 0 017.44 15.546L18 17.25M12 2.25a9.75 9.75 0 00-7.44 15.546L6 17.25" />
-                                        </svg>
-                                        Encodeurs
-                                    </li>
-                                    <li class="interactive-list-item component-item p-3 rounded-md text-gray-300 hover:text-white" data-itemkey="robots">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 inline-block mr-2 text-orange-400">
-                                          <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9.75 0h9.75c.621 0 1.125-.504 1.125-1.125V2.625c0-.621-.504-1.125-1.125-1.125H6.375c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125z" />
-                                        </svg>
-                                        Robots
-                                    </li>
-                                </ul>
-                            </div>
-                            <div id="component-details" class="md:w-2/3 bg-gray-700 p-6 rounded-lg shadow-inner min-h-[300px] md:min-h-[400px] flex flex-col">
-                                <div class="details-content-area component-details-content overflow-y-auto flex-grow pr-2">
-                                    <p class="text-gray-400 text-lg">Sélectionnez un composant dans la liste pour voir ses informations ici.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="module1-tab-content" id="etape1-protocoles">
-                        <h3 class="text-2xl font-semibold mb-6 text-sky-300">Étape 2: Définir les Protocoles de Communication</h3>
-                        <p class="text-gray-400 mb-6">Choisissez un protocole pour découvrir ses caractéristiques et cas d'usage.</p>
-                        <div class="flex flex-col md:flex-row gap-6">
-                            <div class="md:w-1/3 bg-gray-700 p-4 rounded-lg shadow">
-                                <h4 class="text-xl font-semibold mb-4 text-gray-200">Protocoles Courants :</h4>
-                                <ul id="protocol-list" class="space-y-2">
-                                    <li class="interactive-list-item protocol-item p-3 rounded-md text-gray-300 hover:text-white" data-itemkey="ethernet_ip">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 inline-block mr-2 text-cyan-400"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25zM16.5 12a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" /></svg>
-                                        Ethernet/IP
-                                    </li>
-                                    <li class="interactive-list-item protocol-item p-3 rounded-md text-gray-300 hover:text-white" data-itemkey="profibus_dp">
-                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 inline-block mr-2 text-lime-400"><path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.306 3 12m0 0v3.75m0-3.75H1.5m0 0h1.5m0 0H4.5m1.5 0H7.5m0 0h1.5m0 0h1.5m0 0h1.5m0 0h1.5M12 4.5v3.75m0-3.75c-.621 0-1.125.504-1.125 1.125V12M12 4.5c.621 0 1.125.504 1.125 1.125V12m0 8.25c-.621 0-1.125-.504-1.125-1.125V12m0 8.25c.621 0 1.125-.504 1.125-1.125V12" /></svg>
-                                        Profibus DP
-                                    </li>
-                                    <li class="interactive-list-item protocol-item p-3 rounded-md text-gray-300 hover:text-white" data-itemkey="modbus_tcp">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 inline-block mr-2 text-amber-400"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z" /></svg>
-                                        Modbus TCP
-                                    </li>
-                                     <li class="interactive-list-item protocol-item p-3 rounded-md text-gray-300 hover:text-white" data-itemkey="devicenet">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 inline-block mr-2 text-red-400"><path stroke-linecap="round" stroke-linejoin="round" d="M6.429 9.75L2.25 12l4.179 2.25m0-4.5l5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-3.75 2.063M21.75 12l-4.179-2.25m0 0l4.179-2.25m0 0L12 2.25m-3.75 5.25l3.75-2.063m0 0L12 2.25m0 0L8.25 7.5M12 21.75l5.571-3M6.429 14.25l5.571 3M12 21.75l-5.571-3m11.142 0l4.179 2.25m0 0L21.75 12m0 0l-4.179 2.25m0 0l4.179 2.25m0 0L12 21.75M3.75 16.25l4.179-2.25m0 0L3.75 12m0 0l4.179-2.25m0 0L12 2.25" /></svg>
-                                        DeviceNet
-                                    </li>
-                                    <li class="interactive-list-item protocol-item p-3 rounded-md text-gray-300 hover:text-white" data-itemkey="profinet">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 inline-block mr-2 text-indigo-400"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" /></svg>
-                                        PROFINET
-                                    </li>
-                                </ul>
-                            </div>
-                            <div id="protocol-details" class="md:w-2/3 bg-gray-700 p-6 rounded-lg shadow-inner min-h-[300px] md:min-h-[400px] flex flex-col">
-                                <div class="details-content-area protocol-details-content overflow-y-auto flex-grow pr-2">
-                                     <p class="text-gray-400 text-lg">Sélectionnez un protocole dans la liste pour voir ses informations ici.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                     <div class="module1-tab-content" id="etape1-logique">
-                        <h3 class="text-2xl font-semibold mb-6 text-sky-300">Étape 3: Dessiner le Diagramme Logique</h3>
-                        <p class="text-gray-400 mb-8">Le diagramme logique est le cerveau de votre système. Il définit comment les entrées (capteurs, commandes) sont traitées pour produire des sorties (actions des moteurs, voyants). Les langages les plus courants sont le Ladder et le GRAFCET.</p>
-                        
-                        <div class="grid md:grid-cols-2 gap-8">
-                            <div class="logic-diagram-card">
-                                <div class="flex items-center mb-3">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 text-green-400 mr-3">
-                                      <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" />
-                                      <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 6.75V5.25a2.25 2.25 0 012.25-2.25h9a2.25 2.25 0 012.25 2.25v1.5M5.25 18.75V20.25a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-1.5" />
-                                    </svg>
-                                    <h4 class="text-2xl font-orbitron font-semibold text-green-300">Langage Ladder (LD)</h4>
-                                </div>
-                                <p class="text-gray-400 mb-4">Aussi appelé schéma à contacts, il est basé sur la logique des relais électromécaniques. Il est très visuel et apprécié pour sa simplicité pour les logiques séquentielles et combinatoires.</p>
-                                
-                                <div class="ladder-diagram">
-                                    <svg width="250" height="80" viewBox="0 0 250 80" xmlns="http://www.w3.org/2000/svg">
-                                        <line x1="10" y1="10" x2="10" y2="70" stroke="#e2e8f0" stroke-width="2"/>
-                                        <line x1="240" y1="10" x2="240" y2="70" stroke="#e2e8f0" stroke-width="2"/>
-                                        
-                                        <line x1="10" y1="40" x2="50" stroke="#e2e8f0" stroke-width="2"/>
-                                        
-                                        <g class="ladder-element" data-info="Contact Normalement Ouvert (NO) : Permet le passage du courant si la condition associée (ex: capteur actif) est VRAIE.">
-                                            <line x1="50" y1="30" x2="50" y2="50" stroke="#90cdf4" stroke-width="2"/>
-                                            <line x1="70" y1="30" x2="70" y2="50" stroke="#90cdf4" stroke-width="2"/>
-                                            <text x="52" y="25" font-size="10" fill="#90cdf4">I0.0</text>
-                                        </g>
-                                        <line x1="70" y1="40" x2="90" stroke="#e2e8f0" stroke-width="2"/>
-
-                                        <g class="ladder-element" data-info="Contact Normalement Fermé (NF) : Permet le passage du courant si la condition associée est FAUSSE. S'ouvre si la condition devient VRAIE.">
-                                            <line x1="90" y1="30" x2="90" y2="50" stroke="#fdbf6f" stroke-width="2"/>
-                                            <line x1="110" y1="30" x2="110" y2="50" stroke="#fdbf6f" stroke-width="2"/>
-                                            <line x1="92" y1="40" x2="108" y2="40" stroke="#fdbf6f" stroke-width="2" transform="rotate(-30 100 40)"/>
-                                            <text x="92" y="25" font-size="10" fill="#fdbf6f">I0.1</text>
-                                        </g>
-                                        <line x1="110" y1="40" x2="180" stroke="#e2e8f0" stroke-width="2"/>
-
-                                        <g class="ladder-element" data-info="Bobine de Sortie : S'active (met la sortie à VRAI) si le chemin logique qui la précède est conducteur.">
-                                            <circle cx="195" cy="40" r="12" stroke="#a7f3d0" stroke-width="2" fill="none"/>
-                                            <text x="188" y="44" font-size="10" fill="#a7f3d0">Q0.0</text>
-                                        </g>
-                                        <line x1="207" y1="40" x2="240" stroke="#e2e8f0" stroke-width="2"/>
-                                    </svg>
-                                </div>
-                                <div id="ladder-info-box" class="ladder-info">Cliquez sur un élément du schéma Ladder.</div>
-                            </div>
-
-                            <div class="logic-diagram-card">
-                                 <div class="flex items-center mb-3">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 text-purple-400 mr-3">
-                                      <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 7.5h10.5M6.75 12h10.5m-10.5 4.5h10.5M4.5 6.75V17.25M19.5 6.75V17.25" />
-                                      <path stroke-linecap="round" stroke-linejoin="round" d="M9 4.5v15M15 4.5v15" />
-                                      <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 9h16.5M3.75 15h16.5" />
-                                    </svg>
-                                    <h4 class="text-2xl font-orbitron font-semibold text-purple-300">GRAFCET (SFC)</h4>
-                                </div>
-                                <p class="text-gray-400 mb-4">Le GRAphe Fonctionnel de Commande Étapes/Transitions (SFC - Sequential Function Chart) est un langage graphique qui décrit le comportement séquentiel d'un automatisme. Il est idéal pour visualiser les cycles et les modes de marche.</p>
-                                
-                                <div class="grafcet-diagram">
-                                    <div class="grafcet-element grafcet-step" data-info="Étape Initiale 0 : Repos, attente de démarrage.">0</div>
-                                    <div class="grafcet-line"></div>
-                                    <div class="grafcet-element grafcet-transition" data-info="Transition : Condition 'Bouton Démarrer Cycle ET Capteur Pièce Présente'.">
-                                        <span class="grafcet-transition-label">Start & PcsOK</span>
-                                    </div>
-                                    <div class="grafcet-line"></div>
-                                    <div class="grafcet-element grafcet-step" data-info="Étape 1 : Action 'Serrer Pièce'.">1</div>
-                                    <div class="grafcet-line"></div>
-                                    <div class="grafcet-element grafcet-transition" data-info="Transition : Condition 'Pièce Serrée'.">
-                                         <span class="grafcet-transition-label">PcsSerrée</span>
-                                    </div>
-                                    <div class="grafcet-line"></div>
-                                    <div class="grafcet-element grafcet-step" data-info="Étape 2 : Action 'Usiner Pièce'.">2</div>
-                                </div>
-                                <div id="grafcet-info-box" class="grafcet-info">Cliquez sur une étape ou une transition.</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="module1-tab-content" id="etape1-tags">
-                        <h3 class="text-2xl font-semibold mb-6 text-sky-300">Étape 4: Liste des Tags et E/S</h3>
-                        <p class="text-gray-400 mb-4">Une gestion rigoureuse des tags (variables) et des entrées/sorties (E/S) est fondamentale pour un programme automate clair, maintenable et efficace.</p>
-                        
-                        <div class="logic-diagram-card mb-8">
-                            <h4 class="text-xl font-orbitron font-semibold text-yellow-300 mb-3">Conventions de Nommage</h4>
-                            <p class="text-gray-400 mb-2">Adopter une convention de nommage claire et cohérente est crucial. Voici quelques bonnes pratiques :</p>
-                            <ul class="list-disc list-inside space-y-1 text-gray-300">
-                                <li>Utiliser des noms descriptifs (ex: `Convoyeur_Principal_Marche` au lieu de `C1_M`).</li>
-                                <li>Inclure le type de signal (ex: `DI_PresencePiece`, `AO_VitesseMoteur`).</li>
-                                <li>Utiliser des préfixes pour les zones ou fonctions (ex: `Zone1_CapteurPresence`, `Securite_ArretUrgence`).</li>
-                                <li>Être cohérent avec la casse (ex: PascalCase, camelCase, snake_case).</li>
-                            </ul>
-                            <p class="text-gray-400 mt-3">Exemple : `DI_Zone01_DetecteurPositionHaute_S01` (Entrée Digitale, Zone 1, Détecteur de position haute, Capteur numéro 01)</p>
-                        </div>
-
-                        <div class="logic-diagram-card mb-8">
-                            <h4 class="text-xl font-orbitron font-semibold text-yellow-300 mb-3">Ordre de Définition Critique</h4>
-                            <p class="text-gray-400 mb-2">L'ordre dans lequel les tags sont définis peut avoir un impact sur la performance et l'organisation de la mémoire de l'automate, surtout pour les E/S mappées directement.</p>
-                            <ul class="list-disc list-inside space-y-1 text-gray-300">
-                                <li>Regrouper les E/S par module physique.</li>
-                                <li>Définir les bits d'un même octet/mot consécutivement.</li>
-                                <li>Documenter clairement l'adressage physique et son mappage aux tags.</li>
-                            </ul>
-                        </div>
-
-                        <div class="logic-diagram-card">
-                            <h4 class="text-xl font-orbitron font-semibold text-yellow-300 mb-3">Exemple de Table de Tags et E/S</h4>
-                            <p class="text-gray-400 mb-4">Voici un exemple simplifié de la manière dont vous pourriez structurer votre liste de tags. Un "Générateur de Tags Guidé" sera bientôt disponible ici !</p>
-                            <div class="table-container rounded-lg">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Nom du Tag (Mnémonique)</th>
-                                            <th>Type de Donnée</th>
-                                            <th>Adresse Physique (si applicable)</th>
-                                            <th>Description Fonctionnelle</th>
-                                            <th>Commentaire</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>DI_Station1_PresencePiece</td>
-                                            <td>BOOL</td>
-                                            <td>%I0.0</td>
-                                            <td>Détecte la présence d'une pièce à la station 1</td>
-                                            <td>Capteur inductif S101</td>
-                                        </tr>
-                                        <tr>
-                                            <td>DQ_ConvoyeurPrincipal_CmdMarche</td>
-                                            <td>BOOL</td>
-                                            <td>%Q0.2</td>
-                                            <td>Commande de marche du convoyeur principal</td>
-                                            <td>Contacteur KM1</td>
-                                        </tr>
-                                        <tr>
-                                            <td>AI_TemperatureCuve_Mesure</td>
-                                            <td>INT</td>
-                                            <td>%IW10</td>
-                                            <td>Mesure de la température de la cuve</td>
-                                            <td>Sonde PT100, 0-100°C -> 0-32767</td>
-                                        </tr>
-                                        <tr>
-                                            <td>AQ_VanneRegul_Ouverture</td>
-                                            <td>REAL</td>
-                                            <td>%QD20</td>
-                                            <td>Consigne d'ouverture de la vanne de régulation (0-100%)</td>
-                                            <td>Sortie analogique 4-20mA</td>
-                                        </tr>
-                                         <tr>
-                                            <td>HMI_Cmd_DemarrerCycle</td>
-                                            <td>BOOL</td>
-                                            <td>DB10.DBX0.0</td>
-                                            <td>Bouton "Démarrer Cycle" sur l'IHM</td>
-                                            <td>Pupitre principal</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                             <button class="mt-6 button-primary font-semibold py-2 px-4 rounded-lg w-full opacity-50 cursor-not-allowed">Générateur de Tags (Bientôt)</button>
-                        </div>
-                    </div>
-                </div>
+                </a>
+                <a href="#" class="btn btn-secondary">Télécharger la documentation</a>
             </div>
-        </section>
-        
-        <section id="module2" class="content-section">
-            <div class="bg-gray-800 p-6 sm:p-8 rounded-xl shadow-2xl">
-                <div class="flex items-center mb-6">
-                     <svg class="h-10 w-10 text-blue-400 mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.472-2.472a3.75 3.75 0 00-5.303-5.303L6.25 9.75M11.42 15.17L5.877 21m5.543-5.83l2.472-2.472a3.75 3.75 0 00-5.303-5.303L6.25 9.75M15 11.25l-2.472-2.472" />
-                    </svg>
-                    <h2 class="text-3xl font-orbitron font-bold text-blue-300">Module 2: La Boîte à Outils Intelligente</h2>
-                </div>
-                <p class="text-lg text-gray-400 mb-8">Ce module rassemble les outils de référence technique essentiels pour mener à bien vos projets d'automatisation et de robotique.</p>
-                
-                <div class="mb-8 border-b border-gray-700">
-                    <nav class="-mb-px flex space-x-4 sm:space-x-8 overflow-x-auto pb-px module-tabs-nav" aria-label="Tabs">
-                        <button class="module2-tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-blue-500 text-blue-400" data-target="module2-normes">
-                            Normes & Standards
-                        </button>
-                        <button class="module2-tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-transparent text-gray-500 hover:text-gray-300 hover:border-gray-500" data-target="module2-fabricants">
-                            Fabricants
-                        </button>
-                         <button class="module2-tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-transparent text-gray-500 hover:text-gray-300 hover:border-gray-500" data-target="module2-adressage">
-                            Adressage & Connectique
-                        </button>
-                    </nav>
-                </div>
+        </div>
+    </section>
 
-                <div id="module2-content">
-                    <div class="module2-tab-content active" id="module2-normes">
-                        <h3 class="text-2xl font-semibold mb-6 text-sky-300">Normes & Standards Essentiels</h3>
-                        <p class="text-gray-400 mb-6">Naviguez à travers les normes clés pour assurer la conformité, la sécurité et l'interopérabilité de vos systèmes.</p>
-                        <div id="module2-normes-cards" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                            <div class="interactive-card-item norm-card" data-itemkey="securite_machines">
-                                <h4 class="text-xl font-orbitron font-semibold text-yellow-300 mb-2">Sécurité Machines</h4>
-                                <p class="text-gray-400 text-sm">Principes fondamentaux pour la conception de machines sûres (ex: ISO 12100, IEC 60204-1).</p>
-                            </div>
-                            <div class="interactive-card-item norm-card" data-itemkey="programmation_automates">
-                                <h4 class="text-xl font-orbitron font-semibold text-yellow-300 mb-2">Programmation Automates (IEC 61131-3)</h4>
-                                <p class="text-gray-400 text-sm">Standardisation des langages de programmation (LD, FBD, SFC, ST, IL).</p>
-                            </div>
-                            <div class="interactive-card-item norm-card" data-itemkey="communication_industrielle">
-                                <h4 class="text-xl font-orbitron font-semibold text-yellow-300 mb-2">Communication Industrielle</h4>
-                                <p class="text-gray-400 text-sm">Protocoles et standards pour l'échange de données (OPC UA, MQTT, etc.).</p>
-                            </div>
-                        </div>
-                        <div id="norme-details" class="bg-gray-700 p-6 rounded-lg shadow-inner min-h-[200px] md:min-h-[300px] flex flex-col">
-                            <div class="details-content-area norme-details-content overflow-y-auto flex-grow pr-2">
-                                 <p class="text-gray-400 text-lg">Sélectionnez une catégorie de norme pour afficher plus d'informations.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="module2-tab-content" id="module2-fabricants">
-                        <h3 class="text-2xl font-semibold mb-6 text-sky-300">Le Qui-est-Qui des Fabricants</h3>
-                        <p class="text-gray-400 mb-6">Découvrez les principaux acteurs du marché de l'automatisation et leurs spécialités.</p>
-                        <div id="module2-fabricants-cards" class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
-                            </div>
-                        <div id="fabricant-details" class="bg-gray-700 p-6 rounded-lg shadow-inner min-h-[200px] md:min-h-[300px] flex flex-col">
-                            <div class="details-content-area fabricant-details-content overflow-y-auto flex-grow pr-2">
-                                 <p class="text-gray-400 text-lg">Sélectionnez un fabricant pour afficher plus d'informations.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="module2-tab-content" id="module2-adressage">
-                        <h3 class="text-2xl font-semibold mb-6 text-sky-300">Adressage IP Industriel & Connectique</h3>
-                        <p class="text-gray-400 mb-6">Une bonne compréhension de l'adressage IP et des types de connecteurs est essentielle pour établir des communications fiables.</p>
-                        
-                        <div class="toolbox-card mb-8">
-                            <h4 class="text-xl font-orbitron font-semibold text-yellow-300 mb-3">Adressage IP en Milieu Industriel</h4>
-                            <p class="text-gray-400 mb-2">Bien que les réseaux industriels puissent utiliser des adresses IP publiques, il est courant d'utiliser des plages d'adresses IP privées pour isoler le réseau de production :</p>
-                            <ul class="list-disc list-inside space-y-1 text-gray-300 mb-4">
-                                <li><code class="bg-gray-900 px-2 py-1 rounded text-sm">10.0.0.0</code> à <code class="bg-gray-900 px-2 py-1 rounded text-sm">10.255.255.255</code> (Classe A privée)</li>
-                                <li><code class="bg-gray-900 px-2 py-1 rounded text-sm">172.16.0.0</code> à <code class="bg-gray-900 px-2 py-1 rounded text-sm">172.31.255.255</code> (Classe B privée)</li>
-                                <li><code class="bg-gray-900 px-2 py-1 rounded text-sm">192.168.0.0</code> à <code class="bg-gray-900 px-2 py-1 rounded text-sm">192.168.255.255</code> (Classe C privée - très courante pour les petites installations)</li>
-                            </ul>
-                            <p class="text-gray-400">Il est crucial d'avoir un plan d'adressage IP bien défini pour éviter les conflits et faciliter la maintenance.</p>
-                        </div>
-
-                        <h4 class="text-xl font-semibold mb-4 text-sky-300">Ports de Communication Courants</h4>
-                        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            <div class="connectique-card">
-                                <img src="https://placehold.co/150x100/2d3748/63b3ed?text=RJ45&font=orbitron" alt="[Connecteur RJ45]" class="mx-auto mb-3 rounded">
-                                <h5 class="text-lg font-semibold text-blue-300 mb-1">RJ45</h5>
-                                <p class="text-gray-400 text-sm">Utilisé pour Ethernet (Ethernet/IP, PROFINET, Modbus TCP). Standard pour les réseaux locaux.</p>
-                            </div>
-                            <div class="connectique-card">
-                                <img src="https://placehold.co/150x100/2d3748/68d391?text=M12&font=orbitron" alt="[Connecteur M12]" class="mx-auto mb-3 rounded">
-                                <h5 class="text-lg font-semibold text-green-300 mb-1">M12 (Codages variés)</h5>
-                                <p class="text-gray-400 text-sm">Robuste, utilisé pour capteurs, actionneurs et réseaux industriels (ex: Profinet, Ethernet/IP). Différents codages (A, B, D, X) pour différentes applications.</p>
-                            </div>
-                            <div class="connectique-card">
-                                <img src="https://placehold.co/150x100/2d3748/b794f4?text=Sub-D&font=orbitron" alt="[Connecteur Sub-D]" class="mx-auto mb-3 rounded">
-                                <h5 class="text-lg font-semibold text-purple-300 mb-1">Sub-D (DB9, DB25)</h5>
-                                <p class="text-gray-400 text-sm">Utilisé pour les liaisons série (RS-232, RS-485 comme pour Profibus DP) et d'autres interfaces plus anciennes.</p>
-                            </div>
-                             <div class="connectique-card">
-                                <img src="https://placehold.co/150x100/2d3748/f6ad55?text=USB+Industriel&font=orbitron" alt="[Connecteur USB Industriel]" class="mx-auto mb-3 rounded">
-                                <h5 class="text-lg font-semibold text-orange-300 mb-1">USB (Types variés)</h5>
-                                <p class="text-gray-400 text-sm">Utilisé pour la programmation, la configuration, ou la connexion de périphériques. Des versions industrielles robustes existent.</p>
-                            </div>
-                            <div class="connectique-card">
-                                <img src="https://placehold.co/150x100/2d3748/f687b3?text=Bornier&font=orbitron" alt="[Bornier à vis]" class="mx-auto mb-3 rounded">
-                                <h5 class="text-lg font-semibold text-pink-300 mb-1">Borniers à Vis/Ressort</h5>
-                                <p class="text-gray-400 text-sm">Pour le raccordement direct des fils d'alimentation, de capteurs et d'actionneurs.</p>
-                            </div>
-                        </div>
-                        <p class="text-gray-400 mt-6">Des visualisations interactives des brochages seront ajoutées prochainement !</p>
-                    </div>
-                </div>
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <a href="#" class="logo">Uni<span>Borne</span></a>
+                <p>Solution PLC modulaire nouvelle génération basée sur ESP32. Automatisez intelligemment, simplifiez radicalement.</p>
             </div>
-        </section>
-
-        <section id="module3" class="content-section">
-            <div class="bg-gray-800 p-6 sm:p-8 rounded-xl shadow-2xl">
-                <div class="flex items-center mb-6">
-                    <svg class="h-10 w-10 text-blue-400 mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                       <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75V18m-7.5-6.75h.008v.008H8.25v-.008zm0 2.25h.008v.008H8.25V13.5zm0 2.25h.008v.008H8.25v-.008zm0 2.25h.008v.008H8.25V18zm2.498-6.75h.007v.008h-.007v-.008zm0 2.25h.007v.008h-.007V13.5zm0 2.25h.007v.008h-.007v-.008zm0 2.25h.007v.008h-.007V18zm2.504-6.75h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V13.5zm0 2.25h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V18zm2.498-6.75h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V13.5zM8.25 6.75h7.5v7.5h-7.5V6.75z" />
-                    </svg>
-                    <h2 class="text-3xl font-orbitron font-bold text-blue-300">Module 3: Le Laboratoire de Calcul</h2>
-                </div>
-                <p class="text-lg text-gray-400 mb-8">Bienvenue au Laboratoire de Calcul ! Ici, vous trouverez des outils interactifs pour vous aider avec les formules et calculs courants en automatisation et robotique.</p>
-                
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <div class="calculator-card">
-                        <h4 class="text-xl font-orbitron font-semibold text-green-300 mb-3">Calculateur de Vitesse Robot</h4>
-                        <p class="text-gray-400 mb-4 text-sm">Estimez la vitesse optimale de votre robot en fonction de la charge et de la distance à parcourir.</p>
-                        <img src="https://placehold.co/300x150/2d3748/34d399?text=Vitesse+Robot&font=orbitron" alt="[Illustration Calculateur Vitesse Robot]" class="my-4 rounded-lg shadow-md mx-auto">
-                        <button class="button-primary font-semibold py-2 px-4 rounded-lg w-full opacity-50 cursor-not-allowed">Ouvrir (Bientôt)</button>
-                    </div>
-                     <div class="calculator-card">
-                        <h4 class="text-xl font-orbitron font-semibold text-yellow-300 mb-3">Comparateur Temps de Cycle</h4>
-                        <p class="text-gray-400 mb-4 text-sm">Analysez et comparez les temps de cycle théoriques et réels de vos processus.</p>
-                        <img src="https://placehold.co/300x150/2d3748/fbbf24?text=Temps+de+Cycle&font=orbitron" alt="[Illustration Comparateur Temps de Cycle]" class="my-4 rounded-lg shadow-md mx-auto">
-                        <button class="button-primary font-semibold py-2 px-4 rounded-lg w-full opacity-50 cursor-not-allowed">Ouvrir (Bientôt)</button>
-                    </div>
-                    <div class="calculator-card">
-                        <h4 class="text-xl font-orbitron font-semibold text-purple-300 mb-3">Optimiseur Force Pneumatique</h4>
-                        <p class="text-gray-400 mb-4 text-sm">Calculez la force de serrage ou de poussée de vos actionneurs pneumatiques.</p>
-                        <img src="https://placehold.co/300x150/2d3748/c084fc?text=Force+Pneumatique&font=orbitron" alt="[Illustration Optimiseur Force Pneumatique]" class="my-4 rounded-lg shadow-md mx-auto">
-                        <button class="button-primary font-semibold py-2 px-4 rounded-lg w-full opacity-50 cursor-not-allowed">Ouvrir (Bientôt)</button>
-                    </div>
-                    <div class="calculator-card">
-                        <h4 class="text-xl font-orbitron font-semibold text-red-300 mb-3">Simulateur de Vide (Ventouses)</h4>
-                        <p class="text-gray-400 mb-4 text-sm">Déterminez la force de préhension de vos ventouses en fonction du niveau de vide et de la surface.</p>
-                        <img src="https://placehold.co/300x150/2d3748/fca5a5?text=Vide+Ventouses&font=orbitron" alt="[Illustration Simulateur Vide Ventouses]" class="my-4 rounded-lg shadow-md mx-auto">
-                        <button class="button-primary font-semibold py-2 px-4 rounded-lg w-full opacity-50 cursor-not-allowed">Ouvrir (Bientôt)</button>
-                    </div>
-                    </div>
+            <div class="footer-links">
+                <h4>Navigation</h4>
+                <ul>
+                    <li><a href="#probleme">Le problème</a></li>
+                    <li><a href="#solution">Notre solution</a></li>
+                    <li><a href="#architecture">Architecture</a></li>
+                    <li><a href="#avantages">Avantages</a></li>
+                </ul>
             </div>
-        </section>
-
-        <section id="module-placeholder" class="content-section">
-            <h2 class="text-3xl font-orbitron font-bold mb-4 text-blue-300">Module en Construction</h2>
-            <p class="text-xl text-gray-400">Ce module est en cours de développement. Revenez bientôt !</p>
-            <div class="mt-8">
-                <img src="https://placehold.co/600x400/2d3748/e2e8f0?text=Module+en+Construction&font=orbitron" alt="[Image d'un module en construction]" class="rounded-lg shadow-lg mx-auto">
+            <div class="footer-links">
+                <h4>Ressources</h4>
+                <ul>
+                    <li><a href="#">Documentation</a></li>
+                    <li><a href="#">Spécifications</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
             </div>
-        </section>
-    </main>
-
-    <footer class="bg-gray-900 mt-12 py-8 text-center">
-        <p class="text-gray-500">&copy; <span id="currentYear"></span> RoboPro Académie. Tous droits réservés.</p>
-        <p class="text-gray-600 text-sm">Une création interactive pour l'apprentissage de l'automatisation.</p>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2024 UniBorne. Tous droits réservés.</span>
+            <span>Solution PLC ESP32</span>
+        </div>
     </footer>
 
     <script>
-        // --- Données des Composants ---
-        const componentData = {
-            drives: {
-                title: "Variateurs de Vitesse (Drives)",
-                icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 mx-auto mb-4 text-green-400">
-                           <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
-                       </svg>`,
-                description: "Les variateurs de vitesse contrôlent la vitesse, le couple et la direction des moteurs électriques. Ils sont essentiels pour optimiser les processus, économiser l'énergie et améliorer la précision des mouvements.",
-                pointsCles: [
-                    "Contrôle précis de la vitesse et du couple.",
-                    "Démarrages et arrêts en douceur pour réduire l'usure mécanique.",
-                    "Économies d'énergie significatives.",
-                    "Communication avec les automates pour une intégration système."
-                ],
-                image: "https://placehold.co/300x200/1a202c/4299e1?text=Variateur&font=orbitron"
-            },
-            capteurs: {
-                title: "Capteurs",
-                icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 mx-auto mb-4 text-yellow-400">
-                           <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m3-.75H9M9 16.5h.008v.008H9v-.008Zm0 0h.008v.008H9v-.008Zm0 0h.008v.008H9v-.008Zm7.5-3.75h.008v.008H16.5v-.008Zm0 0h.008v.008H16.5v-.008Zm0 0h.008v.008H16.5v-.008Zm-7.5 0h.008v.008H9v-.008Zm0 0h.008v.008H9v-.008Zm0 0h.008v.008H9v-.008Z" />
-                           <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048l5.962-5.962a.75.75 0 011.06 0l2.25 2.25a.75.75 0 010 1.06l-2.25 2.25m0 0l2.25 2.25a.75.75 0 010 1.06l-2.25 2.25m0 0l2.25-2.25" />
-                       </svg>`,
-                description: "Les capteurs sont les 'yeux et oreilles' du système automatisé. Ils détectent la présence, la position, la température, la pression, et d'autres grandeurs physiques pour informer l'automate.",
-                pointsCles: [
-                    "Types variés : inductifs, capacitifs, photoélectriques, ultrasons, température, pression, etc.",
-                    "Fournissent des informations cruciales pour la prise de décision logique.",
-                    "Permettent la surveillance et le contrôle des processus."
-                ],
-                image: "https://placehold.co/300x200/1a202c/f6e05e?text=Capteur&font=orbitron"
-            },
-            hmi: {
-                title: "Interface Homme-Machine (HMI)",
-                icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 mx-auto mb-4 text-purple-400">
-                           <path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25" />
-                       </svg>`,
-                description: "L'HMI permet aux opérateurs d'interagir avec la machine ou le processus. Elle affiche des informations, permet de saisir des commandes et de visualiser l'état du système.",
-                pointsCles: [
-                    "Visualisation des données de production en temps réel.",
-                    "Saisie de paramètres et de consignes.",
-                    "Gestion des alarmes et diagnostics.",
-                    "Interface utilisateur graphique et intuitive."
-                ],
-                image: "https://placehold.co/300x200/1a202c/a78bfa?text=HMI&font=orbitron"
-            },
-            es_deportees: {
-                title: "Entrées/Sorties Déportées",
-                icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 mx-auto mb-4 text-teal-400">
-                           <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z" />
-                       </svg>`,
-                description: "Les modules d'E/S déportées permettent de connecter des capteurs et actionneurs éloignés de l'automate principal, simplifiant le câblage et améliorant la modularité.",
-                pointsCles: [
-                    "Réduction des coûts de câblage.",
-                    "Flexibilité et modularité du système.",
-                    "Communication via des bus de terrain (Ethernet/IP, Profinet, etc.)."
-                ],
-                image: "https://placehold.co/300x200/1a202c/4fd1c5?text=E/S+Déportées&font=orbitron"
-            },
-            encodeurs: {
-                title: "Encodeurs",
-                icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 mx-auto mb-4 text-pink-400">
-                           <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6A2.25 2.25 0 008.25 8.25v3.75a2.25 2.25 0 002.25 2.25h3a2.25 2.25 0 002.25-2.25V8.25a2.25 2.25 0 00-2.25-2.25h-3z" />
-                           <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                           <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12a9.75 9.75 0 0115.546-7.44L17.25 6M2.25 12a9.75 9.75 0 0015.546 7.44L17.25 18M12 2.25a9.75 9.75 0 017.44 15.546L18 17.25M12 2.25a9.75 9.75 0 00-7.44 15.546L6 17.25" />
-                       </svg>`,
-                description: "Les encodeurs mesurent la position angulaire ou linéaire d'un axe. Ils sont cruciaux pour le contrôle précis du mouvement dans les robots et les machines.",
-                pointsCles: [
-                    "Types : incrémentaux et absolus.",
-                    "Fournissent un retour d'information précis sur la position et la vitesse.",
-                    "Essentiels pour les applications de positionnement et de synchronisation."
-                ],
-                image: "https://placehold.co/300x200/1a202c/f472b6?text=Encodeur&font=orbitron"
-            },
-            robots: {
-                title: "Robots",
-                icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 mx-auto mb-4 text-orange-400">
-                           <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9.75 0h9.75c.621 0 1.125-.504 1.125-1.125V2.625c0-.621-.504-1.125-1.125-1.125H6.375c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125z" />
-                       </svg>`,
-                description: "Les robots industriels exécutent des tâches répétitives, dangereuses ou complexes avec une grande précision et vitesse. Ils sont programmables pour s'adapter à diverses applications.",
-                pointsCles: [
-                    "Types : SCARA, 6 axes, collaboratifs (cobots), cartésiens, delta.",
-                    "Augmentent la productivité, la qualité et la sécurité.",
-                    "Utilisés pour l'assemblage, la soudure, la peinture, la manutention, etc."
-                ],
-                image: "https://placehold.co/300x200/1a202c/fb923c?text=Robot&font=orbitron"
-            }
+        // Scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
         };
 
-        // --- Données des Protocoles ---
-        const protocolData = {
-            ethernet_ip: {
-                title: "Ethernet/IP",
-                icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 mx-auto mb-4 text-cyan-400"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25zM16.5 12a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" /></svg>`,
-                description: "Ethernet/IP (Industrial Protocol) est un protocole de communication industriel ouvert basé sur les standards Ethernet. Il est largement utilisé pour connecter des automates, des E/S, des variateurs, des HMI et d'autres dispositifs.",
-                pointsCles: [
-                    "Utilise l'infrastructure Ethernet standard (TCP/IP et UDP/IP).",
-                    "Haute vitesse et grande bande passante.",
-                    "Supporte les communications implicites (E/S) et explicites (messagerie).",
-                    "Géré par ODVA (Open DeviceNet Vendor Association)."
-                ],
-                image: "https://placehold.co/300x200/1a202c/22d3ee?text=Ethernet/IP&font=orbitron"
-            },
-            profibus_dp: {
-                title: "Profibus DP",
-                icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 mx-auto mb-4 text-lime-400"><path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.306 3 12m0 0v3.75m0-3.75H1.5m0 0h1.5m0 0H4.5m1.5 0H7.5m0 0h1.5m0 0h1.5m0 0h1.5m0 0h1.5M12 4.5v3.75m0-3.75c-.621 0-1.125.504-1.125 1.125V12M12 4.5c.621 0 1.125.504 1.125 1.125V12m0 8.25c-.621 0-1.125-.504-1.125-1.125V12m0 8.25c.621 0 1.125-.504 1.125-1.125V12" /></svg>`,
-                description: "Profibus DP (Decentralized Peripherals) est un bus de terrain rapide et robuste, principalement utilisé en Europe pour la communication entre les automates et les périphériques décentralisés (capteurs, actionneurs).",
-                pointsCles: [
-                    "Communication série haute vitesse (jusqu'à 12 Mbit/s).",
-                    "Principalement basé sur RS-485 pour la couche physique.",
-                    "Configuration via fichiers GSD (General Station Description).",
-                    "Géré par PROFIBUS & PROFINET International (PI)."
-                ],
-                image: "https://placehold.co/300x200/1a202c/a3e635?text=Profibus+DP&font=orbitron"
-            },
-            modbus_tcp: {
-                title: "Modbus TCP",
-                icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 mx-auto mb-4 text-amber-400"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z" /></svg>`,
-                description: "Modbus TCP est une variante du protocole Modbus (un des plus anciens et plus simples protocoles industriels) qui utilise TCP/IP sur Ethernet pour la communication. Il est très répandu pour sa simplicité.",
-                pointsCles: [
-                    "Protocole ouvert et simple à implémenter.",
-                    "Fonctionne sur les réseaux Ethernet standards.",
-                    "Utilise une structure client/serveur (maître/esclave).",
-                    "Adapté pour la lecture/écriture de registres et de bits."
-                ],
-                image: "https://placehold.co/300x200/1a202c/f59e0b?text=Modbus+TCP&font=orbitron"
-            },
-            devicenet: {
-                title: "DeviceNet",
-                icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 mx-auto mb-4 text-red-400"><path stroke-linecap="round" stroke-linejoin="round" d="M6.429 9.75L2.25 12l4.179 2.25m0-4.5l5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-3.75 2.063M21.75 12l-4.179-2.25m0 0l4.179-2.25m0 0L12 2.25m-3.75 5.25l3.75-2.063m0 0L12 2.25m0 0L8.25 7.5M12 21.75l5.571-3M6.429 14.25l5.571 3M12 21.75l-5.571-3m11.142 0l4.179 2.25m0 0L21.75 12m0 0l-4.179 2.25m0 0l4.179 2.25m0 0L12 21.75M3.75 16.25l4.179-2.25m0 0L3.75 12m0 0l4.179-2.25m0 0L12 2.25" /></svg>`,
-                description: "DeviceNet est un réseau de communication de bas niveau basé sur CAN (Controller Area Network). Il est conçu pour connecter des dispositifs simples comme des capteurs et des actionneurs à des contrôleurs plus évolués.",
-                pointsCles: [
-                    "Basé sur la technologie CAN, robuste et éprouvée.",
-                    "Supporte l'alimentation et les données sur le même câble.",
-                    "Adapté aux petits dispositifs et aux réseaux d'E/S distribuées.",
-                    "Géré par ODVA."
-                ],
-                image: "https://placehold.co/300x200/1a202c/f87171?text=DeviceNet&font=orbitron"
-            },
-            profinet: {
-                title: "PROFINET",
-                icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 mx-auto mb-4 text-indigo-400"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" /></svg>`,
-                description: "PROFINET est un standard Ethernet industriel développé par Siemens et PROFIBUS & PROFINET International (PI). Il permet la communication en temps réel entre les contrôleurs et les dispositifs de terrain.",
-                pointsCles: [
-                    "Basé sur Ethernet standard, permettant l'intégration avec les réseaux IT.",
-                    "Supporte différentes classes de communication temps réel (RT, IRT).",
-                    "Flexibilité pour les topologies de réseau (ligne, étoile, anneau).",
-                    "Large gamme de dispositifs compatibles."
-                ],
-                image: "https://placehold.co/300x200/1a202c/818cf8?text=PROFINET&font=orbitron"
-            }
-        };
-        
-        // --- Données des Normes (Module 2) ---
-        const normesData = {
-            securite_machines: {
-                title: "Sécurité des Machines",
-                icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 mx-auto mb-2 text-red-400"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" /></svg>`,
-                description: "La sécurité des machines est primordiale pour prévenir les accidents. Elle implique une analyse des risques, la mise en place de mesures de protection (protecteurs, dispositifs d'arrêt d'urgence, barrières immatérielles) et le respect des normes en vigueur.",
-                pointsCles: [
-                    "Norme principale : ISO 12100 (Principes généraux de conception - Appréciation du risque et réduction du risque).",
-                    "IEC 60204-1 : Sécurité des machines – Équipement électrique des machines.",
-                    "ISO 13849-1 : Sécurité des machines – Parties des systèmes de commande relatives à la sécurité.",
-                    "Importance des niveaux de performance (PL) et des niveaux d'intégrité de sécurité (SIL)."
-                ],
-                image: "https://placehold.co/300x200/1a202c/ef4444?text=Sécurité+Machines&font=orbitron"
-            },
-            programmation_automates: {
-                title: "Programmation Automates (IEC 61131-3)",
-                icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 mx-auto mb-2 text-green-400"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" /></svg>`,
-                description: "La norme IEC 61131-3 standardise les langages de programmation pour les automates programmables industriels (API/PLC), favorisant la portabilité et la compréhension des programmes.",
-                pointsCles: [
-                    "Langages graphiques : Ladder Diagram (LD), Function Block Diagram (FBD), Sequential Function Chart (SFC).",
-                    "Langages textuels : Instruction List (IL), Structured Text (ST).",
-                    "Définition des types de données, variables, fonctions et blocs fonctionnels.",
-                    "Facilite la maintenance et la réutilisation du code."
-                ],
-                 image: "https://placehold.co/300x200/1a202c/22c55e?text=IEC+61131-3&font=orbitron"
-            },
-            communication_industrielle: {
-                title: "Communication Industrielle",
-                icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 mx-auto mb-2 text-blue-400"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h18M21 16.5L16.5 12m0 0L21 7.5m-18 0L7.5 3M7.5 3v4.5m1.125 0L12 12m2.625-4.5L12 12m0 0L8.25 15M12 12l3.75 3M12 12l-3.75 3" /></svg>`,
-                description: "Les normes de communication industrielle définissent comment les différents équipements (automates, robots, capteurs, HMI, systèmes SCADA) échangent des données de manière fiable et efficace.",
-                pointsCles: [
-                    "Bus de terrain : Profibus, DeviceNet, Modbus RTU.",
-                    "Ethernet industriel : PROFINET, Ethernet/IP, Modbus TCP, EtherCAT.",
-                    "Protocoles pour l'Industrie 4.0 : OPC UA, MQTT.",
-                    "Importance de l'interopérabilité et de la cybersécurité."
-                ],
-                image: "https://placehold.co/300x200/1a202c/3b82f6?text=Communication&font=orbitron"
-            }
-        };
-
-        // --- Données des Fabricants (Module 2) ---
-        const fabricantsData = {
-            abb: {
-                title: "ABB",
-                icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 mx-auto mb-3 text-red-500" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.5 15.5v-4H8v-3h2.5V7H14v3.5h2.5v3H14v4h-3.5z"/></svg>`, 
-                description: "ABB est un leader mondial des technologies de l'énergie et de l'automatisation, offrant une large gamme de robots industriels, de variateurs, de moteurs et de systèmes de contrôle.",
-                specialites: ["Robotique (IRB, YuMi, GoFa)", "Variateurs de fréquence (ACS)", "Automates (AC500)", "Systèmes de contrôle distribué (DCS)"],
-                codesEx: "Exemples de codes pour automates ABB (AC500) utilisent souvent CoDeSys (IEC 61131-3). Les robots sont programmés en RAPID.",
-                image: "https://placehold.co/300x150/1a202c/ef4444?text=ABB&font=orbitron"
-            },
-            kuka: {
-                title: "KUKA",
-                icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 mx-auto mb-3 text-orange-500" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 13.5c-2.49 0-4.5-2.01-4.5-4.5S9.51 6.5 12 6.5s4.5 2.01 4.5 4.5-2.01 4.5-4.5 4.5z"/></svg>`, 
-                description: "KUKA est un fabricant allemand de robots industriels et de solutions d'automatisation, réputé pour ses robots oranges et ses applications dans l'industrie automobile.",
-                specialites: ["Robots industriels (KR QUANTEC, KR IONTEC, KR AGILUS)", "Robots collaboratifs (LBR iiwa)", "Logiciels de simulation (KUKA.Sim)"],
-                codesEx: "Programmation des robots KUKA avec KRL (KUKA Robot Language). Intégration avec automates via Profinet, EtherCAT, etc.",
-                image: "https://placehold.co/300x150/1a202c/f97316?text=KUKA&font=orbitron"
-            },
-            fanuc: {
-                title: "FANUC",
-                icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 mx-auto mb-3 text-yellow-500" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 13l-4-4h8l-4 4z"/></svg>`, 
-                description: "FANUC est une entreprise japonaise spécialisée dans l'automatisation industrielle, notamment les robots, les CNC (Commandes Numériques par Calculateur) et les machines-outils.",
-                specialites: ["Robots industriels (jaunes)", "Systèmes CNC", "Robodrills, Robocuts, Roboshots"],
-                codesEx: "Programmation des robots FANUC en KAREL ou via des interfaces graphiques. Automates FANUC avec leur propre logique.",
-                image: "https://placehold.co/300x150/1a202c/eab308?text=FANUC&font=orbitron"
-            },
-            siemens: {
-                title: "Siemens",
-                icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 mx-auto mb-3 text-teal-500" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.5 13.5H12v-3h4.5v3zm0-5H7.5v-3h9v3z"/></svg>`, 
-                description: "Siemens est un conglomérat allemand majeur dans les domaines de l'industrie, de l'énergie, de la santé et des infrastructures. Sa division Digital Industries propose une vaste gamme de solutions d'automatisation.",
-                specialites: ["Automates (SIMATIC S7 : S7-1200, S7-1500, S7-300/400)", "HMI (SIMATIC HMI Panels)", "Variateurs (SINAMICS)", "Logiciel TIA Portal"],
-                codesEx: "Programmation avec TIA Portal (STEP 7) utilisant les langages IEC 61131-3 (LAD, FBD, SCL, STL, GRAPH/SFC).",
-                image: "https://placehold.co/300x150/1a202c/14b8a6?text=Siemens&font=orbitron"
-            },
-            schneider: {
-                title: "Schneider Electric",
-                icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 mx-auto mb-3 text-green-500" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 15.5c-3.03 0-5.5-2.47-5.5-5.5s2.47-5.5 5.5-5.5 5.5 2.47 5.5 5.5-2.47 5.5-5.5 5.5z"/></svg>`, 
-                description: "Schneider Electric est une entreprise française spécialisée dans la gestion de l'énergie et les automatismes industriels, offrant des solutions pour l'efficacité énergétique et la durabilité.",
-                specialites: ["Automates (Modicon : M221, M340, M580)", "HMI (Magelis)", "Variateurs (Altivar)", "Logiciel EcoStruxure Machine Expert (anciennement SoMachine)"],
-                codesEx: "Programmation avec EcoStruxure Machine Expert, supportant les langages IEC 61131-3.",
-                image: "https://placehold.co/300x150/1a202c/22c55e?text=Schneider&font=orbitron"
-            },
-            allen_bradley: {
-                title: "Allen-Bradley (Rockwell Automation)",
-                icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 mx-auto mb-3 text-blue-500" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14h-3v-4h3v4zm4 0h-3v-4h3v4zm0-6h-7V6h7v4z"/></svg>`, 
-                description: "Allen-Bradley est une marque de Rockwell Automation, un fournisseur américain de solutions d'automatisation industrielle et d'information.",
-                specialites: ["Automates (ControlLogix, CompactLogix, MicroLogix)", "HMI (PanelView)", "Variateurs (PowerFlex)", "Logiciel Studio 5000 Logix Designer"],
-                codesEx: "Programmation principalement en Ladder Logic (LD), Function Block Diagram (FBD), Structured Text (ST) et Sequential Function Chart (SFC) avec Studio 5000.",
-                image: "https://placehold.co/300x150/1a202c/3b82f6?text=Allen-Bradley&font=orbitron"
-            },
-             universal_robots: {
-                title: "Universal Robots",
-                icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 mx-auto mb-3 text-sky-500" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 12c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>`, 
-                description: "Universal Robots (UR) est un fabricant danois pionnier dans le domaine des robots collaboratifs (cobots), conçus pour travailler en toute sécurité aux côtés des humains.",
-                specialites: ["Robots collaboratifs (UR3e, UR5e, UR10e, UR16e, UR20)", "Interface de programmation intuitive Polyscope", "Écosystème UR+ de périphériques et logiciels"],
-                codesEx: "Programmation via l'interface graphique Polyscope, ou en utilisant URScript (langage de script basé sur Python).",
-                image: "https://placehold.co/300x150/1a202c/0ea5e9?text=Universal+Robots&font=orbitron"
-            }
-        };
-
-
-        // --- Logique de Navigation ---
-        const navLinks = document.querySelectorAll('.nav-link');
-        const contentSections = document.querySelectorAll('.content-section');
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
-
-        function setActiveSection(targetId) {
-            contentSections.forEach(section => {
-                section.classList.toggle('active', section.id === targetId);
-            });
-            navLinks.forEach(link => {
-                link.classList.toggle('text-blue-400', link.dataset.target === targetId);
-                link.classList.toggle('bg-gray-700', link.closest('.mobile-menu') && link.dataset.target === targetId);
-                 if (!link.closest('.mobile-menu') && link.dataset.target !== targetId) { 
-                    link.classList.remove('text-blue-400');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
                 }
             });
-            if (mobileMenu.style.display === 'block') {
-                mobileMenu.style.display = 'none';
-            }
-            window.scrollTo(0, 0); 
+        }, observerOptions);
 
-            // Initialisation spécifique au module si la section active est un module
-            if (targetId === 'module1') {
-                const firstTabButton = document.querySelector('.module1-tab-button[data-target="etape1-composants"]');
-                if (firstTabButton && !firstTabButton.classList.contains('border-blue-500')) firstTabButton.click(); 
-            } else if (targetId === 'module2') {
-                const firstTabButton = document.querySelector('.module2-tab-button[data-target="module2-normes"]');
-                 if (firstTabButton && !firstTabButton.classList.contains('border-blue-500')) firstTabButton.click();
-            }
-        }
-
-        navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const targetId = e.currentTarget.dataset.target;
-                setActiveSection(targetId);
-            });
-        });
-        
-        mobileMenuButton.addEventListener('click', () => {
-            mobileMenu.style.display = mobileMenu.style.display === 'block' ? 'none' : 'block';
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
         });
 
-        // --- Logique d'interaction pour les listes et détails (générique) ---
-        function setupInteractiveList(listId, detailsDivId, dataObject, type = 'list') { 
-            const listOrCardItems = document.querySelectorAll(`#${listId} .interactive-${type}-item`);
-            const detailsDiv = document.getElementById(detailsDivId).querySelector('.details-content-area');
-
-            function displayDetails(itemKey) {
-                const data = dataObject[itemKey];
-                if (data) {
-                    let pointsHtml = '';
-                    let specialitesHtml = ''; 
-                    let codesExHtml = ''; 
-
-                    if (data.pointsCles && data.pointsCles.length > 0) {
-                        pointsHtml = '<h4 class="text-xl font-semibold mt-6 mb-3 text-sky-200">Points Clés :</h4><ul class="list-disc list-inside space-y-1 text-gray-300">';
-                        data.pointsCles.forEach(point => {
-                            pointsHtml += `<li>${point}</li>`;
-                        });
-                        pointsHtml += '</ul>';
-                    }
-                    if (data.specialites && data.specialites.length > 0) {
-                        specialitesHtml = '<h4 class="text-xl font-semibold mt-6 mb-3 text-sky-200">Spécialités :</h4><ul class="list-disc list-inside space-y-1 text-gray-300">';
-                        data.specialites.forEach(point => {
-                            specialitesHtml += `<li>${point}</li>`;
-                        });
-                        specialitesHtml += '</ul>';
-                    }
-                    if (data.codesEx) {
-                        codesExHtml = `<h4 class="text-xl font-semibold mt-6 mb-3 text-sky-200">Exemples Codes / Programmation :</h4><p class="text-gray-300">${data.codesEx}</p>`;
-                    }
-
-                    detailsDiv.innerHTML = `
-                        <div class="text-center">${data.icon || ''}</div>
-                        <h3 class="text-3xl font-orbitron font-semibold mb-4 text-center text-blue-300">${data.title}</h3>
-                        <p class="text-lg text-gray-300 mb-4">${data.description}</p>
-                        ${pointsHtml}
-                        ${specialitesHtml}
-                        ${codesExHtml}
-                        ${data.image ? `<img src="${data.image}" alt="[Image de ${data.title}]" class="mt-6 rounded-lg shadow-md mx-auto" onerror="this.src='https://placehold.co/300x200/1a202c/e2e8f0?text=Image+Indisponible&font=orbitron'; this.alt='Image par défaut pour ${data.title}'">` : ''}
-                    `;
-                } else {
-                    detailsDiv.innerHTML = `<p class="text-gray-400 text-lg">Sélectionnez un élément pour voir ses informations ici.</p>`;
-                }
-            }
-
-            listOrCardItems.forEach(item => {
-                item.addEventListener('click', () => {
-                    listOrCardItems.forEach(i => i.classList.remove('active', 'bg-blue-600', 'text-white', 'border-blue-400')); 
-                    item.classList.add('active');
-                    if (type === 'list') {
-                        item.classList.add('bg-blue-600', 'text-white');
-                    } else { 
-                        item.classList.add('bg-blue-700', 'border-blue-400'); 
-                    }
-                    const itemKey = item.dataset.itemkey; 
-                    displayDetails(itemKey);
-                });
-            });
+        // Navbar scroll effect
+        let lastScroll = 0;
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            const currentScroll = window.pageYOffset;
             
-            if (listOrCardItems.length > 0) {
-                const isActive = Array.from(listOrCardItems).some(item => item.classList.contains('active'));
-                if (!isActive) { 
-                    listOrCardItems[0].click();
-                }
+            if (currentScroll > 100) {
+                nav.style.padding = '1rem 3rem';
+                nav.style.background = 'rgba(10, 15, 28, 0.95)';
             } else {
-                 detailsDiv.innerHTML = `<p class="text-gray-400 text-lg">Aucun élément à afficher.</p>`;
+                nav.style.padding = '1.5rem 3rem';
+                nav.style.background = 'rgba(10, 15, 28, 0.8)';
             }
-        }
+            
+            lastScroll = currentScroll;
+        });
 
-        // --- Génération dynamique des cartes Fabricants ---
-        function populateFabricantCards() {
-            const container = document.getElementById('module2-fabricants-cards');
-            if (!container) return;
-            let cardsHtml = '';
-            for (const key in fabricantsData) {
-                const fabricant = fabricantsData[key];
-                cardsHtml += `
-                    <div class="interactive-card-item fabricant-card" data-itemkey="${key}">
-                        <div>
-                            ${fabricant.icon || `<img src="${fabricant.image || 'https://placehold.co/80x40/2d3748/e2e8f0?text=Logo&font=orbitron'}" alt="Logo ${fabricant.title}" class="fabricant-logo mx-auto">`}
-                            <h4 class="text-xl font-orbitron font-semibold text-yellow-300 mb-2 text-center">${fabricant.title}</h4>
-                            <p class="text-gray-400 text-sm text-center">${fabricant.description.substring(0, 70)}...</p>
-                        </div>
-                        <button class="mt-4 button-primary font-semibold py-1 px-3 rounded-md text-sm w-full opacity-70 hover:opacity-100">Voir détails</button>
-                    </div>
-                `;
-            }
-            container.innerHTML = cardsHtml;
-        }
-        
-        // --- Navigation par Onglets pour Modules ---
-        function setupModuleTabs(moduleId, tabButtonClass, tabContentClass, defaultTabTarget, dataMapping) {
-            const tabButtons = document.querySelectorAll(`.${tabButtonClass}`);
-            const tabContents = document.querySelectorAll(`#${moduleId}-content .${tabContentClass}`);
-
-            tabButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    const targetId = button.dataset.target;
-
-                    tabButtons.forEach(btn => {
-                        btn.classList.remove('border-blue-500', 'text-blue-400');
-                        btn.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-300', 'hover:border-gray-500');
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
                     });
-                    button.classList.add('border-blue-500', 'text-blue-400');
-                    button.classList.remove('border-transparent', 'text-gray-500', 'hover:text-gray-300', 'hover:border-gray-500');
-
-                    tabContents.forEach(content => {
-                        content.classList.toggle('active', content.id === targetId);
-                    });
-
-                    if (dataMapping && dataMapping[targetId]) {
-                        const {listId, detailsId, data, type} = dataMapping[targetId];
-                        setupInteractiveList(listId, detailsId, data, type || 'list');
-                    } else if (targetId === 'module2-normes') { 
-                        setupInteractiveList('module2-normes-cards', 'norme-details', normesData, 'card');
-                    } else if (targetId === 'module2-fabricants') {
-                        populateFabricantCards(); 
-                        setupInteractiveList('module2-fabricants-cards', 'fabricant-details', fabricantsData, 'card');
-                    }
-                });
-            });
-            const defaultButton = document.querySelector(`.${tabButtonClass}[data-target="${defaultTabTarget}"]`);
-            if (defaultButton) {
-                if (!defaultButton.classList.contains('border-blue-500')) { // Click only if not already active by main nav
-                     defaultButton.click();
-                } else { // If already active, ensure content is initialized
-                     if (defaultTabTarget === 'etape1-composants' && moduleId === 'module1') {
-                        setupInteractiveList('component-list', 'component-details', componentData);
-                    } else if (defaultTabTarget === 'module2-normes' && moduleId === 'module2') { 
-                        setupInteractiveList('module2-normes-cards', 'norme-details', normesData, 'card');
-                    }
                 }
-            }
+            });
+        });
+
+        // Counter animation for stats
+        const animateCounter = (element, target, suffix = '') => {
+            let current = 0;
+            const increment = target / 50;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    element.textContent = target + suffix;
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(current) + suffix;
+                }
+            }, 30);
+        };
+
+        // Trigger counter animation when hero is visible
+        const heroObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Stats are already set, but you could animate them here
+                    heroObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        const heroSection = document.querySelector('.hero');
+        if (heroSection) {
+            heroObserver.observe(heroSection);
         }
-
-        setupModuleTabs('module1', 'module1-tab-button', 'module1-tab-content', 'etape1-composants', {
-            'etape1-composants': { listId: 'component-list', detailsId: 'component-details', data: componentData },
-            'etape1-protocoles': { listId: 'protocol-list', detailsId: 'protocol-details', data: protocolData }
-        });
-
-        setupModuleTabs('module2', 'module2-tab-button', 'module2-tab-content', 'module2-normes', {
-            // 'module2-normes' et 'module2-fabricants' sont gérés dans le click handler du bouton d'onglet
-        });
-
-        // --- Logique pour Ladder et GRAFCET interactifs ---
-        const ladderElements = document.querySelectorAll('.ladder-element');
-        const ladderInfoBox = document.getElementById('ladder-info-box');
-        ladderElements.forEach(el => {
-            el.addEventListener('click', () => {
-                ladderInfoBox.textContent = el.dataset.info || "Information non disponible.";
-                ladderElements.forEach(e => e.style.strokeWidth = '2'); // Reset others
-                el.querySelectorAll('line, circle').forEach(shape => shape.style.strokeWidth = '4'); // Highlight clicked
-            });
-        });
-
-        const grafcetElements = document.querySelectorAll('.grafcet-element');
-        const grafcetInfoBox = document.getElementById('grafcet-info-box');
-        grafcetElements.forEach(el => {
-            el.addEventListener('click', () => {
-                grafcetInfoBox.textContent = el.dataset.info || "Information non disponible.";
-                 grafcetElements.forEach(e => {
-                    if(e.classList.contains('grafcet-step')) e.style.borderColor = '#9ca3af';
-                    if(e.classList.contains('grafcet-transition')) e.style.backgroundColor = '#9ca3af';
-                 });
-                if(el.classList.contains('grafcet-step')) el.style.borderColor = '#63b3ed'; // Highlight step
-                if(el.classList.contains('grafcet-transition')) el.style.backgroundColor = '#63b3ed'; // Highlight transition
-            });
-        });
-        
-        document.getElementById('currentYear').textContent = new Date().getFullYear();
-        setActiveSection('accueil');
-        
     </script>
 </body>
 </html>
