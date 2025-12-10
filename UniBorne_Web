@@ -1148,6 +1148,97 @@
             transform: translateY(0);
         }
 
+        /* Image Popup Modal */
+        .image-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .image-modal.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .image-modal-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+            animation: modalZoomIn 0.3s ease;
+        }
+
+        @keyframes modalZoomIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .image-modal img {
+            max-width: 100%;
+            max-height: 80vh;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .image-modal-caption {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: var(--text);
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .image-modal-close {
+            position: absolute;
+            top: -50px;
+            right: 0;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 2rem;
+            cursor: pointer;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .image-modal-close:hover {
+            color: var(--accent);
+            transform: rotate(90deg);
+        }
+
+        /* Hardware image links */
+        .hw-image-link {
+            color: var(--accent);
+            cursor: pointer;
+            text-decoration: underline;
+            text-decoration-style: dotted;
+            text-underline-offset: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .hw-image-link:hover {
+            color: var(--highlight);
+            text-decoration-style: solid;
+        }
+
+        .hw-image-link::after {
+            content: ' 📷';
+            font-size: 0.85em;
+        }
+
         /* Limitations Section */
         .limitations {
             background: var(--primary);
@@ -1225,7 +1316,7 @@
             </div>
 
             <div class="hero-cta">
-                <a href="#contact" class="btn btn-primary">
+                <a href="mailto:aross@mrcbellechasse.qc.ca?subject=Demande%20de%20démonstration%20UniBorne&body=Bonjour,%0A%0AJe%20souhaite%20obtenir%20plus%20d'informations%20sur%20la%20solution%20UniBorne.%0A%0AMerci." class="btn btn-primary">
                     Demander une démo
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M5 12h14M12 5l7 7-7 7"/>
@@ -1335,7 +1426,7 @@
             <div class="arch-card fade-in">
                 <div class="arch-icon">🔩</div>
                 <h3>Hardware Flexible</h3>
-                <p>Compatible avec tout ESP32. Cartes recommandées avec E/S isolées, montage rail DIN.</p>
+                <p>Compatible avec tout ESP32. Cartes recommandées : <span class="hw-image-link" onclick="openImageModal('kincony')">Kincony A8S</span> ou <span class="hw-image-link" onclick="openImageModal('m5stack')">M5Stack StampPLC</span> avec E/S isolées, montage rail DIN.</p>
                 <div class="arch-specs">
                     <span class="spec-tag">Kincony A8S</span>
                     <span class="spec-tag">M5Stack</span>
@@ -1634,13 +1725,13 @@
             <h2>Prêt à automatiser autrement ?</h2>
             <p>Contactez notre équipe technique pour une démonstration personnalisée et découvrez comment UniBorne peut transformer vos projets d'automatisation.</p>
             <div class="cta-buttons">
-                <a href="mailto:contact@uniborne.com" class="btn btn-primary">
+                <a href="mailto:aross@mrcbellechasse.qc.ca?subject=Demande%20de%20démonstration%20UniBorne&body=Bonjour,%0A%0AJe%20souhaite%20obtenir%20plus%20d'informations%20sur%20la%20solution%20UniBorne.%0A%0AMerci." class="btn btn-primary">
                     Demander une démo
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M5 12h14M12 5l7 7-7 7"/>
                     </svg>
                 </a>
-                <a href="#" class="btn btn-secondary">Télécharger la documentation</a>
+                <a href="#architecture" class="btn btn-secondary">Voir l'architecture</a>
             </div>
         </div>
     </section>
@@ -1676,7 +1767,58 @@
         </div>
     </footer>
 
+    <!-- Image Modals -->
+    <div id="imageModal" class="image-modal" onclick="closeImageModal(event)">
+        <div class="image-modal-content">
+            <button class="image-modal-close" onclick="closeImageModal(event)">&times;</button>
+            <img id="modalImage" src="" alt="">
+            <p id="modalCaption" class="image-modal-caption"></p>
+        </div>
+    </div>
+
     <script>
+        // Image modal data
+        const imageData = {
+            'kincony': {
+                src: 'kincony.png',
+                caption: 'Carte Kincony A8S — 8 entrées isolées, 8 relais, alimentation 24V, montage rail DIN'
+            },
+            'm5stack': {
+                src: 'm5stack.png',
+                caption: 'M5Stack StampPLC — Solution compacte avec écran intégré, 8 entrées, 4 relais'
+            }
+        };
+
+        function openImageModal(imageKey) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            const caption = document.getElementById('modalCaption');
+            
+            if (imageData[imageKey]) {
+                modalImg.src = imageData[imageKey].src;
+                caption.textContent = imageData[imageKey].caption;
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeImageModal(event) {
+            if (event.target === event.currentTarget || event.target.classList.contains('image-modal-close')) {
+                const modal = document.getElementById('imageModal');
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        }
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const modal = document.getElementById('imageModal');
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+
         // Scroll animations
         const observerOptions = {
             threshold: 0.1,
@@ -1751,10 +1893,4 @@
             });
         }, { threshold: 0.5 });
 
-        const heroSection = document.querySelector('.hero');
-        if (heroSection) {
-            heroObserver.observe(heroSection);
-        }
-    </script>
-</body>
-</html>
+        const heroSectio
