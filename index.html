@@ -6,7 +6,6 @@
     <title>UniBorne | Solution PLC Nouvelle Génération</title>
     <meta name="description" content="UniBorne - Solution PLC modulaire basée sur ESP32. Automatisez intelligemment, simplifiez radicalement. 70-80% moins cher qu'un automate traditionnel.">
     
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -47,6 +46,66 @@
             line-height: 1.6;
             overflow-x: hidden;
         }
+
+        /* --- STYLES POUR LES POP-UP (MODALES) --- */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 2000; 
+            left: 0; 
+            top: 0; 
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgba(0,0,0,0.85); 
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s;
+        }
+
+        .modal-content {
+            margin: 5% auto;
+            display: block;
+            max-width: 90%;
+            max-height: 85vh;
+            border-radius: 12px;
+            box-shadow: 0 0 30px var(--accent-glow);
+            border: 1px solid var(--accent);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+            z-index: 2001;
+        }
+
+        .close-modal:hover,
+        .close-modal:focus {
+            color: var(--accent);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .trigger-link {
+            color: var(--accent);
+            cursor: pointer;
+            text-decoration: underline;
+            text-decoration-style: dotted;
+            text-underline-offset: 4px;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+        
+        .trigger-link:hover {
+            color: #fff;
+            text-shadow: 0 0 10px var(--accent);
+        }
+        /* ---------------------------------------- */
 
         /* Noise texture overlay */
         body::before {
@@ -978,6 +1037,24 @@
             justify-content: center;
             flex-wrap: wrap;
         }
+        
+        /* Contact Link Override */
+        .contact-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.5rem;
+            display: inline-block;
+            margin-top: 1rem;
+            transition: all 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+        
+        .contact-link:hover {
+            color: #fff;
+            border-bottom-color: var(--accent);
+            text-shadow: 0 0 10px var(--accent-glow);
+        }
 
         /* Footer */
         footer {
@@ -1186,7 +1263,6 @@
 <body>
     <div class="grid-bg"></div>
 
-    <!-- Navigation -->
     <nav>
         <a href="#" class="logo">Uni<span>Borne</span></a>
         <ul class="nav-links">
@@ -1200,7 +1276,6 @@
         <button class="mobile-menu-btn">☰</button>
     </nav>
 
-    <!-- Hero Section -->
     <section class="hero">
         <div class="hero-glow"></div>
         <div class="hero-glow-2"></div>
@@ -1236,7 +1311,6 @@
         </div>
     </section>
 
-    <!-- Problem Section -->
     <section class="problems" id="probleme">
         <div class="section-header fade-in">
             <span class="section-label">Le constat</span>
@@ -1268,7 +1342,6 @@
         </div>
     </section>
 
-    <!-- Solution Section -->
     <section class="solution" id="solution">
         <div class="section-header fade-in">
             <span class="section-label">Notre réponse</span>
@@ -1292,7 +1365,7 @@
                     </div>
                     <div class="feature-item">
                         <div class="feature-icon">🔧</div>
-                        <span class="feature-text">Hardware flexible : Kincony, M5Stack, et plus</span>
+                        <span class="feature-text">Hardware flexible : <span class="trigger-link" onclick="openModal('modal-kincony')">Kincony</span>, <span class="trigger-link" onclick="openModal('modal-m5stack')">M5Stack</span>, et plus</span>
                     </div>
                     <div class="feature-item">
                         <div class="feature-icon">🔄</div>
@@ -1324,7 +1397,6 @@
         </div>
     </section>
 
-    <!-- Architecture Section -->
     <section class="architecture" id="architecture">
         <div class="section-header fade-in">
             <span class="section-label">Architecture</span>
@@ -1370,7 +1442,6 @@
         </div>
     </section>
 
-    <!-- Components Section -->
     <section class="components">
         <div class="section-header fade-in">
             <span class="section-label">Interface</span>
@@ -1443,7 +1514,6 @@
         </div>
     </section>
 
-    <!-- Advantages Section -->
     <section class="advantages" id="avantages">
         <div class="section-header fade-in">
             <span class="section-label">Avantages</span>
@@ -1501,7 +1571,6 @@
         </div>
     </section>
 
-    <!-- Comparison Section -->
     <section class="comparison">
         <div class="section-header fade-in">
             <span class="section-label">Comparatif</span>
@@ -1542,7 +1611,6 @@
         </div>
     </section>
 
-    <!-- Use Case Section -->
     <section class="usecase" id="applications">
         <div class="section-header fade-in">
             <span class="section-label">En production</span>
@@ -1600,7 +1668,6 @@
         </div>
     </section>
 
-    <!-- Limitations Section -->
     <section class="limitations">
         <div class="section-header fade-in">
             <span class="section-label">Transparence</span>
@@ -1628,24 +1695,15 @@
         </div>
     </section>
 
-    <!-- CTA Section -->
     <section class="cta" id="contact">
         <div class="cta-content fade-in">
             <h2>Prêt à automatiser autrement ?</h2>
-            <p>Contactez notre équipe technique pour une démonstration personnalisée et découvrez comment UniBorne peut transformer vos projets d'automatisation.</p>
-            <div class="cta-buttons">
-                <a href="mailto:contact@uniborne.com" class="btn btn-primary">
-                    Demander une démo
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M5 12h14M12 5l7 7-7 7"/>
-                    </svg>
-                </a>
-                <a href="#" class="btn btn-secondary">Télécharger la documentation</a>
+            <p>Contactez <strong>Mathias Berlinger</strong> pour une démonstration personnalisée et découvrez comment UniBorne peut transformer vos projets d'automatisation.<br><br>
+            <a href="mailto:mberlinger@montmagny.com" class="contact-link">mberlinger@montmagny.com</a>
+            </p>
             </div>
-        </div>
     </section>
 
-    <!-- Footer -->
     <footer>
         <div class="footer-content">
             <div class="footer-brand">
@@ -1676,7 +1734,36 @@
         </div>
     </footer>
 
+    <div id="modal-kincony" class="modal">
+        <span class="close-modal" onclick="closeModal('modal-kincony')">&times;</span>
+        <img class="modal-content" src="kincony.png" alt="Contrôleur Kincony">
+    </div>
+
+    <div id="modal-m5stack" class="modal">
+        <span class="close-modal" onclick="closeModal('modal-m5stack')">&times;</span>
+        <img class="modal-content" src="m5stack.png" alt="Contrôleur M5Stack">
+    </div>
+
     <script>
+        // MODAL LOGIC
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = "block";
+            document.body.style.overflow = "hidden"; // Prevent scrolling when modal is open
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = "none";
+            document.body.style.overflow = "auto"; // Re-enable scrolling
+        }
+
+        // Close modal if clicked outside of image
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = "none";
+                document.body.style.overflow = "auto";
+            }
+        }
+
         // Scroll animations
         const observerOptions = {
             threshold: 0.1,
