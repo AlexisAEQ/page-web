@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interface Interactive UniBorne</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0a0f1c; /* Couleur de fond sombre assortie */
+            color: #f1f5f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #22d3ee; /* Bleu UniBorne */
+            margin-bottom: 10px;
+        }
+
+        p.instruction {
+            color: #94a3b8;
+            margin-bottom: 30px;
+        }
+
+        /* Conteneur principal de l'image */
+        .interface-wrapper {
+            position: relative;
+            display: inline-block;
+            max-width: 1200px;
+            width: 100%;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            overflow: hidden;
+        }
+
+        /* L'image elle-même */
+        .interface-img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Style des zones réactives (Hotspots) */
+        .hotspot {
+            position: absolute;
+            cursor: help;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+            border-radius: 4px;
+        }
+
+        /* Effet au survol de la zone : bordure brillante */
+        .hotspot:hover {
+            border-color: #22d3ee;
+            background-color: rgba(34, 211, 238, 0.1);
+            box-shadow: 0 0 15px rgba(34, 211, 238, 0.4);
+        }
+
+        /* L'info-bulle (Tooltip) */
+        .hotspot .tooltip {
+            visibility: hidden;
+            width: 220px;
+            background-color: rgba(15, 23, 42, 0.95);
+            color: #fff;
+            text-align: left;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #22d3ee;
+            
+            /* Positionnement de l'infobulle */
+            position: absolute;
+            z-index: 10;
+            bottom: 120%; /* Juste au-dessus de l'élément */
+            left: 50%;
+            transform: translateX(-50%);
+            
+            /* Animation */
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.9rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            pointer-events: none; /* Empêche de cliquer sur le tooltip */
+        }
+
+        .hotspot .tooltip::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #22d3ee transparent transparent transparent;
+        }
+
+        .hotspot:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .tooltip strong {
+            display: block;
+            color: #22d3ee;
+            margin-bottom: 5px;
+            font-size: 1rem;
+        }
+
+        /* --- POSITIONNEMENT DES ZONES (Pourcentages approximatifs basés sur l'image) --- */
+        
+        /* RxLabel (Haut Gauche) */
+        .spot-rxlabel { top: 35%; left: 7%; width: 10%; height: 12%; }
+        
+        /* TxString (Haut Centre-Gauche) */
+        .spot-txstring { top: 33%; left: 21%; width: 17%; height: 15%; }
+
+        /* RxIndicator (Haut Centre) */
+        .spot-indicator { top: 33%; left: 44%; width: 10%; height: 15%; }
+
+        /* TxDropdown (Haut Centre-Droit) */
+        .spot-dropdown { top: 33%; left: 64%; width: 10%; height: 12%; }
+
+        /* RxLevelBar (Droite Verticale) */
+        .spot-levelbar { top: 20%; left: 81%; width: 13%; height: 42%; }
+
+        /* RxBool (Bas Gauche - Switch) */
+        .spot-rxbool { top: 67%; left: 5%; width: 11%; height: 10%; }
+
+        /* TxQr (Bas Gauche - QR) */
+        .spot-qr { top: 67%; left: 26%; width: 9%; height: 10%; }
+
+        /* TxBool (Bas Centre - Switch) */
+        .spot-txbool { top: 67%; left: 44%; width: 10%; height: 10%; }
+
+        /* TxButtonHold (Bas Droite) */
+        .spot-hold { top: 68%; left: 63%; width: 12%; height: 10%; }
+
+        /* TxNumeric (Tout en bas gauche) */
+        .spot-txn { top: 83%; left: 9%; width: 16%; height: 15%; }
+
+        /* TxSlider (Tout en bas centre) */
+        .spot-slider { top: 83%; left: 40%; width: 19%; height: 15%; }
+
+        /* TxModal (Tout en bas droite) */
+        .spot-modal { top: 86%; left: 76%; width: 10%; height: 10%; }
+
+    </style>
+</head>
+<body>
+
+    <h1>Interface de configuration UniBorne</h1>
+    <p class="instruction">Passez votre souris sur les éléments de l'interface pour voir leur fonction.</p>
+
+    <div class="interface-wrapper">
+        <img src="Capture_different renderer.png" alt="Interface UniBorne" class="interface-img">
+
+        <div class="hotspot spot-rxlabel">
+            <div class="tooltip">
+                <strong>RxLabel</strong>
+                Affiche une donnée simple en lecture seule (texte ou booléen) provenant de l'automate.
+            </div>
+        </div>
+
+        <div class="hotspot spot-txstring">
+            <div class="tooltip">
+                <strong>TxString</strong>
+                Permet à l'opérateur de saisir du texte et de l'envoyer vers la machine (ex: nom de lot).
+            </div>
+        </div>
+
+        <div class="hotspot spot-indicator">
+            <div class="tooltip">
+                <strong>RxIndicator</strong>
+                Voyant lumineux d'état. Change de couleur (Vert/Rouge/Gris) selon l'état d'une variable.
+            </div>
+        </div>
+
+        <div class="hotspot spot-dropdown">
+            <div class="tooltip">
+                <strong>TxDropdown</strong>
+                Menu déroulant permettant de choisir une option parmi une liste pré-configurée.
+            </div>
+        </div>
+
+        <div class="hotspot spot-levelbar">
+            <div class="tooltip">
+                <strong>RxLevelBar</strong>
+                Visualisation graphique d'une valeur analogique (jauge de niveau, température, pourcentage).
+            </div>
+        </div>
+
+        <div class="hotspot spot-rxbool">
+            <div class="tooltip">
+                <strong>RxBool</strong>
+                Interrupteur visualisant l'état d'une entrée numérique.
+            </div>
+        </div>
+
+        <div class="hotspot spot-qr">
+            <div class="tooltip">
+                <strong>TxQr</strong>
+                Génère un code QR dynamique ou permet de scanner un code via la caméra de la tablette.
+            </div>
+        </div>
+
+        <div class="hotspot spot-txbool">
+            <div class="tooltip">
+                <strong>TxBool</strong>
+                Interrupteur de commande (Switch) pour activer ou désactiver une sortie machine.
+            </div>
+        </div>
+
+        <div class="hotspot spot-hold">
+            <div class="tooltip">
+                <strong>TxButtonHold</strong>
+                Bouton momentané : la variable reste active tant que l'utilisateur maintient l'appui (fonction "jog").
+            </div>
+        </div>
+
+        <div class="hotspot spot-txn">
+            <div class="tooltip">
+                <strong>TxNumeric</strong>
+                Champ de saisie pour envoyer une valeur numérique précise (consigne) à l'automate.
+            </div>
+        </div>
+
+        <div class="hotspot spot-slider">
+            <div class="tooltip">
+                <strong>TxSlider</strong>
+                Curseur glissant pour ajuster rapidement une valeur analogique entre 0 et 100%.
+            </div>
+        </div>
+
+        <div class="hotspot spot-modal">
+            <div class="tooltip">
+                <strong>TxModal</strong>
+                Bouton déclenchant l'ouverture d'une fenêtre modale (pop-up) ou d'une page protégée.
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
