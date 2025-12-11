@@ -342,6 +342,8 @@
             display: flex;
             gap: 1rem;
             justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
             animation: fadeInUp 0.8s ease 0.4s both;
         }
 
@@ -377,6 +379,19 @@
         .btn-secondary:hover {
             border-color: var(--accent);
             color: var(--accent);
+        }
+
+        /* Nouveau style pour le bouton démo */
+        .btn-demo {
+            background: rgba(34, 211, 238, 0.1);
+            color: var(--accent);
+            border: 1px solid rgba(34, 211, 238, 0.3);
+        }
+        
+        .btn-demo:hover {
+            background: rgba(34, 211, 238, 0.2);
+            box-shadow: 0 0 20px rgba(34, 211, 238, 0.2);
+            transform: translateY(-3px);
         }
 
         @keyframes fadeInUp {
@@ -1271,6 +1286,7 @@
             <li><a href="#architecture">Architecture</a></li>
             <li><a href="#avantages">Avantages</a></li>
             <li><a href="#applications">Applications</a></li>
+            <li><a href="demo.html" target="_blank" style="color: var(--accent);">Démo Interface</a></li>
         </ul>
         <a href="#contact" class="nav-cta">Nous contacter</a>
         <button class="mobile-menu-btn">☰</button>
@@ -1305,6 +1321,9 @@
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M5 12h14M12 5l7 7-7 7"/>
                     </svg>
+                </a>
+                <a href="demo.html" target="_blank" class="btn btn-demo">
+                    <span style="margin-right:8px">🎮</span> Voir l'interface
                 </a>
                 <a href="#solution" class="btn btn-secondary">Découvrir la solution</a>
             </div>
@@ -1701,7 +1720,7 @@
             <p>Contactez <strong>Mathias Berlinger</strong> pour une démonstration personnalisée et découvrez comment UniBorne peut transformer vos projets d'automatisation.<br><br>
             <a href="mailto:mberlinger@montmagny.com" class="contact-link">mberlinger@montmagny.com</a>
             </p>
-            </div>
+        </div>
     </section>
 
     <footer>
@@ -1717,6 +1736,14 @@
                     <li><a href="#solution">Notre solution</a></li>
                     <li><a href="#architecture">Architecture</a></li>
                     <li><a href="#avantages">Avantages</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Ressources</h4>
+                <ul>
+                    <li><a href="#">Documentation</a></li>
+                    <li><a href="#">Spécifications</a></li>
+                    <li><a href="#contact">Contact</a></li>
                 </ul>
             </div>
         </div>
@@ -1804,21 +1831,6 @@
                 }
             });
         });
-
-        // Counter animation for stats
-        const animateCounter = (element, target, suffix = '') => {
-            let current = 0;
-            const increment = target / 50;
-            const timer = setInterval(() => {
-                current += increment;
-                if (current >= target) {
-                    element.textContent = target + suffix;
-                    clearInterval(timer);
-                } else {
-                    element.textContent = Math.floor(current) + suffix;
-                }
-            }, 30);
-        };
 
         // Trigger counter animation when hero is visible
         const heroObserver = new IntersectionObserver((entries) => {
